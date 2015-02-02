@@ -13,13 +13,20 @@ $(document).ready(function(){
 	var interval;
 	var FPS = 30;
 
-	var x=0;
-	var y=0;
+	var gameLost = false;
+
 
 	var taxi = {
 		color: "#aa0000",
 		x: w/2-10,
 		y: h-20,
+
+		//velocity towards x (vx) and y (vy)
+		vx: 0,
+		vy: 0,
+
+		collisionBottom: false,
+
 		width: 20,
 		height: 20,
 		draw: function() {
@@ -30,31 +37,56 @@ $(document).ready(function(){
 
 
 
-	$(document).bind("keydown", function() {});
-
-	
-
 	function draw() {
 		ctx.clearRect ( 0 , 0 , canvas.width, canvas.height );
 		taxi.draw();
+		ctx.fillText("Debugging:",10,20);
+		ctx.fillText("velocity Y = " + taxi.vy,10,40);
+		ctx.fillText("Lost game: " + gameLost,10,60);
 	}
 
 	function update() {
 		if(keydown.up) {
-			taxi.y -= 5;
+			taxi.vy += 6;
+			taxi.collisionBottom = false;
 		}
-		if(keydown.down) {
-			taxi.y += 5;
+		if(keydown.down && taxi.collisionBottom == false) {
+			taxi.vy -= 6;
 		}
 		if (keydown.left) {
-	    	taxi.x -= 5;
+	    	taxi.vx -= 6;
 	  	}
 	  	if (keydown.right) {
-	    	taxi.x += 5;
+	    	taxi.vx += 6;
 	  	}
 	  	if(keydown.space) {
 	  		//Zeit die Kufen auszufahren!!!
 	  	}
+	  	
+	  	//simulating gravity
+	  	if(taxi.collisionBottom == false) {
+	  		taxi.vy -= 3;	
+	  	}
+
+	  	taxi.x += taxi.vx/10;
+	  	taxi.y -= taxi.vy/10;
+
+	  	checkCollision();
+	}
+
+	function checkCollision() {
+		if(taxi.y > h-taxi.height) {
+
+			if(taxi.vy < -70) {
+				gameLost = true;
+			}
+
+			taxi.vy = 0;
+			taxi.collisionBottom = true;
+			taxi.y = h-taxi.height;
+
+			
+		}
 	}
 
 	
