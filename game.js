@@ -3,6 +3,7 @@
 //ctx.fillRect(0, 0, w, h);
 //ctx.strokeStyle = "black";
 //ctx.strokeRect(0, 0, w, h);
+
 var canvas;
 var ctx;
 var w;
@@ -12,14 +13,20 @@ var FPS;
 var gameLost;
 var taxi;
 
+// Collector for 
+var obstructionCollector;
+
 var taxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
 
-         // Level ranges
-var levelXMax = 32;
-var levelYMax = 24; 
-var blockSizeX = 25;
-var blockSizeY = 25;
-var frame = 0;
+// Level ranges
+var levelXMax;
+var levelYMax;
+
+// Size of a block
+var blockSizeX;
+var blockSizeY;
+
+var frame;
 
 function init(){
 	canvas = $("#canvas")[0];
@@ -27,11 +34,18 @@ function init(){
 	w = $("#canvas").width();
 	h = $("#canvas").height();
 
+    levelXMax = 32;
+    levelYMax = 24; 
+    blockSizeX = 25;
+    blockSizeY = 25;
+
+    frame = 0;
 
 	FPS = 60;
 
 	gameLost = false;
 
+    obstructionCollector = new Array();
 
 	taxi = {
 		color: "#aa0000",
@@ -51,14 +65,11 @@ function init(){
 		}
 	};
 
-	
-
-
-
 	preloadAssets();
 
 }
 
+    // Function to preload all images and sounds
 	function preloadAssets() {
         var _toPreload = 0;
 
@@ -86,6 +97,7 @@ function init(){
         blocks20x10 = addImage("assets/blocks20x10.png");
 
         var checkResources = function () {
+            // If everthing is preloaded go on and load the level
             if (_toPreload == 0)
                 loadLevel("level10.txt");
             else
@@ -95,6 +107,7 @@ function init(){
 
     }
 
+    // Load the level description file and begin the game loop to draw the level
     function loadLevel(levelName) {
         var xmlhttp  = new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
         
@@ -103,7 +116,10 @@ function init(){
                 levelDataRaw = xmlhttp.responseText;
                 document.getElementById("level").innerHTML = xmlhttp.responseText;
 
+                // Debugging message
                 console.log("level loaded");
+
+                // Begin the game loop
                 setInterval(function() {
  					update();
   					draw();
@@ -111,13 +127,19 @@ function init(){
             }
         }
 
+        // Load level description from the folder "levels" with the name in the variable levelName
         xmlhttp.open("GET", "levels/"+levelName, true);
         xmlhttp.send();
     }
 
+    // Draw the game
 	function draw() {
+        // Counting up the frame
 		frame += 0.1;
+
 		//ctx.clearRect ( 0 , 0 , canvas.width, canvas.height );
+
+
 		drawBackground();
 		drawLevel();
 		taxi.draw();
@@ -128,6 +150,7 @@ function init(){
 		ctx.fillText("Lost game: " + gameLost,10,60);
 	}
 
+    // Update the position of the taxi
 	function update() {
 		if(keydown.up) {
 			taxi.vy += 6;
@@ -143,10 +166,10 @@ function init(){
 	    	taxi.vx += 3;
 	  	}
 	  	if(keydown.space) {
-	  		//Zeit die Kufen auszufahren!!!
+	  		// Zeit die Kufen auszufahren!!!
 	  	}
 	  	
-	  	//simulating gravity
+	  	// Simulating gravity
 	  	if(taxi.collisionBottom == false) {
 	  		taxi.vy -= 3;	
 	  	}
@@ -154,9 +177,11 @@ function init(){
 	  	taxi.x += taxi.vx/20;
 	  	taxi.y -= taxi.vy/20;
 
+        // After updating the position check if the is a collision
 	  	checkCollision();
 	}
 
+    // Check if the is a collision
 	function checkCollision() {
 		if(taxi.y > h-taxi.height) {
 
@@ -169,6 +194,12 @@ function init(){
 			taxi.y = h-taxi.height;
 
 		}
+        for(var i= 0; i<obstructionCollector.length; i++) {
+            if((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
+                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) {
+                gameLost = true;
+            }
+        }
 	}
 
 	function drawBackground() {
@@ -177,6 +208,7 @@ function init(){
         ctx.fillRect(0, 0, w, h);
     }
 
+    // Draw the level depending on the level description file
     function drawLevel() {
         var strings = levelDataRaw;
         var levelRows = strings.split("\r\n");
@@ -193,6 +225,8 @@ function init(){
                     case "#": //Platform
                         ctx.fillStyle = "#AAAAAA";
                         ctx.fillRect(x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        obstructionCollector.push({type: "platform", xStart: x*blockSizeX-blockSizeX, xEnd: x*blockSizeX, 
+                                                                     yStart: y*blockSizeY-blockSizeY, yEnd: y*blockSizeY});
                         break;
                     case "R": //frame
                         ctx.drawImage(edge, 0, 0, edge.width, edge.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
@@ -229,10 +263,10 @@ function init(){
                     // Dynamic level elements
                     // Taxi and guests
                     // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
-                   /* case "1":
+                    /* case "1":
                         ctx.drawImage(taxi, 0, 0, taxi.width, taxi.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                         break;
-*/
+                    */
                     case "2":
                         ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                         break;
@@ -248,11 +282,5 @@ function init(){
 
     }
 
-	
-	
-
-
-	
-
-
+// Run the init method when the document is loaded
 document.addEventListener("DOMContentLoaded", init, false);
