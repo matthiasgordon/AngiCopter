@@ -12,6 +12,7 @@ var interval;
 var FPS;
 var gameLost;
 var taxi;
+var collisionText = "frei";
 
 // Collector for 
 var obstructionCollector;
@@ -114,7 +115,7 @@ function init(){
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                 levelDataRaw = xmlhttp.responseText;
-                document.getElementById("level").innerHTML = xmlhttp.responseText;
+                //document.getElementById("level").innerHTML = xmlhttp.responseText;
 
                 // Debugging message
                 console.log("level loaded");
@@ -147,7 +148,8 @@ function init(){
 		//Only for debugging
 		ctx.fillText("Debugging:",10,20);
 		ctx.fillText("velocity Y = " + taxi.vy,10,40);
-		ctx.fillText("Lost game: " + gameLost,10,60);
+		//ctx.fillText("Lost game: " + gameLost, 10, 60);
+		ctx.fillText("Lost game: " + collisionText, 10, 60);
 	}
 
     // Update the position of the taxi
@@ -174,8 +176,8 @@ function init(){
 	  		taxi.vy -= 3;	
 	  	}
 
-	  	taxi.x += taxi.vx/20;
-	  	taxi.y -= taxi.vy/20;
+	  	taxi.x += taxi.vx/200;
+	  	taxi.y -= taxi.vy/200;
 
         // After updating the position check if the is a collision
 	  	checkCollision();
@@ -194,17 +196,44 @@ function init(){
 			taxi.y = h-taxi.height;
 
 		}
-        for(var i= 0; i<obstructionCollector.length; i++) {
-            if((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
-                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) {
-                gameLost = true;
-            }
-        }
+
+		for (var i = 0; i < obstructionCollector.length; i++) {
+		    if (((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
+                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) ||
+                ((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
+                ((taxi.x - blockSizeX) > obstructionCollector[i].xStart && (taxi.x - blockSizeX) < obstructionCollector[i].xEnd))) {
+		        gameLost = true;
+		        collisionText = "bottom";
+		        taxi.collisionBottom = true;
+		        taxi.vy = 0;
+		        taxi.y = obstructionCollector[i].yStart;
+		    }
+		    else if ((((taxi.y - blockSizeY) > obstructionCollector[i].yStart && (taxi.y - blockSizeY) < obstructionCollector[i].yEnd) &&
+                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) ||
+                (((taxi.y - blockSizeY) > obstructionCollector[i].yStart && (taxi.y - blockSizeY) < obstructionCollector[i].yEnd) &&
+                ((taxi.x - blockSizeX) > obstructionCollector[i].xStart && (taxi.x - blockSizeX) < obstructionCollector[i].xEnd)) ||
+                ((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
+                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) ||
+                ((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
+                ((taxi.x - blockSizeX) > obstructionCollector[i].xStart && (taxi.x - blockSizeX) < obstructionCollector[i].xEnd))) {
+		        gameLost = true;
+		        collisionText = "tot";
+		        death();
+		    }
+		}
+
+	}
+
+	function death() {
+        taxi.x = w/2-10;
+        taxi.y = h - 20;
+        taxi.vy = 0;
+        taxi.vx= 0;
 	}
 
 	function drawBackground() {
         //ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, cwidth, cheight);
-        ctx.fillStyle = "#00FF00";
+        ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, w, h);
     }
 
