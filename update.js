@@ -22,11 +22,17 @@ function update() {
 	  	if(taxi.collisionBottom == false) {
 	  		taxi.vy -= 3;	
 	  	}
-
+        //Update of X/Y - coordinate of taxi
 	  	taxi.x += taxi.vx/200;
-	  	taxi.y -= taxi.vy/200;
-
-        // After updating the position check if the is a collision
+	  	taxi.y -= taxi.vy / 200;
+    //                                                                     lu = left-up                     ru = right-up
+    //Update of taxi corner position:                                       //---------------+---------------
+        taxi.ru.x = taxi.x + blockSizeX; taxi.ru.y = taxi.y;                //         ___ /^^[___              
+        taxi.rd.x = taxi.x + blockSizeX; taxi.rd.y = taxi.y + blockSizeY;   //        /|^+----+   |#___________//
+        taxi.lu.x = taxi.x; taxi.lu.y = taxi.y;                             //      ( -+ |____|   _______-----+/
+        taxi.ld.x = taxi.x; taxi.ld.y = taxi.y + blockSizeY;                //       ==_________--'            \
+                                                                            //          ~_|___|__
+    // After updating the position check if the is a collision             ld = left-down                   rd = right-down
 	  	checkObjects();
         deprecatedCheckCollision();
 	}
@@ -37,18 +43,40 @@ function update() {
             /*Prüfung Landung*/
             if (checkCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
                                platformCollector[i].yStart, platformCollector[i].yEnd,
-                               taxi.x, taxi.y + blockSizeY)
+                               taxi.ld.x, taxi.ld.y)
+                //taxi.x, taxi.y + blockSizeY)
                                &&
                 checkCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
                                platformCollector[i].yStart, platformCollector[i].yEnd,
-                               taxi.x + blockSizeX, taxi.y + blockSizeY)) {
+                               taxi.rd.x, taxi.rd.y)){              
+                //taxi.x + blockSizeX, taxi.y + blockSizeY)) {
 
                 gameLost = true;
-                collisionText = "bottom";
                 taxi.collisionBottom = true;
                 taxi.vy = 0;
                 taxi.y = platformCollector[i].yStart - blockSizeY;
             }
+            else{
+                if (checkTaxiCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
+                                   platformCollector[i].yStart, platformCollector[i].yEnd)) {
+                    taxi.x = w / 2 - 10;
+                    taxi.y = h - 20;
+                    taxi.vy = 0;
+                    taxi.vx = 0;
+                }
+            }
+        }
+    }
+
+    function checkTaxiCollision(obstXstart, obstXend, obstYstart, obstYend) {
+        if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.lu.x, taxi.lu.y)||
+            checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.ld.x, taxi.ld.y)||
+            checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.ru.x, taxi.ru.y)||
+            checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.rd.x, taxi.rd.y)) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 

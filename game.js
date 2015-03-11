@@ -57,6 +57,12 @@ function init(){
 		vx: 0,
 		vy: 0,
 
+	    // corners of taxi hitbox
+		ru: { x: w/2-10 + blockSizeX, y: h-20 }, // -> right upper corner
+		rd: { x: w/2-10 + blockSizeX, y: h - 20 + blockSizeY }, // -> right down corner
+		lu: { x: w / 2 - 10, y: h - 20 }, // -> left up corner
+		ld: { x: w / 2 - 10, y: h - 20 + blockSizeY }, // -> left down corner
+
 		collisionBottom: false,
 
 		width: 20,
@@ -100,7 +106,7 @@ function init(){
         var checkResources = function () {
             // If everthing is preloaded go on and load the level
             if (_toPreload == 0)
-                loadLevel("level10.txt");
+                loadLevel("level2.txt");
             else
                 setTimeout(checkResources, 200);
         }
