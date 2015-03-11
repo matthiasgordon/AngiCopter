@@ -15,7 +15,7 @@ var taxi;
 var collisionText = "frei";
 
 // Collector for 
-var obstructionCollector;
+var platformCollector;
 
 var taxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
 
@@ -46,7 +46,7 @@ function init(){
 
 	gameLost = false;
 
-    obstructionCollector = new Array();
+    platformCollector = new Array();
 
 	taxi = {
 		color: "#aa0000",
@@ -120,6 +120,7 @@ function init(){
                 // Debugging message
                 console.log("level loaded");
 
+                initObjects();
                 // Begin the game loop
                 setInterval(function() {
  					update();
@@ -169,6 +170,8 @@ function init(){
 	  	}
 	  	if(keydown.space) {
 	  		// Zeit die Kufen auszufahren!!!
+
+            console.log(platformCollector.length);
 	  	}
 	  	
 	  	// Simulating gravity
@@ -180,11 +183,42 @@ function init(){
 	  	taxi.y -= taxi.vy/200;
 
         // After updating the position check if the is a collision
-	  	checkCollision();
+	  	checkObjects();
+        deprecatedCheckCollision();
 	}
 
-    // Check if the is a collision
-	function checkCollision() {
+    function checkObjects() {
+        for (var i = 0; i < platformCollector.length; i++) {
+
+            /*Prüfung Landung*/
+            if (checkCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
+                               platformCollector[i].yStart, platformCollector[i].yEnd,
+                               taxi.x, taxi.y + blockSizeY)
+                               &&
+                checkCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
+                               platformCollector[i].yStart, platformCollector[i].yEnd,
+                               taxi.x + blockSizeX, taxi.y + blockSizeY)) {
+
+                gameLost = true;
+                collisionText = "bottom";
+                taxi.collisionBottom = true;
+                taxi.vy = 0;
+                taxi.y = platformCollector[i].yStart - blockSizeY;
+            }
+        }
+    }
+
+    function checkCollision(xStart, xEnd, yStart, yEnd, xTaxi, yTaxi) {
+        if ((yTaxi > yStart && yTaxi < yEnd) && (xTaxi > xStart && xTaxi < xEnd)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // Check if there is a collision
+	function deprecatedCheckCollision() {
 		if(taxi.y > h-taxi.height) {
 
 			if(taxi.vy < -70) {
@@ -196,31 +230,20 @@ function init(){
 			taxi.y = h-taxi.height;
 
 		}
-
-		for (var i = 0; i < obstructionCollector.length; i++) {
-		    if (((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
-                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) ||
-                ((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
-                ((taxi.x - blockSizeX) > obstructionCollector[i].xStart && (taxi.x - blockSizeX) < obstructionCollector[i].xEnd))) {
-		        gameLost = true;
-		        collisionText = "bottom";
-		        taxi.collisionBottom = true;
-		        taxi.vy = 0;
-		        taxi.y = obstructionCollector[i].yStart;
-		    }
-		    else if ((((taxi.y - blockSizeY) > obstructionCollector[i].yStart && (taxi.y - blockSizeY) < obstructionCollector[i].yEnd) &&
-                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) ||
-                (((taxi.y - blockSizeY) > obstructionCollector[i].yStart && (taxi.y - blockSizeY) < obstructionCollector[i].yEnd) &&
-                ((taxi.x - blockSizeX) > obstructionCollector[i].xStart && (taxi.x - blockSizeX) < obstructionCollector[i].xEnd)) ||
-                ((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
-                (taxi.x > obstructionCollector[i].xStart && taxi.x < obstructionCollector[i].xEnd)) ||
-                ((taxi.y > obstructionCollector[i].yStart && taxi.y < obstructionCollector[i].yEnd) &&
-                ((taxi.x - blockSizeX) > obstructionCollector[i].xStart && (taxi.x - blockSizeX) < obstructionCollector[i].xEnd))) {
+		
+		    /*else if ((((taxi.y - blockSizeY) > platformCollector[i].yStart && (taxi.y - blockSizeY) < platformCollector[i].yEnd) &&
+                (taxi.x > platformCollector[i].xStart && taxi.x < platformCollector[i].xEnd)) ||
+                (((taxi.y - blockSizeY) > platformCollector[i].yStart && (taxi.y - blockSizeY) < platformCollector[i].yEnd) &&
+                ((taxi.x - blockSizeX) > platformCollector[i].xStart && (taxi.x - blockSizeX) < platformCollector[i].xEnd)) ||
+                ((taxi.y > platformCollector[i].yStart && taxi.y < platformCollector[i].yEnd) &&
+                (taxi.x > platformCollector[i].xStart && taxi.x < platformCollector[i].xEnd)) ||
+                ((taxi.y > platformCollector[i].yStart && taxi.y < platformCollector[i].yEnd) &&
+                ((taxi.x - blockSizeX) > platformCollector[i].xStart && (taxi.x - blockSizeX) < platformCollector[i].xEnd))) {
 		        gameLost = true;
 		        collisionText = "tot";
 		        death();
-		    }
-		}
+		    }*/
+		//}
 
 	}
 
@@ -235,6 +258,98 @@ function init(){
         //ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, cwidth, cheight);
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, w, h);
+    }
+
+    function initObjects() {
+        var strings = levelDataRaw;
+        var levelRows = strings.split("\r\n");
+        var platformSave = {
+            xStart: 0,
+            xEnd: 0,
+            yStart: 0,
+            yEnd: 0
+        };
+
+        for (y = 0; y < levelYMax; y++) {
+            for (x = 0; x < levelXMax; x++) {
+
+                switch(levelRows[y][x]){
+                    //Basic Level elements
+                    /*case ".": //Nothing
+                        //ctx.fillStyle = "#AAAA00";
+                        //ctx.fillRect(x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;*/
+                    case "#": //Platform
+                        platformSave.xStart = x*blockSizeX;
+                        platformSave.xEnd = x*blockSizeX + blockSizeX;
+                        platformSave.yStart = y*blockSizeY;
+                        platformSave.yEnd = y*blockSizeY + blockSizeY;
+
+                        var count = -1;
+                        var oldX = x;
+
+                        while(levelRows[y][x] == "#") {
+                            x++;
+                            count++;
+                        }
+
+                        platformSave.xEnd += count*blockSizeX;
+
+                        platformCollector.push({xStart: platformSave.xStart, xEnd: platformSave.xEnd,
+                                                yStart: platformSave.yStart, yEnd: platformSave.yEnd});
+                        break;
+                    /*case "R": //frame
+                        ctx.drawImage(edge, 0, 0, edge.width, edge.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+
+                    //Extended Level Elements                             
+                    case "A": 
+                        ctx.drawImage(obstacle, 0, 0, obstacle.width, obstacle.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+
+                    case "F":
+                        ctx.drawImage(fire, Math.floor(frame % 7) * fire.width / 7, 0, fire.width / 7, fire.height,
+                                             x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+                    
+                    //Jungle platform <===>
+                    case "<":
+                        ctx.drawImage(blocks20x10, blocks20x10.width / 20 * 5, blocks20x10.height / 10 * 1, blocks20x10.width / 20, blocks20x10.height / 10,
+                                            x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+                    
+                    case "=":
+                        var indexx = 6, indexy = 1;
+                        ctx.drawImage(blocks20x10, blocks20x10.width / 20 * indexx, blocks20x10.height / 10 * indexy, blocks20x10.width / 20, blocks20x10.height / 10,
+                                            x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+
+                    case ">":
+                        var indexx = 10, indexy = 1;
+                        ctx.drawImage(blocks20x10, blocks20x10.width / 20 * indexx, blocks20x10.height / 10 * indexy, blocks20x10.width / 20, blocks20x10.height / 10,
+                                            x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+
+                    // Dynamic level elements
+                    // Taxi and guests
+                    // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
+                    /* case "1":
+                        ctx.drawImage(taxi, 0, 0, taxi.width, taxi.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+                    
+                    case "2":
+                        ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+
+                    case "3":
+                        ctx.drawImage(guest2, Math.floor(frame % 2) * guest2.width / 2, 0, guest2.width / 2, guest2.height,
+                                             x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                        break;
+                        */
+                }//switch
+            }//for x
+        }//for y
+
     }
 
     // Draw the level depending on the level description file
@@ -254,8 +369,6 @@ function init(){
                     case "#": //Platform
                         ctx.fillStyle = "#AAAAAA";
                         ctx.fillRect(x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                        obstructionCollector.push({type: "platform", xStart: x*blockSizeX-blockSizeX, xEnd: x*blockSizeX, 
-                                                                     yStart: y*blockSizeY-blockSizeY, yEnd: y*blockSizeY});
                         break;
                     case "R": //frame
                         ctx.drawImage(edge, 0, 0, edge.width, edge.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
