@@ -80,8 +80,28 @@ function update() {
 						taxi.y = taxiStarty;
 						taxi.vy = 0;
 						taxi.vx = 0;
-						break;
-				}
+					}
+					break;
+				
+				case "static_obstacle":
+					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
+										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
+						taxi.x = taxiStartx;
+						taxi.y = taxiStarty;
+						taxi.vy = 0;
+						taxi.vx = 0;
+					}
+					break;
+					
+				case "platform_edge":
+					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
+										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
+						taxi.x = taxiStartx;
+						taxi.y = taxiStarty;
+						taxi.vy = 0;
+						taxi.vx = 0;
+					}
+					break;
 			}
         }
     }

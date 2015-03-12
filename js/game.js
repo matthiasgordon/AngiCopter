@@ -180,9 +180,12 @@ function initObjects() {
                     break;
 
                 /*********************************Extended Level elements******************************/
-                /*case "A": 
-                    ctx.drawImage(obstacle, 0, 0, obstacle.width, obstacle.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;*/
+                case "X":  //static obstacle
+                    obstacleCollector.push({
+						type: "static_obstacle",
+                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+                    break;
 
                 /*case "F":
                     ctx.drawImage(fire, Math.floor(frame % 7) * fire.width / 7, 0, fire.width / 7, fire.height,
@@ -190,10 +193,12 @@ function initObjects() {
                     break;*/
                     
                 //Jungle platform <===>
-                /*case "<":
-                    ctx.drawImage(blocks20x10, blocks20x10.width / 20 * 5, blocks20x10.height / 10 * 1, blocks20x10.width / 20, blocks20x10.height / 10,
-                                    x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;*/
+                case "<":
+                    obstacleCollector.push({
+						type: "platform_edge",
+                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+                    break;
                     
                 /*case "=":
                     var indexx = 6, indexy = 1;
@@ -201,11 +206,12 @@ function initObjects() {
                                         x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;*/
 
-                /*case ">":
-                    var indexx = 10, indexy = 1;
-                    ctx.drawImage(blocks20x10, blocks20x10.width / 20 * indexx, blocks20x10.height / 10 * indexy, blocks20x10.width / 20, blocks20x10.height / 10,
-                                        x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;*/
+                case ">":
+                    obstacleCollector.push({
+						type: "platform_edge",
+                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+                    break;
 
                 /*********************************Dynamic Level elements*******************************/
                 // Taxi and guests
