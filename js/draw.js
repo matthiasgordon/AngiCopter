@@ -69,10 +69,10 @@ function drawLevel() {
                     break;
 
                 // First passenger spawning position
-                case "1":
+/*                case "1":
                     ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
-
+*/
                 // Second passenger spawning position
                 case "2":
                     ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);

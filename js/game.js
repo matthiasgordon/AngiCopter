@@ -12,6 +12,8 @@ var collisionText = "frei";
 
 // Collector for 
 var platformCollector;
+var obstacleCollector;
+var guestCollector;
 
 var taxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
 
@@ -47,10 +49,10 @@ function init(){
 
 	platformCollector = new Array();
 	obstacleCollector = new Array();
+	guestCollector = new Array();
 
     // taxi-object
 	taxi = {
-		color: "#aa0000",
 		x: w/2-10,
 		y: h-20,
 
@@ -66,15 +68,23 @@ function init(){
 
 		collisionBottom: false,
 
-		width: 20,
-		height: 20,
 		draw: function() {
 			ctx.drawImage(taxiImage, 0, 0, taxiImage.width, taxiImage.height, this.x, this.y, blockSizeX, blockSizeY);
 		}
 	};
+	
+	guest = {
+		x: 0,
+		y: 0,
+		
+		id: 0,
+		currPlatform: 0,
+		draw: function() {
+			ctx.drawImage(taxiImage, 0, 0, taxiImage.width, taxiImage.height, this.x, this.y, blockSizeX, blockSizeY);
+		}
+	}
 
 	preloadAssets();
-
 }
 
 // Function to preload all images and sounds
@@ -222,18 +232,22 @@ function initObjects() {
                     //ctx.drawImage(taxi, 0, 0, taxi.width, taxi.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
                     
-                /*case "2":
-                    ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;*/
-
-                /*case "3":
-                    ctx.drawImage(guest2, Math.floor(frame % 2) * guest2.width / 2, 0, guest2.width / 2, guest2.height,
-                                            x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;*/
+                case "2":
+					guestCollector.push({
+							type: "guest_1",
+							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+						break;
+						
+                case "3":
+                    guestCollector.push({
+							type: "guest_2",
+							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+						break;
             }//switch
         }//for x
     }//for y
-
 }
 
 // Run the init method when the document is loaded

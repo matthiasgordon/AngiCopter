@@ -21,7 +21,10 @@ function update() {
 	  	// Simulating gravity
 	  	if(taxi.collisionBottom == false) {
 	  		taxi.vy -= 3;	
-	  	}
+		}
+		
+		
+		
         //Update of X/Y - coordinate of taxi
 	  	taxi.x += taxi.vx/200;
 	  	taxi.y -= taxi.vy / 200;
@@ -34,7 +37,6 @@ function update() {
                                                                             //          ~_|___|__
     // After updating the position check if the is a collision             ld = left-down                   rd = right-down
 	  	checkObjects();
-        deprecatedCheckCollision();
 	}
 
     function checkObjects() {
@@ -55,7 +57,7 @@ function update() {
                 gameLost = true;
                 taxi.collisionBottom = true;
                 taxi.vy = 0;
-                taxi.vx = 0;
+                //taxi.vx = 0;
                 taxi.y = platformCollector[i].yStart - blockSizeY;
             }
             else{
@@ -76,34 +78,45 @@ function update() {
 				case "frame":
 					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
 										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
-						taxi.x = taxiStartx;
-						taxi.y = taxiStarty;
-						taxi.vy = 0;
-						taxi.vx = 0;
+						death();
 					}
 					break;
 				
 				case "static_obstacle":
 					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
 										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
-						taxi.x = taxiStartx;
-						taxi.y = taxiStarty;
-						taxi.vy = 0;
-						taxi.vx = 0;
+						death();
 					}
 					break;
 					
 				case "platform_edge":
 					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
 										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
-						taxi.x = taxiStartx;
-						taxi.y = taxiStarty;
-						taxi.vy = 0;
-						taxi.vx = 0;
+						death();
 					}
 					break;
 			}
         }
+		
+		//Guest loop
+		for (var i = 0; i < guestCollector.length; i++) {
+			
+			switch(guestCollector[i].type) {
+				case "guest_1":
+					if (checkTaxiCollision(guestCollector[i].xStart, guestCollector[i].xEnd,
+										guestCollector[i].yStart, guestCollector[i].yEnd)) {
+						death();
+					}
+					break;
+				
+				case "guest_2":
+					if (checkTaxiCollision(guestCollector[i].xStart, guestCollector[i].xEnd,
+										guestCollector[i].yStart, guestCollector[i].yEnd)) {
+						death();
+					}
+					break;
+			}
+		}
     }
 
     function checkTaxiCollision(obstXstart, obstXend, obstYstart, obstYend) {
@@ -119,7 +132,7 @@ function update() {
     }
 
     function checkCollision(xStart, xEnd, yStart, yEnd, xTaxi, yTaxi) {
-        if ((yTaxi > yStart && yTaxi < yEnd) && (xTaxi > xStart && xTaxi < xEnd)) {
+        if ((yTaxi >= yStart && yTaxi <= yEnd) && (xTaxi >= xStart && xTaxi <= xEnd)) {
             return true;
         }
         else {
@@ -127,24 +140,9 @@ function update() {
         }
     }
 
-    // Check if there is a collision
-	function deprecatedCheckCollision() {
-		if(taxi.y > h-taxi.height) {
-
-			if(taxi.vy < -70) {
-				gameLost = true;
-			}
-
-			taxi.vy = 0;
-			taxi.collisionBottom = true;
-			taxi.y = h-taxi.height;
-
-		}
-	}
-
 	function death() {
-        taxi.x = w/2-10;
-        taxi.y = h - 20;
-        taxi.vy = 0;
-        taxi.vx= 0;
+        taxi.x = taxiStartx;
+		taxi.y = taxiStarty;
+		taxi.vy = 0;
+		taxi.vx = 0;
 	}
