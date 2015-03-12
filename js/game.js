@@ -68,20 +68,46 @@ function init(){
 
 		collisionBottom: false,
 
-		draw: function() {
-			ctx.drawImage(taxiImage, 0, 0, taxiImage.width, taxiImage.height, this.x, this.y, blockSizeX, blockSizeY);
-		}
+		//Heli going straight up
+        drawUp: function() {
+            ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
+                          this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+        },
+
+        //Heli going left
+        drawLeft: function() {
+            ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+                          this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+        },
+
+        //Heli going right
+        drawRight: function() {
+            ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+                          this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+        }
 	};
 	
-	guest = {
-		x: 0,
-		y: 0,
-		
-		id: 0,
-		currPlatform: 0,
+    //Guests object
+	guests = {
+		position: {},
+		currPlatform: {},
+
 		draw: function() {
-			ctx.drawImage(taxiImage, 0, 0, taxiImage.width, taxiImage.height, this.x, this.y, blockSizeX, blockSizeY);
-		}
+            for(i = 0; i < this.position.length; i++) {
+                 ctx.drawImage(guest, 0, 0, guest.width, guest.height,
+                               this.position[i].xStart, this.position[i].yStart, blockSizeX, blockSizeY);
+            }
+		},
+
+        changeShownGuests: function(guestNumber) {
+            this.position = [];
+            for(i = 0; i < guestCollector.length; i++) {
+                if(guestCollector[i].type == "guest_"+guestNumber) {
+                    this.position.push({xStart: guestCollector[i].xStart, xEnd: guestCollector[i].xEnd,
+                                        yStart: guestCollector[i].yStart, yEnd: guestCollector[i].yEnd});
+                }
+            }
+        }
 	}
 
 	preloadAssets();
@@ -101,7 +127,7 @@ function preloadAssets() {
         return img;
     }
 
-    taxiImage = addImage("assets/taxi.png");
+    taxiImage = addImage("assets/sprite_sheet_heli.png");
     goal = addImage("assets/goal.png");
     guest = addImage("assets/guest.png");
     guest2 = addImage("assets/guest2.png");
@@ -226,28 +252,36 @@ function initObjects() {
                 /*********************************Dynamic Level elements*******************************/
                 // Taxi and guests
                 // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
-                case "1":
+                case "T":
                     taxi.x = x * blockSizeX; taxiStartx = x * blockSizeX;
                     taxi.y = y * blockSizeY; taxiStarty = y * blockSizeY;
                     //ctx.drawImage(taxi, 0, 0, taxi.width, taxi.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
                     
-                case "2":
+                case "1":
 					guestCollector.push({
 							type: "guest_1",
 							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
 							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
 						break;
+
+                case "2":
+                    guestCollector.push({
+                            type: "guest_2",
+                            xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                            yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+                        break;
 						
                 case "3":
                     guestCollector.push({
-							type: "guest_2",
+							type: "guest_3",
 							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
 							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
 						break;
             }//switch
         }//for x
     }//for y
+    guests.changeShownGuests(1);
 }
 
 // Run the init method when the document is loaded

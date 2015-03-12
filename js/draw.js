@@ -5,7 +5,19 @@ function draw() {
     //console.log("draw!");
     drawBackground();
     drawLevel();
-    taxi.draw();
+    guests.draw();
+
+    if(taxi.vx < 10 && taxi.vx > -10) {
+        taxi.drawUp();
+    }
+    else {
+        if(taxi.vx < 0) {
+            taxi.drawLeft();
+        }
+        if(taxi.vx > 0) {
+            taxi.drawRight();
+        }
+    }
 
     //Only for debugging
     ctx.fillText("Debugging:", 10, 20);
@@ -74,7 +86,7 @@ function drawLevel() {
                     break;
 */
                 // Second passenger spawning position
-                case "2":
+                /*case "2":
                     ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
 
@@ -88,7 +100,7 @@ function drawLevel() {
                 case "E":
 
                     break;
-
+                */
                 // Reserved symbols for our group: G, H, I, J, K, L, M
 
                 // TODO FÜR SPÄTER!!!!!!
