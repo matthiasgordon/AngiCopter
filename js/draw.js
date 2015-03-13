@@ -5,16 +5,16 @@ function draw() {
     //console.log("draw!");
     drawBackground();
     drawLevel();
-    guests.draw();
+   // guests.draw();
 
-    if(taxi.vx < 10 && taxi.vx > -10) {
+    if(taxi.direction == "up") {
         taxi.drawUp();
     }
     else {
-        if(taxi.vx < 0) {
+        if(taxi.direction == "left") {
             taxi.drawLeft();
         }
-        if(taxi.vx > 0) {
+        if(taxi.direction == "right") {
             taxi.drawRight();
         }
     }
@@ -42,7 +42,7 @@ function drawLevel() {
 
             switch(levelRows[y][x]){
 
-                //Basic Level elements
+                /*********************************Basic Level elements*********************************/
                 case ".": //Nothing
                     break;
 
@@ -69,8 +69,8 @@ function drawLevel() {
                 case "R":
                     ctx.drawImage(edge, 0, 0, edge.width, edge.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
-
-                // "Hindernis fest"                           
+				/*********************************Extended Level elements*********************************/
+                // "obstacle_stable"                           
                 case "X": 
                     ctx.drawImage(obstacle, 0, 0, obstacle.width, obstacle.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
@@ -79,17 +79,22 @@ function drawLevel() {
                 case "Y": 
                     
                     break;
-
+				/*********************************Dynamic Level elements*********************************/
                 // First passenger spawning position
-/*                case "1":
-                    ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+               case "1":
+			   for(i = 0; i < guestCollector.length; i++){
+				   if(roundNumber == 1 && guestCollector[i].type == "guest_1" && guestCollector[i].state == "free"){
+						ctx.drawImage(guest, 0, 0, guest.width, guest.height, guestCollector[i].x, guestCollector[i].y, blockSizeX, blockSizeY);
+				   }
+			   }
                     break;
-*/
+
                 // Second passenger spawning position
                 /*case "2":
                     ctx.drawImage(guest, 0, 0, guest.width, guest.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
 
+					
                 // Third passenger spawning position
                 case "3":
                     ctx.drawImage(guest2, Math.floor(frame % 2) * guest2.width / 2, 0, guest2.width / 2, guest2.height,

@@ -8,6 +8,7 @@ var gameLost;
 var taxi;
 //Wird bis jetzt zur Wiedergeburtgebraucht - nötig!?
 var taxiStartx, taxiStarty;
+var roundNumber;
 var collisionText = "frei";
 
 // Collector for 
@@ -46,6 +47,7 @@ function init(){
 
     //variable
 	gameLost = false;
+	roundNumber = 1;
 
 	platformCollector = new Array();
 	obstacleCollector = new Array();
@@ -59,6 +61,8 @@ function init(){
 		//velocity towards x (vx) and y (vy)
 		vx: 0,
 		vy: 0,
+		
+		direction: "up",
 
 	    // corners of taxi hitbox
 		ru: { x: w/2-10 + blockSizeX, y: h-20 }, // -> right upper corner
@@ -67,6 +71,7 @@ function init(){
 		ld: { x: w / 2 - 10, y: h - 20 + blockSizeY }, // -> left down corner
 
 		collisionBottom: false,
+		currPlatform: 0,
 
 		//Heli going straight up
         drawUp: function() {
@@ -88,7 +93,7 @@ function init(){
 	};
 	
     //Guests object
-	guests = {
+/*	guests = {
 		position: {},
 		currPlatform: {},
 
@@ -108,7 +113,7 @@ function init(){
                 }
             }
         }
-	}
+	}*/
 
 	preloadAssets();
 }
@@ -203,6 +208,7 @@ function initObjects() {
 
                     //add tempPlatform to platformCollector
                     platformCollector.push({
+						id: platformCollector.length + 1,
                         xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,
                         yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd
                     });
@@ -260,12 +266,12 @@ function initObjects() {
                     
                 case "1":
 					guestCollector.push({
-							type: "guest_1",
-							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+							type: "guest_1", state: "free", currPlatform : 0, //muss irgendwann später definiert werden, da dies immer wieder geschieht
+							xStart: x * blockSizeX, x: x * blockSizeX,
+							yStart: y * blockSizeY, y: y * blockSizeY});
 						break;
 
-                case "2":
+               /* case "2":
                     guestCollector.push({
                             type: "guest_2",
                             xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
@@ -277,11 +283,11 @@ function initObjects() {
 							type: "guest_3",
 							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
 							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
-						break;
+						break; */
             }//switch
         }//for x
     }//for y
-    guests.changeShownGuests(1);
+    //guests.changeShownGuests(1);
 }
 
 // Run the init method when the document is loaded

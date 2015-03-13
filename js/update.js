@@ -1,16 +1,20 @@
 function update() {
 		if(keydown.up) {
-			taxi.vy += 6;
+			taxi.vy += 10;
 			taxi.collisionBottom = false;
+			taxi.direction = "up";
+			taxi.currPlatform = 0;
 		}
 		if(keydown.down && taxi.collisionBottom == false) {
-			taxi.vy -= 6;
+			taxi.vy -= 10;
 		}
 		if (keydown.left) {
-	    	taxi.vx -= 3;
+	    	taxi.vx -= 7;
+			taxi.direction = "left";
 	  	}
 	  	if (keydown.right) {
-	    	taxi.vx += 3;
+	    	taxi.vx += 7;
+			taxi.direction = "right";
 	  	}
 	  	if(keydown.space) {
 	  		// Zeit die Kufen auszufahren!!!
@@ -44,21 +48,15 @@ function update() {
         for (var i = 0; i < platformCollector.length; i++) {
 
             /*Prüfung Landung*/
-            if (checkCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
-                               platformCollector[i].yStart, platformCollector[i].yEnd,
-                               taxi.ld.x, taxi.ld.y)
-                //taxi.x, taxi.y + blockSizeY)
-                               &&
-                checkCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
-                               platformCollector[i].yStart, platformCollector[i].yEnd,
-                               taxi.rd.x, taxi.rd.y)){              
-                //taxi.x + blockSizeX, taxi.y + blockSizeY)) {
+			if(checkOnPlatform(platformCollector[i].xStart, platformCollector[i].xEnd,
+						   platformCollector[i].yStart, platformCollector[i].yEnd,
+						   taxi.ld.x, taxi.rd.x, taxi.ld.y, taxi.rd.y)){
 
-                gameLost = true;
-                taxi.collisionBottom = true;
-                taxi.vy = 0;
-                //taxi.vx = 0;
-                taxi.y = platformCollector[i].yStart - blockSizeY;
+				taxi.currPlatform = platformCollector[i].id;
+				taxi.collisionBottom = true;
+				taxi.vy = 0;
+				//taxi.vx = 0;
+				taxi.y = platformCollector[i].yStart - blockSizeY;
             }
             else{
                 if (checkTaxiCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
@@ -100,24 +98,55 @@ function update() {
 		
 		//Guest loop
 		for (var i = 0; i < guestCollector.length; i++) {
-			
+			//updateing platform_ID
+			for (var j = 0; j < platformCollector.length; j++) {
+				if(checkOnPlatform(platformCollector[j].xStart, platformCollector[j].xEnd,
+                               platformCollector[j].yStart, platformCollector[j].yEnd,
+							   guestCollector[i].x, guestCollector[i].x + blockSizeX, 
+							   guestCollector[i].y + blockSizeY, guestCollector[i].y + blockSizeY)){
+					guestCollector[i].currPlatform = platformCollector[j].id;
+				}
+			}
 			switch(guestCollector[i].type) {
 				case "guest_1":
-					if (checkTaxiCollision(guestCollector[i].xStart, guestCollector[i].xEnd,
-										guestCollector[i].yStart, guestCollector[i].yEnd)) {
-						death();
+				if(guestCollector[i].currPlatform == taxi.currPlatform && roundNumber == 1){
+					if(taxi.x-guestCollector[i].x <0){
+						guestCollector[i].x -= 1;
+					}else{
+						guestCollector[i].x += 1;
 					}
-					break;
+					console.log("da!")
+				}
+				if (checkTaxiCollision(guestCollector[i].x, guestCollector[i].x + blockSizeX,
+									guestCollector[i].y, guestCollector[i].y + blockSizeY)) {
+						if(taxi.vy == 0){
+							guestCollector[i].state = "onTaxi";
+						}
+						else if(guestCollector[i].state == "free"){
+							death();
+						}
+					}
+				break;
 				
-				case "guest_2":
+				/*case "guest_2":
 					if (checkTaxiCollision(guestCollector[i].xStart, guestCollector[i].xEnd,
 										guestCollector[i].yStart, guestCollector[i].yEnd)) {
 						death();
 					}
-					break;
+					break;*/
 			}
 		}
     }
+	
+	function checkOnPlatform (platXstart, platXend, platYstart, platYend, objXstart, objXend, objYstart, objYend){// 
+		if(checkCollision(platXstart, platXend, platYstart, platYend, objXstart, objYstart)
+                               &&
+           checkCollision(platXstart, platXend, platYstart, platYend, objXend, objYend)){
+			return true;					   
+		} else{
+			return false;
+		}
+	}
 
     function checkTaxiCollision(obstXstart, obstXend, obstYstart, obstYend) {
         if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.lu.x, taxi.lu.y)||
@@ -131,8 +160,8 @@ function update() {
         }
     }
 
-    function checkCollision(xStart, xEnd, yStart, yEnd, xTaxi, yTaxi) {
-        if ((yTaxi >= yStart && yTaxi <= yEnd) && (xTaxi >= xStart && xTaxi <= xEnd)) {
+    function checkCollision(xStart, xEnd, yStart, yEnd, xObj, yObj) {
+        if ((yObj >= yStart && yObj <= yEnd) && (xObj >= xStart && xObj <= xEnd)) {
             return true;
         }
         else {
