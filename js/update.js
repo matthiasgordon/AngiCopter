@@ -53,6 +53,9 @@ function update() {
 						   taxi.ld.x, taxi.rd.x, taxi.ld.y, taxi.rd.y)){
 
 				taxi.currPlatform = platformCollector[i].id;
+				if(taxi.state == "full" && taxi.currPlatform == targetPlatform){
+					console.log("win!");
+				}
 				taxi.collisionBottom = true;
 				taxi.vy = 0;
 				//taxi.vx = 0;
@@ -97,6 +100,8 @@ function update() {
         }
 		
 		//Guest loop
+		var guestCounter = 0;
+		var passengerCounter = 0;
 		for (var i = 0; i < guestCollector.length; i++) {
 			//updateing platform_ID
 			for (var j = 0; j < platformCollector.length; j++) {
@@ -109,13 +114,16 @@ function update() {
 			}
 			switch(guestCollector[i].type) {
 				case "guest_1":
-				if(guestCollector[i].currPlatform == taxi.currPlatform && roundNumber == 1){
-					if(taxi.x-guestCollector[i].x <0){
-						guestCollector[i].x -= 1;
-					}else{
-						guestCollector[i].x += 1;
+				if(roundNumber == 1){
+					guestCounter++;
+					if(guestCollector[i].currPlatform == taxi.currPlatform){
+						if(taxi.x-guestCollector[i].x <0){
+							guestCollector[i].x -= 1;
+						}else{
+							guestCollector[i].x += 1;
+						}
+						console.log("da!")
 					}
-					console.log("da!")
 				}
 				if (checkTaxiCollision(guestCollector[i].x, guestCollector[i].x + blockSizeX,
 									guestCollector[i].y, guestCollector[i].y + blockSizeY)) {
@@ -126,6 +134,14 @@ function update() {
 							death();
 						}
 					}
+				if(guestCollector[i].state == "onTaxi")		//Idee kann man bestimmt schöner programmieren
+					passengerCounter++;
+				if(passengerCounter==guestCounter){
+					taxi.state = "full";
+				}else{
+					taxi.state = "free";
+				}
+					
 				break;
 				
 				/*case "guest_2":

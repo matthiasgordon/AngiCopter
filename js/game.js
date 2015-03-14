@@ -7,8 +7,10 @@ var FPS;
 var gameLost;
 var taxi;
 //Wird bis jetzt zur Wiedergeburtgebraucht - nötig!?
+// Variablen die Ende des Levels bestimmen(Rundennummer, Zielplattform etc...)
 var taxiStartx, taxiStarty;
 var roundNumber;
+var targetPlatform
 var collisionText = "frei";
 
 // Collector for 
@@ -48,6 +50,9 @@ function init(){
     //variable
 	gameLost = false;
 	roundNumber = 1;
+	targetPlatform = Math.floor((Math.random() * 3) + 1);
+	document.getElementById("target").innerHTML ="Zielplattform:" + targetPlatform;
+	
 
 	platformCollector = new Array();
 	obstacleCollector = new Array();
@@ -72,6 +77,7 @@ function init(){
 
 		collisionBottom: false,
 		currPlatform: 0,
+		state: "free",
 
 		//Heli going straight up
         drawUp: function() {
