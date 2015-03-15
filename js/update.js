@@ -1,4 +1,6 @@
 function update() {
+		taxi.direction = "up";
+
 		if(keydown.up) {
 			taxi.vy += 10;
 			taxi.collisionBottom = false;
