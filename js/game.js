@@ -170,19 +170,22 @@ function loadLevel(levelName) {
 
             // Debugging message
             console.log("level loaded");
-
+            mainMenu();
             initObjects();
-            // Begin the game loop
-            setInterval(function() {
-                update();
-                draw();
-			}, 1000/FPS);
         }
     }
 
     // Load level description from the folder "levels" with the name in the variable levelName
     xmlhttp.open("GET", "levels/"+levelName, true);
     xmlhttp.send();
+}
+
+function beginGameLoop() {
+    // Begin the game loop
+    setInterval(function() {
+        update();
+        draw();
+    }, 1000/FPS);
 }
 
 function initObjects() {

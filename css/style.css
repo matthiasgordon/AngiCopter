@@ -5,3 +5,49 @@
 	margin-left: 20px;
 	margin-top: 20px;
 }
+
+.wrapper {
+	text-align: center;
+}
+
+#menu.main {
+  background: #FF0000;
+}
+
+#main {
+  display: none;
+  height: 60%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.button {
+  display: block;
+  width: 15%;
+  margin: 1% auto;
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #AA2666;
+  color: white;
+  font-weight: bold;
+  background-color: #FF0000;
+  border-radius: 5px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+#game-over {
+  display: none;
+  text-align: center;
+  padding-top: 92px;
+  z-index: 1;
+  width: 600px;
+  height: 360px;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+}
