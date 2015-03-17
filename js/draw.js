@@ -35,16 +35,16 @@ function draw() {
     }
 
     //Only for debugging
-    ctx.fillText("Debugging:", 10, 20);
-    ctx.fillText("velocity Y = " + taxi.vy, 10, 40);
+    //ctx.fillText("Debugging:", 10, 20);
+    //ctx.fillText("velocity Y = " + taxi.vy, 10, 40);
     //ctx.fillText("Lost game: " + gameLost, 10, 60);
-    ctx.fillText("Lost game: " + collisionText, 10, 60);
+    //ctx.fillText("Lost game: " + collisionText, 10, 60);
 }
 
 function drawBackground() {
-        //ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, cwidth, cheight);
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, w, h);
+        //ctx.fillStyle = "#FFFFFF";
+        //ctx.fillRect(0, 0, w, h);
     }
 
 // Draw the level depending on the level description file
@@ -63,20 +63,20 @@ function drawLevel() {
 
                 // Platform
                 case "#":
-                    ctx.fillStyle = "#AAAAAA";
-                    ctx.fillRect(x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
+                    ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height,
+                                        x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
 
                 // Left edge of platform
                 case "<":
-                    ctx.drawImage(blocks20x10, blocks20x10.width / 20 * 5, blocks20x10.height / 10 * 1, blocks20x10.width / 20, blocks20x10.height / 10,
+                    ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
                                         x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
                 
                 // Right edge of platform
                 case ">":
                     var indexx = 10, indexy = 1;
-                    ctx.drawImage(blocks20x10, blocks20x10.width / 20 * indexx, blocks20x10.height / 10 * indexy, blocks20x10.width / 20, blocks20x10.height / 10,
+                    ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
                                         x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
 

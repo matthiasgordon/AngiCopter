@@ -19,7 +19,7 @@ var platforms;
 var obstacles;
 var guests;
 
-var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
+var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10, platform_mid, platform_left, platform_right; 
 
 // Level ranges
 var levelXMax;
@@ -168,9 +168,12 @@ function preloadAssets() {
     guest2 = addImage("assets/guest2.png");
     edge = addImage("assets/block_r.png");
     obstacle = addImage("assets/block_a.png");
-    background = addImage("assets/starfield.png");
+    background = addImage("assets/background3.png");
     fire = addImage("assets/feuer.png");
     blocks20x10 = addImage("assets/blocks20x10.png");
+    platform_mid = addImage("assets/plattform_mitte.png");
+    platform_left = addImage("assets/plattform_links.png");
+    platform_right = addImage("assets/plattform_rechts.png");
 
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
