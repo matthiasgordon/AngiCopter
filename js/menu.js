@@ -13,7 +13,6 @@ function gameOverMenu() {
 
 	$('.restart').click(function() {
   		$('#game-over').hide();
-        gameLost = false;
         init();
 	});
 }
@@ -24,5 +23,14 @@ function gamePausedMenu() {
     $('.continue').click(function() {
         $('#game-paused').hide();
         gamePaused = false;
+    });
+}
+
+function gameWonMenu() {
+    $('#game-won').show();
+
+    $('.restart').click(function() {
+        $('#game-won').hide();
+        init();
     });
 }

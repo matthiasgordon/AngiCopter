@@ -4,7 +4,7 @@ var w;
 var h;
 var gameInterval;
 var FPS;
-var gameLost;
+var gameOver;
 var gamePaused;
 var taxi;
 //Wird bis jetzt zur Wiedergeburtgebraucht - nötig!?
@@ -49,7 +49,7 @@ function init(){
 	FPS = 60;
 
     //variable
-	gameLost = false;
+	gameOver = false;
     gamePaused = false;
 	roundNumber = 1;
 	targetPlatform = 0;
@@ -209,7 +209,7 @@ function loadLevel(levelName) {
 function beginGameLoop() {
     // Begin the game loop
     var gameInterval = setInterval(function() {
-        if(gameLost == false && gamePaused == false) {
+        if(gameOver == false && gamePaused == false) {
             update();
         }
         draw();

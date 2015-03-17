@@ -24,6 +24,7 @@
 }
 
 #game-over {
+  color: white;
   display: none;
   height: 60%;
   overflow: auto;
@@ -33,6 +34,17 @@
 }
 
 #game-paused {
+  color: white;
+  display: none;
+  height: 60%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#game-won {
+  color: white;
   display: none;
   height: 60%;
   overflow: auto;

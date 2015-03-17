@@ -35,10 +35,27 @@ function update() {
 		}
 		
 		//Check: gewonnen?
-		if(taxi.y < 0){
+		if(taxi.y < -50){
 			document.getElementById("target").innerHTML = "Gewonnen!";
+			gameOver = true;
+			gameWonMenu();
 		}
 		
+		if(taxi.collisionBottom == true) {
+			if(taxi.vx < -5) {
+				taxi.vx += 5;
+			}
+			else {
+				if(taxi.vx > 5) {
+					taxi.vx -= 5;
+				}
+				else {
+					taxi.vx = 0;
+				}
+			}
+
+		}
+
         //Update of X/Y - coordinate of taxi
 	  	taxi.x += taxi.vx/200;
 	  	taxi.y -= taxi.vy / 200;
@@ -76,10 +93,11 @@ function update() {
             else{
                 if (checkTaxiCollision(platforms[i].xStart, platforms[i].xEnd,
                                    platforms[i].yStart, platforms[i].yEnd)) {
-                    taxi.x = taxiStartx;
+                    /*taxi.x = taxiStartx;
                     taxi.y = taxiStarty;
                     taxi.vy = 0;
-                    taxi.vx = 0;
+                    taxi.vx = 0;*/
+                    death();
                 }
             }
         }
@@ -265,7 +283,7 @@ function update() {
 	function death() {
 		taxi.draw = "broken";
 		frame = 0;
-		gameLost = true;
+		gameOver = true;
 
 		/*
 		var endFrame = 0;
