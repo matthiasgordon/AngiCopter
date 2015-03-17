@@ -119,7 +119,6 @@ function init(){
                           brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
         }
 	};
-<<<<<<< HEAD
 	
     //Guests object
 /*	guests = {
@@ -145,9 +144,7 @@ function init(){
 	}*/
 
     initObjects();
-=======
-	preloadAssets();
->>>>>>> origin/master
+	//preloadAssets();
 }
 
 // Function to preload all images and sounds

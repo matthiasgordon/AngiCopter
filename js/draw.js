@@ -1,7 +1,9 @@
 // Draw the game
 function draw() {
-    // Counting up the frame
-    frame += 0.1;
+    // Counting up the frame while game is unpaused
+    if(gamePaused == false) {
+        frame += 0.1;
+    }
     //console.log("draw!");
     drawBackground();
     drawLevel();
