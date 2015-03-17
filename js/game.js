@@ -2,9 +2,10 @@ var canvas;
 var ctx;
 var w;
 var h;
-var interval;
+var gameInterval;
 var FPS;
 var gameLost;
+var gamePaused;
 var taxi;
 //Wird bis jetzt zur Wiedergeburtgebraucht - nötig!?
 // Variablen die Ende des Levels bestimmen(Rundennummer, Zielplattform etc...)
@@ -18,7 +19,7 @@ var platformCollector;
 var obstacleCollector;
 var guestCollector;
 
-var taxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
+var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
 
 // Level ranges
 var levelXMax;
@@ -49,6 +50,7 @@ function init(){
 
     //variable
 	gameLost = false;
+    gamePaused = false;
 	roundNumber = 1;
 	targetPlatform = Math.floor((Math.random() * 3) + 1);
 	document.getElementById("target").innerHTML ="Zielplattform:" + targetPlatform;
@@ -67,7 +69,7 @@ function init(){
 		vx: 0,
 		vy: 0,
 		
-		direction: "up",
+		draw: "up",
 
 	    // corners of taxi hitbox
 		ru: { x: w/2-10 + blockSizeX, y: h-20 }, // -> right upper corner
@@ -95,6 +97,11 @@ function init(){
         drawRight: function() {
             ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
                           this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+        },
+
+        drawBroken: function() {
+            ctx.drawImage(brokenTaxiImage, Math.floor(frame % 8) * brokenTaxiImage.width / 8, Math.floor(frame / 8) * brokenTaxiImage.height / 6,
+                          brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
         }
 	};
 	
@@ -121,7 +128,7 @@ function init(){
         }
 	}*/
 
-	preloadAssets();
+    initObjects();
 }
 
 // Function to preload all images and sounds
@@ -139,6 +146,7 @@ function preloadAssets() {
     }
 
     taxiImage = addImage("assets/sprite_sheet_heli.png");
+    brokenTaxiImage = addImage("assets/heli_absturz.png");
     goal = addImage("assets/goal.png");
     guest = addImage("assets/guest.png");
     guest2 = addImage("assets/guest2.png");
@@ -171,7 +179,6 @@ function loadLevel(levelName) {
             // Debugging message
             console.log("level loaded");
             mainMenu();
-            initObjects();
         }
     }
 
@@ -182,11 +189,15 @@ function loadLevel(levelName) {
 
 function beginGameLoop() {
     // Begin the game loop
-    setInterval(function() {
-        update();
+    var gameInterval = setInterval(function() {
+        if(gameLost == false && gamePaused == false) {
+            update();
+        }
         draw();
     }, 1000/FPS);
 }
+
+
 
 function initObjects() {
     var strings = levelDataRaw;
@@ -300,4 +311,4 @@ function initObjects() {
 }
 
 // Run the init method when the document is loaded
-document.addEventListener("DOMContentLoaded", init, false);
+document.addEventListener("DOMContentLoaded", preloadAssets, false);

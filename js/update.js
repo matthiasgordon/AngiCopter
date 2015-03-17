@@ -1,10 +1,10 @@
 function update() {
-		taxi.direction = "up";
+		taxi.draw = "up";
 
 		if(keydown.up) {
 			taxi.vy += 10;
 			taxi.collisionBottom = false;
-			taxi.direction = "up";
+			taxi.draw = "up";
 			taxi.currPlatform = 0;
 		}
 		if(keydown.down && taxi.collisionBottom == false) {
@@ -12,11 +12,11 @@ function update() {
 		}
 		if (keydown.left) {
 	    	taxi.vx -= 7;
-			taxi.direction = "left";
+			taxi.draw = "left";
 	  	}
 	  	if (keydown.right) {
 	    	taxi.vx += 7;
-			taxi.direction = "right";
+			taxi.draw = "right";
 	  	}
 	  	if(keydown.space) {
 	  		// Zeit die Kufen auszufahren!!!
@@ -27,6 +27,11 @@ function update() {
 	  	// Simulating gravity
 	  	if(taxi.collisionBottom == false) {
 	  		taxi.vy -= 3;	
+		}
+
+		if(keydown.esc) {
+			gamePaused = true;
+			gamePausedMenu();
 		}
 		
 		
@@ -188,8 +193,21 @@ function update() {
     }
 
 	function death() {
-        taxi.x = taxiStartx;
-		taxi.y = taxiStarty;
-		taxi.vy = 0;
-		taxi.vx = 0;
+		taxi.draw = "broken";
+		frame = 0;
+		gameLost = true;
+
+		/*
+		var endFrame = 0;
+		var endFrameLimit = 48;
+		while(endFrame < endFrameLimit) {
+			setTimeout(function() {
+				taxi.drawBroken(endFrame);
+			}, 500);
+			endFrame++;
+		}
+
+		*/
+		
+		//gameOverMenu();
 	}

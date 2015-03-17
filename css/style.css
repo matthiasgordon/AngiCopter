@@ -23,6 +23,24 @@
   top: 0; left: 0; bottom: 0; right: 0;
 }
 
+#game-over {
+  display: none;
+  height: 60%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#game-paused {
+  display: none;
+  height: 60%;
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
 .button {
   display: block;
   width: 15%;
@@ -34,20 +52,14 @@
   font-weight: bold;
   background-color: #FF0000;
   border-radius: 5px;
+  text-decoration: none;
+}
+
+.button:hover {
+  color: #DDDDDD;
+  background-color: #DD0000;
 }
 
 ul {
   list-style-type: none;
-}
-
-#game-over {
-  display: none;
-  text-align: center;
-  padding-top: 92px;
-  z-index: 1;
-  width: 600px;
-  height: 360px;
-  overflow: auto;
-  margin: auto;
-  position: absolute;
 }

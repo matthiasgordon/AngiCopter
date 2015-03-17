@@ -7,16 +7,29 @@ function draw() {
     drawLevel();
    // guests.draw();
 
-    if(taxi.direction == "up") {
-        taxi.drawUp();
-    }
-    else {
-        if(taxi.direction == "left") {
+    switch(taxi.draw) {
+
+        case "up":
+            taxi.drawUp();
+            break;
+
+        case "left":
             taxi.drawLeft();
-        }
-        if(taxi.direction == "right") {
+            break;
+        
+        case "right":
             taxi.drawRight();
-        }
+            break;
+
+        case "broken":
+            taxi.vx = 0;
+            taxi.vy = 0;
+            taxi.drawBroken();
+            frame += 0.2;
+            if(frame > 48) {
+                gameOverMenu();
+            }
+            break;
     }
 
     //Only for debugging

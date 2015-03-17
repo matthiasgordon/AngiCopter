@@ -1,10 +1,9 @@
 function mainMenu() {
     $('#main').show();
-    console.log("Klappt!");
 
     $('.play').click(function() {
-        console.log("Klappt auch!");
         $('#main').hide();
+        init();
         beginGameLoop();
     });
 }
@@ -14,6 +13,16 @@ function gameOverMenu() {
 
 	$('.restart').click(function() {
   		$('#game-over').hide();
-  		init();
+        gameLost = false;
+        init();
 	});
+}
+
+function gamePausedMenu() {
+    $('#game-paused').show();
+
+    $('.continue').click(function() {
+        $('#game-paused').hide();
+        gamePaused = false;
+    });
 }
