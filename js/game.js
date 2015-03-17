@@ -15,9 +15,9 @@ var targetPlatform
 var collisionText = "frei";
 
 // Collector for 
-var platformCollector;
-var obstacleCollector;
-var guestCollector;
+var platforms;
+var obstacles;
+var guests;
 
 var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10;
 
@@ -52,13 +52,15 @@ function init(){
 	gameLost = false;
     gamePaused = false;
 	roundNumber = 1;
-	targetPlatform = Math.floor((Math.random() * 3) + 1);
-	document.getElementById("target").innerHTML ="Zielplattform:" + targetPlatform;
+	targetPlatform = 0;
+	
 	
 
-	platformCollector = new Array();
-	obstacleCollector = new Array();
-	guestCollector = new Array();
+	platforms = new Array();
+	obstacles = new Array();
+	guests1 = new Array();
+	guests2 = new Array();
+	guests3 = new Array();
 
     // taxi-object
 	taxi = {
@@ -78,7 +80,20 @@ function init(){
 		ld: { x: w / 2 - 10, y: h - 20 + blockSizeY }, // -> left down corner
 
 		collisionBottom: false,
-		currPlatform: 0,
+		currPlatform:  0,
+		
+		/*function() {
+			var id = 0;
+			for (var i = 0; i < platforms.length; i++) {
+				if(checkCollision(platforms[i].xStart, platforms[i].xEnd, platforms[i].yStart, platforms[i].yEnd, this.ld.x, this.ld.y) &&
+				checkCollision(platforms[i].xStart, platforms[i].xEnd, platforms[i].yStart, platforms[i].yEnd, this.rd.x, this.rd.y)){
+					id = platforms[i].id;					   
+				}
+			}
+			return id;
+		},*/
+		
+		passengers: 0,
 		state: "free",
 
 		//Heli going straight up
@@ -104,6 +119,7 @@ function init(){
                           brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
         }
 	};
+<<<<<<< HEAD
 	
     //Guests object
 /*	guests = {
@@ -129,6 +145,9 @@ function init(){
 	}*/
 
     initObjects();
+=======
+	preloadAssets();
+>>>>>>> origin/master
 }
 
 // Function to preload all images and sounds
@@ -226,16 +245,16 @@ function initObjects() {
                     }
                     tempPlatform.xEnd += count * blockSizeX;
 
-                    //add tempPlatform to platformCollector
-                    platformCollector.push({
-						id: platformCollector.length + 1,
+                    //add tempPlatform to platforms
+                    platforms.push({
+						id: platforms.length + 1,
                         xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,
                         yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd
                     });
                     break;
 
                 case "R": //frame
-                    obstacleCollector.push({
+                    obstacles.push({
 						type: "frame",
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
                         yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
@@ -243,7 +262,7 @@ function initObjects() {
 
                 /*********************************Extended Level elements******************************/
                 case "X":  //static obstacle
-                    obstacleCollector.push({
+                    obstacles.push({
 						type: "static_obstacle",
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
                         yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
@@ -256,7 +275,7 @@ function initObjects() {
                     
                 //Jungle platform <===>
                 case "<":
-                    obstacleCollector.push({
+                    obstacles.push({
 						type: "platform_edge",
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
                         yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
@@ -269,7 +288,7 @@ function initObjects() {
                     break;*/
 
                 case ">":
-                    obstacleCollector.push({
+                    obstacles.push({
 						type: "platform_edge",
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
                         yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
@@ -285,29 +304,79 @@ function initObjects() {
                     break;
                     
                 case "1":
-					guestCollector.push({
-							type: "guest_1", state: "free", currPlatform : 0, //muss irgendwann später definiert werden, da dies immer wieder geschieht
+					guests1.push({
+							type: "guest_1", state: "free", 
+							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
 							xStart: x * blockSizeX, x: x * blockSizeX,
-							yStart: y * blockSizeY, y: y * blockSizeY});
+							yStart: y * blockSizeY, y: y * blockSizeY,
+							enterTaxi: function(taxiX){
+											if(taxiX-this.x <0){
+												this.x -= 1;
+											}else{
+												this.x += 1;
+											}
+							}});
 						break;
-
-               /* case "2":
-                    guestCollector.push({
-                            type: "guest_2",
-                            xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-                            yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
-                        break;
-						
+                case "2":
+                    guests2.push({
+							type: "guest_2", state: "free", 
+							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
+							xStart: x * blockSizeX, x: x * blockSizeX,
+							yStart: y * blockSizeY, y: y * blockSizeY,
+							enterTaxi: function(taxiX){
+											if(taxiX-this.x <0){
+												this.x -= 1;
+											}else{
+												this.x += 1;
+											}
+							}});
+						break;
                 case "3":
-                    guestCollector.push({
-							type: "guest_3",
-							xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-							yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
-						break; */
+                    guests3.push({
+							type: "guest_3", state: "free", 
+							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
+							xStart: x * blockSizeX, x: x * blockSizeX,
+							yStart: y * blockSizeY, y: y * blockSizeY,
+							enterTaxi: function(taxiX){
+											if(taxiX-this.x <0){
+												this.x -= 1;
+											}else{
+												this.x += 1;
+											}
+							}});
+						break;
             }//switch
         }//for x
     }//for y
     //guests.changeShownGuests(1);
+	
+	//check currPlatform for guests
+	for (var j = 0; j < platforms.length; j++) {
+		for(var i = 0; i < guests1.length; i++){
+			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
+						   platforms[j].yStart, platforms[j].yEnd,
+						   guests1[i].x, guests1[i].x + blockSizeX, 
+						   guests1[i].y + blockSizeY, guests1[i].y + blockSizeY)){
+				guests1[i].currPlatform = platforms[j].id;
+			}
+		}
+		for(var i = 0; i < guests2.length; i++){
+			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
+						   platforms[j].yStart, platforms[j].yEnd,
+						   guests2[i].x, guests2[i].x + blockSizeX, 
+						   guests2[i].y + blockSizeY, guests2[i].y + blockSizeY)){
+				guests2[i].currPlatform = platforms[j].id;
+			}
+		}
+		for(var i = 0; i < guests3.length; i++){
+			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
+						   platforms[j].yStart, platforms[j].yEnd,
+						   guests3[i].x, guests3[i].x + blockSizeX, 
+						   guests3[i].y + blockSizeY, guests3[i].y + blockSizeY)){
+				guests3[i].currPlatform = platforms[j].id;
+			}
+		}
+	}
 }
 
 // Run the init method when the document is loaded

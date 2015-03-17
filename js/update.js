@@ -21,7 +21,7 @@ function update() {
 	  	if(keydown.space) {
 	  		// Zeit die Kufen auszufahren!!!
 
-            console.log(platformCollector.length);
+            console.log(platforms.length);
 	  	}
 	  	//console.log("update!");
 	  	// Simulating gravity
@@ -34,7 +34,10 @@ function update() {
 			gamePausedMenu();
 		}
 		
-		
+		//Check: gewonnen?
+		if(taxi.y < 0){
+			document.getElementById("target").innerHTML = "Gewonnen!";
+		}
 		
         //Update of X/Y - coordinate of taxi
 	  	taxi.x += taxi.vx/200;
@@ -52,25 +55,27 @@ function update() {
 
     function checkObjects() {
         //Platfrom loop
-        for (var i = 0; i < platformCollector.length; i++) {
+        for (var i = 0; i < platforms.length; i++) {
 
             /*Prüfung Landung*/
-			if(checkOnPlatform(platformCollector[i].xStart, platformCollector[i].xEnd,
-						   platformCollector[i].yStart, platformCollector[i].yEnd,
+			if(checkOnPlatform(platforms[i].xStart, platforms[i].xEnd,
+						   platforms[i].yStart, platforms[i].yEnd,
 						   taxi.ld.x, taxi.rd.x, taxi.ld.y, taxi.rd.y)){
-
-				taxi.currPlatform = platformCollector[i].id;
+				taxi.currPlatform = platforms[i].id;
+				//gewonnen
 				if(taxi.state == "full" && taxi.currPlatform == targetPlatform){
 					console.log("win!");
+					roundNumber++;
 				}
+				
 				taxi.collisionBottom = true;
 				taxi.vy = 0;
 				//taxi.vx = 0;
-				taxi.y = platformCollector[i].yStart - blockSizeY;
+				taxi.y = platforms[i].yStart - blockSizeY;
             }
             else{
-                if (checkTaxiCollision(platformCollector[i].xStart, platformCollector[i].xEnd,
-                                   platformCollector[i].yStart, platformCollector[i].yEnd)) {
+                if (checkTaxiCollision(platforms[i].xStart, platforms[i].xEnd,
+                                   platforms[i].yStart, platforms[i].yEnd)) {
                     taxi.x = taxiStartx;
                     taxi.y = taxiStarty;
                     taxi.vy = 0;
@@ -80,85 +85,150 @@ function update() {
         }
 
         //Obstacle loop
-        for (var i = 0; i < obstacleCollector.length; i++) {
-			//console.log(obstacleCollector[i].type);
-			switch(obstacleCollector[i].type) {
+        for (var i = 0; i < obstacles.length; i++) {
+			//console.log(obstacles[i].type);
+			switch(obstacles[i].type) {
 				case "frame":
-					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
-										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
+					if (checkTaxiCollision(obstacles[i].xStart, obstacles[i].xEnd,
+										obstacles[i].yStart, obstacles[i].yEnd)) {
 						death();
 					}
 					break;
 				
 				case "static_obstacle":
-					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
-										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
+					if (checkTaxiCollision(obstacles[i].xStart, obstacles[i].xEnd,
+										obstacles[i].yStart, obstacles[i].yEnd)) {
 						death();
 					}
 					break;
 					
 				case "platform_edge":
-					if (checkTaxiCollision(obstacleCollector[i].xStart, obstacleCollector[i].xEnd,
-										obstacleCollector[i].yStart, obstacleCollector[i].yEnd)) {
+					if (checkTaxiCollision(obstacles[i].xStart, obstacles[i].xEnd,
+										obstacles[i].yStart, obstacles[i].yEnd)) {
 						death();
 					}
 					break;
 			}
         }
 		
-		//Guest loop
-		var guestCounter = 0;
-		var passengerCounter = 0;
-		for (var i = 0; i < guestCollector.length; i++) {
-			//updateing platform_ID
-			for (var j = 0; j < platformCollector.length; j++) {
-				if(checkOnPlatform(platformCollector[j].xStart, platformCollector[j].xEnd,
-                               platformCollector[j].yStart, platformCollector[j].yEnd,
-							   guestCollector[i].x, guestCollector[i].x + blockSizeX, 
-							   guestCollector[i].y + blockSizeY, guestCollector[i].y + blockSizeY)){
-					guestCollector[i].currPlatform = platformCollector[j].id;
-				}
-			}
-			switch(guestCollector[i].type) {
-				case "guest_1":
-				if(roundNumber == 1){
-					guestCounter++;
-					if(guestCollector[i].currPlatform == taxi.currPlatform){
-						if(taxi.x-guestCollector[i].x <0){
-							guestCollector[i].x -= 1;
-						}else{
-							guestCollector[i].x += 1;
+		//Guests loops
+		taxi.passengers = 0;
+		switch(roundNumber){
+			case 1:
+				for (var i = 0; i < guests1.length; i++) {
+					//updateing platform_ID
+					for (var j = 0; j < platforms.length; j++) {
+						if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
+									   platforms[j].yStart, platforms[j].yEnd,
+									   guests1[i].x, guests1[i].x + blockSizeX, 
+									   guests1[i].y + blockSizeY, guests1[i].y + blockSizeY)){
+							guests1[i].currPlatform = platforms[j].id;
 						}
-						console.log("da!")
 					}
-				}
-				if (checkTaxiCollision(guestCollector[i].x, guestCollector[i].x + blockSizeX,
-									guestCollector[i].y, guestCollector[i].y + blockSizeY)) {
-						if(taxi.vy == 0){
-							guestCollector[i].state = "onTaxi";
+					// setting up target platform
+					targetPlatform = guests2[0].currPlatform;
+					document.getElementById("target").innerHTML ="Zielplattform:" + targetPlatform;
+					//do loading process
+					if(guests1[i].currPlatform == taxi.currPlatform){
+							guests1[i].enterTaxi(taxi.x);
+					}
+					//Check collision or loading?
+					if (checkTaxiCollision(guests1[i].x, guests1[i].x + blockSizeX,
+										guests1[i].y, guests1[i].y + blockSizeY)) {
+							if(taxi.vy == 0){
+								guests1[i].state = "onTaxi";
+							}
+							else if(guests1[i].state == "free"){
+								death();
+							}
+					}
+					//update taxi attributes
+					if(guests1[i].state == "onTaxi")		//Idee kann man bestimmt schöner programmieren
+						taxi.passengers++;
+					if(taxi.passengers == guests1.length){
+						taxi.state = "full";
+					}else{
+						taxi.state = "free";
+					}
+				}			
+				break;
+			case 2:
+				for (var i = 0; i < guests2.length; i++) {
+					//updateing platform_ID
+					for (var j = 0; j < platforms.length; j++) {
+						if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
+									   platforms[j].yStart, platforms[j].yEnd,
+									   guests2[i].x, guests2[i].x + blockSizeX, 
+									   guests2[i].y + blockSizeY, guests2[i].y + blockSizeY)){
+							guests2[i].currPlatform = platforms[j].id;
 						}
-						else if(guestCollector[i].state == "free"){
+					}
+					// setting up target platform
+					targetPlatform = guests3[0].currPlatform;
+					document.getElementById("target").innerHTML ="Zielplattform:" + targetPlatform;
+					//do loading process
+					if(guests2[i].currPlatform == taxi.currPlatform){
+						guests2[i].enterTaxi(taxi.x);
+					}
+					//Check collision or loading?
+					if (checkTaxiCollision(guests2[i].x, guests2[i].x + blockSizeX,
+									guests2[i].y, guests2[i].y + blockSizeY)) {
+						if(taxi.vy == 0){
+							guests2[i].state = "onTaxi";
+						}
+						else if(guests2[i].state == "free"){
 							death();
 						}
 					}
-				if(guestCollector[i].state == "onTaxi")		//Idee kann man bestimmt schöner programmieren
-					passengerCounter++;
-				if(passengerCounter==guestCounter){
+					//update taxi attributes
+					if(guests2[i].state == "onTaxi")		//Idee kann man bestimmt schöner programmieren
+						taxi.passengers++;
+					if(taxi.passengers == guests2.length){
+						taxi.state = "full";
+					}else{
+						taxi.state = "free";
+					}
+				}
+			break;
+			case 3:
+				for (var i = 0; i < guests3.length; i++) {
+				//updateing platform_ID
+					for (var j = 0; j < platforms.length; j++) {
+						if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
+									   platforms[j].yStart, platforms[j].yEnd,
+									   guests3[i].x, guests3[i].x + blockSizeX, 
+									   guests3[i].y + blockSizeY, guests3[i].y + blockSizeY)){
+							guests3[i].currPlatform = platforms[j].id;
+						}
+					}
+				// setting up target platform
+				//targetPlatform = guests3[0].currPlatform;
+				document.getElementById("target").innerHTML ="Zielplattform: Bring Angi raus hier!!";
+				//do loading process
+				if(guests3[i].currPlatform == taxi.currPlatform){
+						guests3[i].enterTaxi(taxi.x);
+				}
+				//Check collision or loading?
+				if (checkTaxiCollision(guests3[i].x, guests3[i].x + blockSizeX,
+									guests3[i].y, guests3[i].y + blockSizeY)) {
+						if(taxi.vy == 0){
+							guests3[i].state = "onTaxi";
+						}
+						else if(guests3[i].state == "free"){
+							death();
+						}
+				}
+				//update taxi attributes
+				if(guests3[i].state == "onTaxi")		//Idee kann man bestimmt schöner programmieren
+					taxi.passengers++;
+				if(taxi.passengers == guests3.length){
 					taxi.state = "full";
 				}else{
 					taxi.state = "free";
 				}
-					
-				break;
-				
-				/*case "guest_2":
-					if (checkTaxiCollision(guestCollector[i].xStart, guestCollector[i].xEnd,
-										guestCollector[i].yStart, guestCollector[i].yEnd)) {
-						death();
-					}
-					break;*/
-			}
-		}
+			}			
+	}
+		
     }
 	
 	function checkOnPlatform (platXstart, platXend, platYstart, platYend, objXstart, objXend, objYstart, objYend){// 
