@@ -64,22 +64,7 @@ function init(){
 	}
 	
     initObjects();
-	
-	
-	
-	for (i=0; i < guests.length; i++){
-		for(j=0; j < guests[i].length; j++){
-			guests[i][j].update();
-			/*for (var k = 0; k < platforms.length; k++) {
-		
-				if(checkOnPlatform(platforms[k].xStart, platforms[k].xEnd,
-									platforms[k].yStart, platforms[k].yEnd,
-					guests[i][j].x, guests[i][j].x +blockSizeX, guests[i][j].y + blockSizeY, guests[i][j].y + blockSizeY)){
-					guests[i][j].currPlatform = platforms[k].id;
-				}
-			}*/	
-		}
-	}
+
 	//preloadAssets();
 }
 

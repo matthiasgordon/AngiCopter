@@ -3,7 +3,12 @@ function update() {
 	  	//console.log("update!");
 	  	// Simulating gravity
 	  	taxi.update();
-
+		for (i=0; i < guests.length; i++){
+			for(j=0; j < guests[i].length; j++){
+				guests[i][j].update();
+			}
+		}
+		
 		if(keydown.esc) {
 			gamePaused = true;
 			gamePausedMenu();
