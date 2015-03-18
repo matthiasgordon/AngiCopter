@@ -58,92 +58,28 @@ function init(){
 
 	platforms = new Array();
 	obstacles = new Array();
-	guests1 = new Array();
-	guests2 = new Array();
-	guests3 = new Array();
-
-    // taxi-object
-	taxi = {
-		x: w/2-10,
-		y: h-20,
-
-		//velocity towards x (vx) and y (vy)
-		vx: 0,
-		vy: 0,
-		
-		draw: "up",
-
-	    // corners of taxi hitbox
-		ru: { x: w/2-10 + blockSizeX, y: h-20 }, // -> right upper corner
-		rd: { x: w/2-10 + blockSizeX, y: h - 20 + blockSizeY }, // -> right down corner
-		lu: { x: w / 2 - 10, y: h - 20 }, // -> left up corner
-		ld: { x: w / 2 - 10, y: h - 20 + blockSizeY }, // -> left down corner
-
-		collisionBottom: false,
-		currPlatform:  0,
-		
-		/*function() {
-			var id = 0;
-			for (var i = 0; i < platforms.length; i++) {
-				if(checkCollision(platforms[i].xStart, platforms[i].xEnd, platforms[i].yStart, platforms[i].yEnd, this.ld.x, this.ld.y) &&
-				checkCollision(platforms[i].xStart, platforms[i].xEnd, platforms[i].yStart, platforms[i].yEnd, this.rd.x, this.rd.y)){
-					id = platforms[i].id;					   
-				}
-			}
-			return id;
-		},*/
-		
-		passengers: 0,
-		state: "free",
-
-		//Heli going straight up
-        drawUp: function() {
-            ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
-                          this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
-        },
-
-        //Heli going left
-        drawLeft: function() {
-            ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
-                          this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
-        },
-
-        //Heli going right
-        drawRight: function() {
-            ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
-                          this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
-        },
-
-        drawBroken: function() {
-            ctx.drawImage(brokenTaxiImage, Math.floor(frame % 8) * brokenTaxiImage.width / 8, Math.floor(frame / 8) * brokenTaxiImage.height / 6,
-                          brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
-        }
-	};
+	guests = new Array();
+	for (i=0; i<3; i++){
+		guests[i] = new Array;
+	}
 	
-    //Guests object
-/*	guests = {
-		position: {},
-		currPlatform: {},
-
-		draw: function() {
-            for(i = 0; i < this.position.length; i++) {
-                 ctx.drawImage(guest, 0, 0, guest.width, guest.height,
-                               this.position[i].xStart, this.position[i].yStart, blockSizeX, blockSizeY);
-            }
-		},
-
-        changeShownGuests: function(guestNumber) {
-            this.position = [];
-            for(i = 0; i < guestCollector.length; i++) {
-                if(guestCollector[i].type == "guest_"+guestNumber) {
-                    this.position.push({xStart: guestCollector[i].xStart, xEnd: guestCollector[i].xEnd,
-                                        yStart: guestCollector[i].yStart, yEnd: guestCollector[i].yEnd});
-                }
-            }
-        }
-	}*/
-
     initObjects();
+	
+	
+	
+	for (i=0; i < guests.length; i++){
+		for(j=0; j < guests[i].length; j++){
+			guests[i][j].update();
+			/*for (var k = 0; k < platforms.length; k++) {
+		
+				if(checkOnPlatform(platforms[k].xStart, platforms[k].xEnd,
+									platforms[k].yStart, platforms[k].yEnd,
+					guests[i][j].x, guests[i][j].x +blockSizeX, guests[i][j].y + blockSizeY, guests[i][j].y + blockSizeY)){
+					guests[i][j].currPlatform = platforms[k].id;
+				}
+			}*/	
+		}
+	}
 	//preloadAssets();
 }
 
@@ -298,26 +234,152 @@ function initObjects() {
                 // Taxi and guests
                 // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
                 case "T":
-                    taxi.x = x * blockSizeX; taxiStartx = x * blockSizeX;
-                    taxi.y = y * blockSizeY; taxiStarty = y * blockSizeY;
-                    //ctx.drawImage(taxi, 0, 0, taxi.width, taxi.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;
-                    
-                case "1":
-					guests1.push({
-							type: "guest_1", state: "free", 
-							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
-							xStart: x * blockSizeX, x: x * blockSizeX,
-							yStart: y * blockSizeY, y: y * blockSizeY,
-							enterTaxi: function(taxiX){
-											if(taxiX-this.x <0){
-												this.x -= 1;
-											}else{
-												this.x += 1;
-											}
-							}});
-						break;
+                    taxi = {
+						x: x * blockSizeX,
+						y: y * blockSizeY,
+
+						//velocity towards x (vx) and y (vy)
+						vx: 0,
+						vy: 0,
+						
+						draw: "up",
+
+						// corners of taxi hitbox
+						ru: { x: x * blockSizeX + blockSizeX, y: y * blockSizeY }, // -> right upper corner
+						rd: { x: x * blockSizeX + blockSizeX, y: y * blockSizeY + blockSizeY }, // -> right down corner
+						lu: { x: x * blockSizeX, y: y * blockSizeY }, // -> left up corner
+						ld: { x: x * blockSizeX, y: y * blockSizeY + blockSizeY }, // -> left down corner
+
+						
+						collisionBottom: false,
+						currPlatform:  0,
+						
+						passengers: 0,
+						state: "free",
+						
+						update: function() {
+							if(this.collisionBottom == false) {
+								this.vy -= 3;	
+							}
+							
+							this.draw = "up";
+
+							if(keydown.up) {
+								this.vy += 10;
+								this.collisionBottom = false;
+								this.draw = "up";
+								this.currPlatform = 0;
+							}
+							if(keydown.down && this.collisionBottom == false) {
+								this.vy -= 10;
+							}
+							if (keydown.left) {
+								this.vx -= 7;
+								this.draw = "left";
+							}
+							if (keydown.right) {
+								this.vx += 7;
+								this.draw = "right";
+							}
+							if(keydown.space) {
+								// Zeit die Kufen auszufahren!!!
+
+								console.log(platforms.length);
+							}
+						
+							if(this.collisionBottom == true) {
+								if(this.vx < -5) {
+									this.vx += 5;
+								}
+								else {
+									if(this.vx > 5) {
+										this.vx -= 5;
+									}
+									else {
+										this.vx = 0;
+									}
+								}
+							}
+							
+							this.x += this.vx/200;
+							this.y -= this.vy / 200;
+							
+							//                                                                     lu = left-up                     ru = right-up
+							//Update of this corner position:                                       //---------------+---------------
+								this.ru.x = this.x + blockSizeX; this.ru.y = this.y;                //         ___ /^^[___              
+								this.rd.x = this.x + blockSizeX; this.rd.y = this.y + blockSizeY;   //        /|^+----+   |#___________//
+								this.lu.x = this.x; this.lu.y = this.y;                             //      ( -+ |____|   _______-----+/
+								this.ld.x = this.x; this.ld.y = this.y + blockSizeY;                //       ==_________--'            \
+																									//          ~_|___|__
+							// 															           ld = left-down                   rd = right-down
+							
+							for (var i = 0; i < platforms.length; i++) {
+
+							/*Prüfung Landung*/
+								if(checkOnPlatform(platforms[i].xStart, platforms[i].xEnd,
+									platforms[i].yStart, platforms[i].yEnd,
+									this.ld.x, this.rd.x, this.ld.y, this.rd.y)){
+										this.currPlatform = platforms[i].id;
+								}
+							}
+						},						
+						
+						//Heli going straight up
+						drawUp: function() {
+							ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
+										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+						},
+
+						//Heli going left
+						drawLeft: function() {
+							ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+						},
+
+						//Heli going right
+						drawRight: function() {
+							ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+						},
+
+						drawBroken: function() {
+							ctx.drawImage(brokenTaxiImage, Math.floor(frame % 8) * brokenTaxiImage.width / 8, Math.floor(frame / 8) * brokenTaxiImage.height / 6,
+										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
+						}
+					};
+					break;
+				
+				case "1":
                 case "2":
+				case "3":
+					var value = levelRows[y][x] - 1;
+					console.log(value);
+
+					guests[value].push({
+						type: value, state: "free", 
+						currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
+						xStart: x * blockSizeX, x: x * blockSizeX,
+						yStart: y * blockSizeY, y: y * blockSizeY,
+						enterTaxi: function(taxiX){
+							if(taxiX-this.x <0){
+								this.x -= 1;
+							}else{
+								this.x += 1;
+							}
+						},
+						update: function(){
+							for (var i = 0; i < platforms.length; i++) {
+								/*Prüfung Landung*/
+								if(checkOnPlatform(platforms[i].xStart, platforms[i].xEnd,
+									platforms[i].yStart, platforms[i].yEnd,
+									this.x, this.x +blockSizeX, this.y + blockSizeY, this.y + blockSizeY)){
+										this.currPlatform = platforms[i].id;
+								}
+							}
+						}
+					});
+					break;
+                /*case "2":
                     guests2.push({
 							type: "guest_2", state: "free", 
 							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
@@ -344,14 +406,14 @@ function initObjects() {
 												this.x += 1;
 											}
 							}});
-						break;
+						break;*/
             }//switch
         }//for x
     }//for y
     //guests.changeShownGuests(1);
 	
 	//check currPlatform for guests
-	for (var j = 0; j < platforms.length; j++) {
+	/*for (var j = 0; j < platforms.length; j++) {
 		for(var i = 0; i < guests1.length; i++){
 			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
 						   platforms[j].yStart, platforms[j].yEnd,
@@ -376,7 +438,7 @@ function initObjects() {
 				guests3[i].currPlatform = platforms[j].id;
 			}
 		}
-	}
+	}*/
 }
 
 // Run the init method when the document is loaded

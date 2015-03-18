@@ -34,7 +34,7 @@ function draw() {
             break;
     }
 
-    drawTarget();
+    //drawTarget();
 
     //Only for debugging
     //ctx.fillText("Debugging:", 10, 20);
@@ -99,27 +99,27 @@ function drawLevel() {
 				/*********************************Dynamic Level elements*********************************/
                 // First passenger spawning position
 				case "1":
-					for(i = 0; i < guests1.length; i++){
-					   if(roundNumber == 1 && guests1[i].type == "guest_1" && guests1[i].state == "free"){
-							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests1[i].x, guests1[i].y, blockSizeX, blockSizeY);
+					for(i = 0; i < guests[0].length; i++){
+					   if(roundNumber == 1 && guests[0][i].state == "free"){
+							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests[0][i].x, guests[0][i].y, blockSizeX, blockSizeY);
 					   }
 					}
 					break;
 
                 // Second passenger spawning position
 				case "2":
-					for(i = 0; i < guests2.length; i++){
-					   if(roundNumber == 2 && guests2[i].type == "guest_2" && guests2[i].state == "free"){
-							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests2[i].x, guests2[i].y, blockSizeX, blockSizeY);
+					for(i = 0; i < guests[0].length; i++){
+					   if(roundNumber == 2 && guests[1][i].state == "free"){
+							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests[1][i].x, guests[1][i].y, blockSizeX, blockSizeY);
 					   }
 					}
                     break;
 					
                 // Third passenger spawning position
                 case "3":
-					for(i = 0; i < guests3.length; i++){
-						if(roundNumber == 3 && guests3[i].type == "guest_3" && guests3[i].state == "free"){
-							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests3[i].x, guests3[i].y, blockSizeX, blockSizeY);
+					for(i = 0; i < guests[0].length; i++){
+					   if(roundNumber == 3 && guests[2][i].state == "free"){
+							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests[0][i].x, guests[0][i].y, blockSizeX, blockSizeY);
 						}
 					}
                     break;
@@ -139,7 +139,7 @@ function drawLevel() {
 
 }
 
-function drawTarget() {
+/*function drawTarget() {
     var target;
     switch(roundNumber){
         case 1:
@@ -156,4 +156,4 @@ function drawTarget() {
     }
     ctx.fillStyle = "white";
     ctx.fillText("Zielplattform: " + target, 50, 50);
-}
+}*/
