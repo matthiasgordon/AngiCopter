@@ -34,6 +34,8 @@ function draw() {
             break;
     }
 
+    drawTarget();
+
     //Only for debugging
     //ctx.fillText("Debugging:", 10, 20);
     //ctx.fillText("velocity Y = " + taxi.vy, 10, 40);
@@ -135,4 +137,23 @@ function drawLevel() {
         }//for x
     }//for y
 
+}
+
+function drawTarget() {
+    var target;
+    switch(roundNumber){
+        case 1:
+            target = String(guests2[0].currPlatform);
+            break;
+
+        case 2:
+            target = String(guests3[0].currPlatform);
+            break;
+
+        case 3:
+            target = "Bring Angi raus hier!!";
+            break;
+    }
+    ctx.fillStyle = "white";
+    ctx.fillText("Zielplattform: " + target, 50, 50);
 }

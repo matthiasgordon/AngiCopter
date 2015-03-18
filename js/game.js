@@ -178,7 +178,7 @@ function preloadAssets() {
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
         if (_toPreload == 0)
-            loadLevel("level4.txt");
+            loadLevel("level1.txt");
         else
             setTimeout(checkResources, 200);
     }
