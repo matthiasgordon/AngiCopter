@@ -139,17 +139,10 @@ function beginGameLoop() {
     }, 1000/FPS);
 }
 
-
-
 function initObjects() {
     var strings = levelDataRaw;
     var levelRows = strings.split("\r\n");
-    var tempPlatform = {
-        xStart: 0,
-        xEnd: 0,
-        yStart: 0,
-        yEnd: 0
-    };
+    
     var verticalDronesFinished = new Array();
     for (X=0; X<levelXMax; X++){
         verticalDronesFinished[X] = new Array();
@@ -162,16 +155,25 @@ function initObjects() {
         for (x = 0; x < levelXMax; x++) {
 
             switch(levelRows[y][x]){
-            /*********************************Basic Level elements*********************************/
-                case "#": //Platform
+            /*********************************Initialization platforms*********************************/
+                case "<":
+				case "#": //Platform
+					var tempPlatform = {xStart: 0, xEnd: 0, yStart: 0, yEnd: 0, hasBegin: false, hasEnd: false};
+
                     tempPlatform.xStart = x * blockSizeX; tempPlatform.xEnd = x * blockSizeX + blockSizeX;
                     tempPlatform.yStart = y * blockSizeY; tempPlatform.yEnd = y * blockSizeY + blockSizeY;
-
-                    //check end of platform and save in tempPlatform
+					//check if platform has a begin-edge
+					if(levelRows[y][x] == "<"){
+						tempPlatform.hasBegin = true;
+					}
+                    //check end of platform and is end-edge exists 
                     var count = -1;
-                    while(levelRows[y][x] == "#") {
+                    while(levelRows[y][x] == "#" || levelRows[y][x] == ">" || levelRows[y][x] == "<") {
                         x++;
                         count++;
+						if(levelRows[y][x] == ">"){
+							tempPlatform.hasEnd = true;
+						}
                     }
 					x--;
                     tempPlatform.xEnd += count * blockSizeX;
@@ -181,11 +183,21 @@ function initObjects() {
 						id: platforms.length + 1,
                         xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,
                         yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd,
+						hasBegin: tempPlatform.hasBegin, hasEnd: tempPlatform.hasEnd,
 						
 						draw: function(){
-							for(j=0; j < ((this.xEnd - this.xStart)/25); j++){
-								ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height, 
-												this.xStart + (j * blockSizeX), this.yStart, blockSizeX, blockSizeY);
+							var boxes = (this.xEnd - this.xStart)/25;
+							for(j=0; j < boxes; j++){
+								if(j == 0 && this.hasBegin){
+									ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
+                                        this.xStart + (j * blockSizeX), this.yStart, blockSizeX, blockSizeY);
+								}else if(j == boxes-1 && this.hasEnd){
+									ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
+                                        this.xStart + (j * blockSizeX), this.yStart, blockSizeX, blockSizeY);
+								}else{
+									ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height, 
+										this.xStart + (j * blockSizeX), this.yStart, blockSizeX, blockSizeY);
+								}
 							}
 						}
                     });
@@ -214,22 +226,7 @@ function initObjects() {
                     ctx.drawImage(fire, Math.floor(frame % 7) * fire.width / 7, 0, fire.width / 7, fire.height,
                                     x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;*/
-                    
-                //platform edges <###>
-                case "<":
-                    obstacles.push({
-						type: "platform_edge",
-                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
-                    break;
-
-                case ">":
-                    obstacles.push({
-						type: "platform_edge",
-                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
-                    break;
-
+					
                 /*********************************Dynamic Level elements*******************************/
                 // Taxi and guests
                 // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
@@ -416,6 +413,10 @@ function initObjects() {
 									platforms[i].yStart, platforms[i].yEnd,
 									this.ld.x, this.rd.x, this.ld.y, this.rd.y)){
 										this.currPlatform = platforms[i].id;
+										break;
+								}else{
+									this.currPlatform = 0;
+									this.collisionBottom = false;
 								}
 							}
 							
@@ -430,7 +431,19 @@ function initObjects() {
 									this.state = "free";
 								}
 							}
-						},						
+						},
+						
+						collides: function(obstXstart, obstXend, obstYstart, obstYend){
+							if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.lu.x, this.lu.y)||
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.ld.x, this.ld.y)||
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.ru.x, this.ru.y)||
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.rd.x, this.rd.y)) {
+								return true;
+							}
+							else {
+								return false;
+							}
+						},
 						
 						//Heli going straight up
 						draw: function(){
@@ -475,7 +488,6 @@ function initObjects() {
                 case "2":
 				case "3":
 					var value = levelRows[y][x] - 1;
-					console.log(value);
 
 					guests[value].push({
 						type: levelRows[y][x], state: "free", 
