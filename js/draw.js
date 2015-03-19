@@ -4,7 +4,7 @@ function draw() {
     if(gamePaused == false) {
         frame += 0.1;
     }
-    //console.log("draw!");
+
     drawBackground();
     drawLevel();
 	for (i=0; i < guests.length; i++){

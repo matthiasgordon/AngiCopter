@@ -382,7 +382,6 @@ function initObjects() {
                 case "2":
 				case "3":
 					var value = levelRows[y][x] - 1;
-					console.log(value);
 
 					guests[value].push({
 						type: levelRows[y][x], state: "free", 
