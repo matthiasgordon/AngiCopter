@@ -34,12 +34,26 @@ function update() {
         for (var i = 0; i < platforms.length; i++) {
 			// Check collision platform, taxi
             if(taxi.currPlatform == 0){
-                if (checkTaxiCollision(platforms[i].xStart, platforms[i].xEnd,
+                if (taxi.collides(platforms[i].xStart, platforms[i].xEnd,
                                    platforms[i].yStart, platforms[i].yEnd)) {
                     taxi.death();
                 }
             }
         }
+		
+		for(var i = 0; i < frames.length; i++){
+			if(taxi.collides(frames[i].xStart, frames[i].xEnd,
+                                   frames[i].yStart, frames[i].yEnd)){
+				taxi.death();
+		    }
+		}
+		
+		for(var i = 0; i < staticSatellites.length; i++){
+			if(taxi.collides(staticSatellites[i].xStart, staticSatellites[i].xEnd,
+                                   staticSatellites[i].yStart, staticSatellites[i].yEnd)){
+				taxi.death();
+		    }
+		}
 
         //Obstacle loop
         for (var i = 0; i < obstacles.length; i++) {

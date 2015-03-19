@@ -307,6 +307,10 @@ function initObjects() {
 									platforms[i].yStart, platforms[i].yEnd,
 									this.ld.x, this.rd.x, this.ld.y, this.rd.y)){
 										this.currPlatform = platforms[i].id;
+										break;
+								}else{
+									this.currPlatform = 0;
+									this.collisionBottom = false;
 								}
 							}
 							
@@ -321,7 +325,19 @@ function initObjects() {
 									this.state = "free";
 								}
 							}
-						},						
+						},
+						
+						collides: function(obstXstart, obstXend, obstYstart, obstYend){
+							if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.lu.x, this.lu.y)||
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.ld.x, this.ld.y)||
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.ru.x, this.ru.y)||
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.rd.x, this.rd.y)) {
+								return true;
+							}
+							else {
+								return false;
+							}
+						},
 						
 						//Heli going straight up
 						draw: function(){
