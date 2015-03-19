@@ -51,24 +51,6 @@ function drawLevel() {
                 case ".": //Nothing
                     break;
 
-                // Platform
-                /*case "#":
-                    ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height,
-                                        x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;
-*/
-                // Left edge of platform
-                case "<":
-                    ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
-                                        x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;
-                
-                // Right edge of platform
-                case ">":
-                    //var indexx = 10, indexy = 1;
-                    ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
-                                        x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;
                 // "Hindernis beweglich" moving between first and second X
                 case "Y": 
                     
