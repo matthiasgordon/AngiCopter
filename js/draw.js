@@ -7,13 +7,21 @@ function draw() {
     //console.log("draw!");
     drawBackground();
     drawLevel();
-	taxi.draw();
 	for (i=0; i < guests.length; i++){
 		for(j=0; j < guests[i].length; j++){
 			guests[i][j].draw();
 		}
 	}
-
+	for(i=0; i<frames.length; i++){
+		frames[i].draw();
+	}
+	for(i=0; i<staticSatellites.length; i++){
+		staticSatellites[i].draw();
+	}
+	for(i=0; i<platforms.length; i++){
+		platforms[i].draw();
+	}
+	taxi.draw();
     //drawTarget();
 
     //Only for debugging
@@ -44,11 +52,11 @@ function drawLevel() {
                     break;
 
                 // Platform
-                case "#":
+                /*case "#":
                     ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height,
                                         x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
-
+*/
                 // Left edge of platform
                 case "<":
                     ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
@@ -57,21 +65,10 @@ function drawLevel() {
                 
                 // Right edge of platform
                 case ">":
-                    var indexx = 10, indexy = 1;
+                    //var indexx = 10, indexy = 1;
                     ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
                                         x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;
-
-                // Level frame
-                case "R":
-                    ctx.drawImage(edge, 0, 0, edge.width, edge.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;
-				/*********************************Extended Level elements*********************************/
-                // "obstacle_stable"                           
-                case "X": 
-                    ctx.drawImage(obstacle, 0, 0, obstacle.width, obstacle.height, x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;
-
                 // "Hindernis beweglich" moving between first and second X
                 case "Y": 
                     

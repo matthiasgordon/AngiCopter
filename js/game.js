@@ -15,9 +15,7 @@ var targetPlatform
 var collisionText = "frei";
 
 // Collector for 
-var platforms;
-var obstacles;
-var guests;
+var platforms, obstacles, guests, frames, staticSatellites;
 
 var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10, platform_mid, platform_left, platform_right; 
 
@@ -55,13 +53,15 @@ function init(){
 	targetPlatform = 0;
 	
 	
-
+	//collector initialisation
 	platforms = new Array();
 	obstacles = new Array();
+	staticSatellites = new Array();
 	guests = new Array();
 	for (i=0; i<3; i++){
 		guests[i] = new Array;
 	}
+	frames = new Array();
 	
     initObjects();
 
@@ -164,29 +164,41 @@ function initObjects() {
                         x++;
                         count++;
                     }
+					x--;
                     tempPlatform.xEnd += count * blockSizeX;
 
                     //add tempPlatform to platforms
                     platforms.push({
 						id: platforms.length + 1,
                         xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,
-                        yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd
+                        yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd,
+						
+						draw: function(){
+							for(j=0; j < ((this.xEnd - this.xStart)/25); j++){
+								ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height, 
+												this.xStart + (j * blockSizeX), this.yStart, blockSizeX, blockSizeY);
+							}
+						}
                     });
                     break;
 
                 case "R": //frame
-                    obstacles.push({
-						type: "frame",
+                    frames.push({
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
+						draw: function(){
+							ctx.drawImage(edge, 0, 0, edge.width, edge.height, this.xStart, this.yStart, blockSizeX, blockSizeY);
+						}});
                     break;
 
                 /*********************************Extended Level elements******************************/
                 case "X":  //static obstacle
-                    obstacles.push({
-						type: "static_obstacle",
+                    staticSatellites.push({
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
-                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
+						draw: function(){
+							ctx.drawImage(obstacle, 0, 0, obstacle.width, obstacle.height, this.xStart, this.yStart, blockSizeX, blockSizeY);
+						}});
                     break;
 
                 /*case "F":
@@ -194,19 +206,13 @@ function initObjects() {
                                     x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
                     break;*/
                     
-                //Jungle platform <===>
+                //platform edges <###>
                 case "<":
                     obstacles.push({
 						type: "platform_edge",
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
                         yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY});
                     break;
-                    
-                /*case "=":
-                    var indexx = 6, indexy = 1;
-                    ctx.drawImage(blocks20x10, blocks20x10.width / 20 * indexx, blocks20x10.height / 10 * indexy, blocks20x10.width / 20, blocks20x10.height / 10,
-                                        x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
-                    break;*/
 
                 case ">":
                     obstacles.push({

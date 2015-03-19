@@ -36,7 +36,7 @@ function update() {
             if(taxi.currPlatform == 0){
                 if (checkTaxiCollision(platforms[i].xStart, platforms[i].xEnd,
                                    platforms[i].yStart, platforms[i].yEnd)) {
-                    death();
+                    taxi.death();
                 }
             }
         }
@@ -131,9 +131,3 @@ function update() {
             return false;
         }
     }
-	//action when taxi collides with any object
-	function death() {
-		taxi.drawState = "broken";
-		frame = 0;
-		gameOver = true;
-	}
