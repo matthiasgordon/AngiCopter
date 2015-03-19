@@ -77,33 +77,6 @@ function drawLevel() {
                     
                     break;
 				/*********************************Dynamic Level elements*********************************/
-                // First passenger spawning position
-				case "1":
-					for(i = 0; i < guests[0].length; i++){
-					   if(roundNumber == 1 && guests[0][i].state == "free"){
-							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests[0][i].x, guests[0][i].y, blockSizeX, blockSizeY);
-					   }
-					}
-					break;
-
-                // Second passenger spawning position
-				case "2":
-					for(i = 0; i < guests[0].length; i++){
-					   if(roundNumber == 2 && guests[1][i].state == "free"){
-							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests[1][i].x, guests[1][i].y, blockSizeX, blockSizeY);
-					   }
-					}
-                    break;
-					
-                // Third passenger spawning position
-                case "3":
-					for(i = 0; i < guests[0].length; i++){
-					   if(roundNumber == 3 && guests[2][i].state == "free"){
-							ctx.drawImage(guest, 0, 0, guest.width, guest.height, guests[0][i].x, guests[0][i].y, blockSizeX, blockSizeY);
-						}
-					}
-                    break;
-
                 // Position for level exit
                 case "E":
 

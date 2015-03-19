@@ -307,6 +307,18 @@ function initObjects() {
 										this.currPlatform = platforms[i].id;
 								}
 							}
+							
+							//update taxi attributes according to guests
+							this.passengers = 0;
+							for (i = 0; i < guests[roundNumber-1].length; i++){
+								if(guests[roundNumber-1][i].state == "onTaxi")
+									this.passengers++;
+								if(taxi.passengers == guests[roundNumber-1].length){
+									this.state = "full";
+								}else{
+									this.state = "free";
+								}
+							}
 						},						
 						
 						//Heli going straight up
@@ -338,6 +350,12 @@ function initObjects() {
 									}
 									break;
 							}
+						},
+						
+						death: function(){
+							this.drawState = "broken";
+							frame = 0;
+							gameOver = true;
 						}
 					};
 					break;
@@ -349,7 +367,7 @@ function initObjects() {
 					console.log(value);
 
 					guests[value].push({
-						type: value, state: "free", 
+						type: levelRows[y][x], state: "free", 
 						currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
 						xStart: x * blockSizeX, x: x * blockSizeX,
 						yStart: y * blockSizeY, y: y * blockSizeY,
@@ -369,69 +387,20 @@ function initObjects() {
 										this.currPlatform = platforms[i].id;
 								}
 							}
-						}
+						},
+						
+						draw: function(){
+										if(this.state == "free" && (this.type == roundNumber)){
+											ctx.drawImage(guest, 0, 0, guest.width, guest.height, this.x, this.y, blockSizeX, blockSizeY);
+										}
+						}		
 					});
+
 					break;
-                /*case "2":
-                    guests2.push({
-							type: "guest_2", state: "free", 
-							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
-							xStart: x * blockSizeX, x: x * blockSizeX,
-							yStart: y * blockSizeY, y: y * blockSizeY,
-							enterTaxi: function(taxiX){
-											if(taxiX-this.x <0){
-												this.x -= 1;
-											}else{
-												this.x += 1;
-											}
-							}});
-						break;
-                case "3":
-                    guests3.push({
-							type: "guest_3", state: "free", 
-							currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
-							xStart: x * blockSizeX, x: x * blockSizeX,
-							yStart: y * blockSizeY, y: y * blockSizeY,
-							enterTaxi: function(taxiX){
-											if(taxiX-this.x <0){
-												this.x -= 1;
-											}else{
-												this.x += 1;
-											}
-							}});
-						break;*/
             }//switch
         }//for x
     }//for y
     //guests.changeShownGuests(1);
-	
-	//check currPlatform for guests
-	/*for (var j = 0; j < platforms.length; j++) {
-		for(var i = 0; i < guests1.length; i++){
-			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
-						   platforms[j].yStart, platforms[j].yEnd,
-						   guests1[i].x, guests1[i].x + blockSizeX, 
-						   guests1[i].y + blockSizeY, guests1[i].y + blockSizeY)){
-				guests1[i].currPlatform = platforms[j].id;
-			}
-		}
-		for(var i = 0; i < guests2.length; i++){
-			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
-						   platforms[j].yStart, platforms[j].yEnd,
-						   guests2[i].x, guests2[i].x + blockSizeX, 
-						   guests2[i].y + blockSizeY, guests2[i].y + blockSizeY)){
-				guests2[i].currPlatform = platforms[j].id;
-			}
-		}
-		for(var i = 0; i < guests3.length; i++){
-			if(checkOnPlatform(platforms[j].xStart, platforms[j].xEnd,
-						   platforms[j].yStart, platforms[j].yEnd,
-						   guests3[i].x, guests3[i].x + blockSizeX, 
-						   guests3[i].y + blockSizeY, guests3[i].y + blockSizeY)){
-				guests3[i].currPlatform = platforms[j].id;
-			}
-		}
-	}*/
 }
 
 // Run the init method when the document is loaded
