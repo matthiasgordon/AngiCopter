@@ -1,7 +1,6 @@
 function update() {
 
-	  	//console.log("update!");
-	  	// Simulating gravity
+	  	// update objects
 	  	taxi.update();
 		for (i=0; i < guests.length; i++){
 			for(j=0; j < guests[i].length; j++){
@@ -14,7 +13,7 @@ function update() {
 			gamePausedMenu();
 		}
 		
-		//Check: gewonnen?
+		//Check: gewonnen? - WIRD DAS NOCH BENÖTIGT!?!?
 		if(taxi.y < -50){
 			document.getElementById("target").innerHTML = "Gewonnen!";
 			gameOver = true;
@@ -66,17 +65,17 @@ function update() {
 		//Guests loops
 		taxi.passengers = 0;
 		for (i = 0; i < guests[roundNumber-1].length; i++){
-			
+			//update of targetPlatform
 			if(roundNumber != 3){
 				targetPlatform = guests[roundNumber][0].currPlatform;
 			}else{
 				targetPlatform = 11; //Muss noch verbessert werden!
 			}
-			
+			//check if taxi arrived for picking up guest
 			if(guests[roundNumber-1][i].currPlatform == taxi.currPlatform){
 				guests[roundNumber-1][i].enterTaxi(taxi.x);
 			}
-			
+			//handle collision taxi, guest
 			if (checkTaxiCollision(guests[roundNumber-1][i].x, guests[roundNumber-1][i].x + blockSizeX,
 									guests[roundNumber-1][i].y, guests[roundNumber-1][i].y + blockSizeY)) {
 				if(taxi.vy == 0){
@@ -87,7 +86,7 @@ function update() {
 				}
 			}
 			
-			//update taxi attributes
+			//update taxi attributes according to guests - MUSS WAHRSCHEINLICH IN taxi.update() -> Gordon fragen....
 			if(guests[roundNumber-1][i].state == "onTaxi")		//Idee kann man bestimmt schöner programmieren
 				taxi.passengers++;
 			if(taxi.passengers == guests[roundNumber-1].length){
@@ -96,9 +95,9 @@ function update() {
 				taxi.state = "free";
 			}
 		}
-		
+		//action when taxi landed on any platform
 		if(taxi.currPlatform != 0){
-			//guests delivered
+			//guests delivered ?
 			if(taxi.state == "full" && taxi.currPlatform == targetPlatform){
 				console.log("Gaeste abgeliefert!");
 				roundNumber++;
@@ -110,7 +109,7 @@ function update() {
 		}
 		
     }
-	
+	//check if object is on platform
 	function checkOnPlatform (platXstart, platXend, platYstart, platYend, objXstart, objXend, objYstart, objYend){// 
 		if(checkCollision(platXstart, platXend, platYstart, platYend, objXstart, objYstart)
                                &&
@@ -120,7 +119,7 @@ function update() {
 			return false;
 		}
 	}
-
+	//check if taxi collides with any object
     function checkTaxiCollision(obstXstart, obstXend, obstYstart, obstYend) {
         if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.lu.x, taxi.lu.y)||
             checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.ld.x, taxi.ld.y)||
@@ -132,7 +131,7 @@ function update() {
             return false;
         }
     }
-
+	//check collision between two objects
     function checkCollision(xStart, xEnd, yStart, yEnd, xObj, yObj) {
         if ((yObj >= yStart && yObj <= yEnd) && (xObj >= xStart && xObj <= xEnd)) {
             return true;
@@ -141,9 +140,9 @@ function update() {
             return false;
         }
     }
-
+	//action when taxi collides with any object
 	function death() {
-		taxi.draw = "broken";
+		taxi.drawState = "broken";
 		frame = 0;
 		gameOver = true;
 
@@ -155,9 +154,6 @@ function update() {
 				taxi.drawBroken(endFrame);
 			}, 500);
 			endFrame++;
-		}
-
-		*/
-		
-		//gameOverMenu();
+		}		
+		//gameOverMenu();*/
 	}

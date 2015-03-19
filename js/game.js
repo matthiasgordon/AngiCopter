@@ -227,7 +227,7 @@ function initObjects() {
 						vx: 0,
 						vy: 0,
 						
-						draw: "up",
+						drawState: "up",
 
 						// corners of taxi hitbox
 						ru: { x: x * blockSizeX + blockSizeX, y: y * blockSizeY }, // -> right upper corner
@@ -247,12 +247,12 @@ function initObjects() {
 								this.vy -= 3;	
 							}
 							
-							this.draw = "up";
+							this.drawState = "up";
 
 							if(keydown.up) {
 								this.vy += 10;
 								this.collisionBottom = false;
-								this.draw = "up";
+								this.drawState = "up";
 								this.currPlatform = 0;
 							}
 							if(keydown.down && this.collisionBottom == false) {
@@ -260,11 +260,11 @@ function initObjects() {
 							}
 							if (keydown.left) {
 								this.vx -= 7;
-								this.draw = "left";
+								this.drawState = "left";
 							}
 							if (keydown.right) {
 								this.vx += 7;
-								this.draw = "right";
+								this.drawState = "right";
 							}
 							if(keydown.space) {
 								// Zeit die Kufen auszufahren!!!
@@ -310,26 +310,34 @@ function initObjects() {
 						},						
 						
 						//Heli going straight up
-						drawUp: function() {
-							ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
+						draw: function(){
+							switch(this.drawState){
+								case "up":
+									ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
 										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
-						},
+									break;
 
-						//Heli going left
-						drawLeft: function() {
-							ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+								case "left":
+									ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
 										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
-						},
-
-						//Heli going right
-						drawRight: function() {
-							ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+									break;
+        
+								case "right":
+									ctx.drawImage(taxiImage, Math.floor(frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
 										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
-						},
-
-						drawBroken: function() {
-							ctx.drawImage(brokenTaxiImage, Math.floor(frame % 8) * brokenTaxiImage.width / 8, Math.floor(frame / 8) * brokenTaxiImage.height / 6,
+									break;
+									
+								case "broken":
+									taxi.vx = 0;
+									taxi.vy = 0;
+									ctx.drawImage(brokenTaxiImage, Math.floor(frame % 8) * brokenTaxiImage.width / 8, Math.floor(frame / 8) * brokenTaxiImage.height / 6,
 										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
+									frame += 0.2;
+									if(frame > 48) {
+										gameOverMenu();
+									}
+									break;
+							}
 						}
 					};
 					break;

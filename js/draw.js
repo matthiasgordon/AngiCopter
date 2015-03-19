@@ -7,32 +7,12 @@ function draw() {
     //console.log("draw!");
     drawBackground();
     drawLevel();
-   // guests1.draw();
-
-    switch(taxi.draw) {
-
-        case "up":
-            taxi.drawUp();
-            break;
-
-        case "left":
-            taxi.drawLeft();
-            break;
-        
-        case "right":
-            taxi.drawRight();
-            break;
-
-        case "broken":
-            taxi.vx = 0;
-            taxi.vy = 0;
-            taxi.drawBroken();
-            frame += 0.2;
-            if(frame > 48) {
-                gameOverMenu();
-            }
-            break;
-    }
+	taxi.draw();
+	for (i=0; i < guests.length; i++){
+		for(j=0; j < guests[i].length; j++){
+			guests[i][j].draw();
+		}
+	}
 
     //drawTarget();
 
