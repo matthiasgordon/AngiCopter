@@ -22,6 +22,10 @@ function draw() {
 		platforms[i].draw();
 	}
 	taxi.draw();
+
+    for(i=0; i < drones.length; i++) {
+            drones[i].draw();
+        }
     //drawTarget();
 
     //Only for debugging

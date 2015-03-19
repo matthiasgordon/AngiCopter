@@ -15,9 +15,9 @@ var targetPlatform
 var collisionText = "frei";
 
 // Collector for 
-var platforms, obstacles, guests, frames, staticSatellites;
+var platforms, obstacles, guests, frames, staticSatellites, drones;
 
-var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10, platform_mid, platform_left, platform_right; 
+var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10, platform_mid, platform_left, platform_right, droneImage; 
 
 // Level ranges
 var levelXMax;
@@ -57,6 +57,7 @@ function init(){
 	platforms = new Array();
 	obstacles = new Array();
 	staticSatellites = new Array();
+    drones = new Array();
 	guests = new Array();
 	for (i=0; i<3; i++){
 		guests[i] = new Array;
@@ -95,6 +96,7 @@ function preloadAssets() {
     platform_mid = addImage("assets/plattform_mitte.png");
     platform_left = addImage("assets/plattform_links.png");
     platform_right = addImage("assets/plattform_rechts.png");
+    droneImage = addImage("assets/amazon_drone.png");
 
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
@@ -148,6 +150,13 @@ function initObjects() {
         yStart: 0,
         yEnd: 0
     };
+    var verticalDronesFinished = new Array();
+    for (X=0; X<levelXMax; X++){
+        verticalDronesFinished[X] = new Array();
+        for(Y=0; Y<levelYMax; Y++){
+            verticalDronesFinished[X][Y] = false;
+        }
+    }
 
     for (y = 0; y < levelYMax; y++) {
         for (x = 0; x < levelXMax; x++) {
@@ -224,6 +233,102 @@ function initObjects() {
                 /*********************************Dynamic Level elements*******************************/
                 // Taxi and guests
                 // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
+
+                //Vertical flying drone
+                case "K":
+                    if(verticalDronesFinished[x][y] == false) {
+                        drones.push({
+                            xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                            yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
+                            moveStart: y * blockSizeX, moveEnd: y * blockSizeX,
+                            direction: "down",
+
+                            update: function (){
+                                if(this.direction == "down") {
+                                    if(this.yEnd <= this.moveEnd) {
+                                        this.yStart += 1; this.yEnd += 1;
+                                    }
+                                    else{
+                                        this.direction = "up";
+                                    }
+                                }
+                                if(this.direction == "up"){
+                                    if(this.yStart >= this.moveStart) {
+                                        this.yStart -= 1; this.yEnd -= 1;
+                                    }
+                                    else{
+                                        this.direction = "down";
+                                        //this.update();
+                                    }
+                                }
+                            },
+
+                            draw: function() {
+                                ctx.drawImage(droneImage, Math.floor(frame % 16) *  droneImage.width / 16, 0, droneImage.width / 16, droneImage.height,
+                                              this.xStart, this.yStart, blockSizeX, blockSizeY);
+                            }
+                        });
+
+                        var count = 0;
+                        var oldY = y;
+                        y++;
+                        while(levelRows[y][x] != "K") {
+                            y++;
+                            count++;
+                        }
+
+                        verticalDronesFinished[x][y] = true;
+
+                        y = oldY + 1;
+                        drones[drones.length-1].moveEnd += count * blockSizeY + blockSizeY;
+                    }
+
+                    break;
+
+                //Horizontal flying drone
+                case "L":
+                    drones.push({
+                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
+                        moveStart: x * blockSizeX, moveEnd: x * blockSizeX,
+                        direction: "right",
+
+                        update: function (){
+                            if(this.direction == "right") {
+                                if(this.xEnd <= this.moveEnd) {
+                                    this.xStart += 1; this.xEnd += 1;
+                                }
+                                else{
+                                    this.direction = "left";
+                                }
+                            }
+                            if(this.direction == "left"){
+                                if(this.xStart >= this.moveStart) {
+                                    this.xStart -= 1; this.xEnd -= 1;
+                                }
+                                else{
+                                    this.direction = "right";
+                                    //this.update();
+                                }
+                            }
+                        },
+
+                        draw: function() {
+                            ctx.drawImage(droneImage, Math.floor(frame % 16) *  droneImage.width / 16, 0, droneImage.width / 16, droneImage.height,
+                                          this.xStart, this.yStart, blockSizeX, blockSizeY);
+                        }
+                    });
+
+                    var count = 0;
+                    x++;
+                    while(levelRows[y][x] != "L") {
+                        x++;
+                        count++;
+                    }
+
+                    drones[drones.length-1].moveEnd += count * blockSizeX + blockSizeX;
+                    break;
+
                 case "T":
                     taxi = {
 						x: x * blockSizeX,

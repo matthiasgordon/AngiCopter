@@ -2,6 +2,11 @@ function update() {
 
 	  	// update objects
 	  	taxi.update();
+
+	  	for(i=0; i < drones.length; i++) {
+	  		drones[i].update();
+	  	}
+
 		for (i=0; i < guests.length; i++){
 			for(j=0; j < guests[i].length; j++){
 				guests[i][j].update();
