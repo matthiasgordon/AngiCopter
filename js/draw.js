@@ -12,6 +12,9 @@ function draw() {
 			guests[i][j].draw();
 		}
 	}
+    for(i=0; i<transmitter.length; i++){
+        transmitter[i].draw();
+    }
 	for(i=0; i<frames.length; i++){
 		frames[i].draw();
 	}
@@ -21,6 +24,9 @@ function draw() {
     for(i=0; i < drones.length; i++) {
             drones[i].draw();
         }
+    for(i=0; i < googleCars.length; i++) {
+        googleCars[i].draw();
+    }
 	for(i=0; i<platforms.length; i++){
 		platforms[i].draw();
 	}

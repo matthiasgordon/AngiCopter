@@ -7,6 +7,10 @@ function update() {
 	  		drones[i].update();
 	  	}
 
+	  	for(i=0; i < googleCars.length; i++) {
+	  		googleCars[i].update();
+	  	}
+
 		for (i=0; i < guests.length; i++){
 			for(j=0; j < guests[i].length; j++){
 				guests[i][j].update();
@@ -120,6 +124,12 @@ function update() {
 
 		for(i=0; i < drones.length; i++) {
 	  		if(taxi.collides(drones[i].xStart, drones[i].xEnd, drones[i].yStart, drones[i].yEnd)) {
+	  			taxi.death();
+	  		}
+	  	}
+
+	  	for(i=0; i < googleCars.length; i++) {
+	  		if(taxi.collides(googleCars[i].xStart, googleCars[i].xEnd, googleCars[i].yStart, googleCars[i].yEnd)) {
 	  			taxi.death();
 	  		}
 	  	}

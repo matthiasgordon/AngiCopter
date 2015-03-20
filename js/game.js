@@ -15,9 +15,10 @@ var targetPlatform
 var collisionText = "frei";
 
 // Collector for 
-var platforms, obstacles, guests, frames, staticSatellites, drones;
+var platforms, obstacles, guests, frames, staticSatellites, googleCars, drones, transmitter;
 
-var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10, platform_mid, platform_left, platform_right, droneImage; 
+var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10,
+    platform_mid, platform_left, platform_right, droneImage, googleCarImage, transmitterImage, transmitterRadioImage; 
 
 // Level ranges
 var levelXMax;
@@ -57,7 +58,9 @@ function init(){
 	platforms = new Array();
 	obstacles = new Array();
 	staticSatellites = new Array();
+    googleCars = new Array();
     drones = new Array();
+    transmitter = new Array();
 	guests = new Array();
 	for (i=0; i<3; i++){
 		guests[i] = new Array;
@@ -97,6 +100,9 @@ function preloadAssets() {
     platform_left = addImage("assets/plattform_links.png");
     platform_right = addImage("assets/plattform_rechts.png");
     droneImage = addImage("assets/amazon_drone.png");
+    googleCarImage = addImage("assets/google_car.png");
+    transmitterImage = addImage("assets/sendemast_final.png");
+    transmitterRadioImage = addImage("assets/strahlung_final.png");
 
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
@@ -222,6 +228,18 @@ function initObjects() {
 						}});
                     break;
 
+                case "M":  //static obstacle
+                    transmitter.push({
+                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
+
+                        draw: function(){
+                            //ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, this.xStart + blockSizeX / 8, this.yStart - blockSizeY / 2.5, blockSizeX, blockSizeY);
+                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart, blockSizeX, blockSizeY);
+
+                        }});
+                    break;
+
                 /*case "F":
                     ctx.drawImage(fire, Math.floor(frame % 7) * fire.width / 7, 0, fire.width / 7, fire.height,
                                     x * blockSizeX, y * blockSizeY, blockSizeX, blockSizeY);
@@ -316,7 +334,7 @@ function initObjects() {
                         }
                     });
 
-                    var count = 0;
+                    var count = 1;
                     x++;
                     while(levelRows[y][x] != "L") {
                         x++;
@@ -324,6 +342,55 @@ function initObjects() {
                     }
 
                     drones[drones.length-1].moveEnd += count * blockSizeX + blockSizeX;
+                    break;
+
+                case "Y":
+                    googleCars.push({
+                        xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
+                        yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
+                        moveStart: x * blockSizeX, moveEnd: x * blockSizeX,
+                        direction: "right",
+
+                        update: function (){
+                            if(this.direction == "right") {
+                                if(this.xEnd <= this.moveEnd) {
+                                    this.xStart += 1; this.xEnd += 1;
+                                }
+                                else{
+                                    this.direction = "left";
+                                }
+                            }
+                            if(this.direction == "left"){
+                                if(this.xStart >= this.moveStart) {
+                                    this.xStart -= 1; this.xEnd -= 1;
+                                }
+                                else{
+                                    this.direction = "right";
+                                    //this.update();
+                                }
+                            }
+                        },
+
+                        draw: function() {
+                            if(this.direction == "right"){
+                                ctx.drawImage(googleCarImage, Math.floor(frame % 4) *  googleCarImage.width / 4, 0, googleCarImage.width / 4, googleCarImage.height / 2,
+                                              this.xStart, this.yStart, blockSizeX, blockSizeY);
+                            }
+                            else{
+                                ctx.drawImage(googleCarImage, Math.floor(frame % 4) *  googleCarImage.width / 4, googleCarImage.height / 2, googleCarImage.width / 4, googleCarImage.height / 2,
+                                              this.xStart, this.yStart, blockSizeX, blockSizeY);
+                            }
+                        }
+                    });
+
+                    var count = 1;
+                    x++;
+                    while(levelRows[y][x] != "Y") {
+                        x++;
+                        count++;
+                    }
+
+                    googleCars[googleCars.length-1].moveEnd += count * blockSizeX + blockSizeX;
                     break;
 
                 case "T":
