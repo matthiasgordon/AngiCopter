@@ -17,21 +17,22 @@ function update() {
 			}
 		}
 		//update targetPlatform
-		if(roundNumber != 3){
-				targetPlatform = guests[roundNumber][0].currPlatform;
+		if(game.roundNumber != 3){
+				game.targetPlatform = guests[game.roundNumber][0].currPlatform;
 		}else{
-				targetPlatform = -1; //Muss noch verbessert werden!
+				game.targetPlatform = -1; //Muss noch verbessert werden!
 			}
 		
 		if(keydown.esc) {
-			gamePaused = true;
+			game.state = "pause";
 			gamePausedMenu();
 		}
 		
 		//Check: gewonnen? 
-		if(taxi.y < -50 && targetPlatform < 0){
+		if(taxi.y < -50 && game.targetPlatform < 0){
 			document.getElementById("target").innerHTML = "Gewonnen!";
-			gameOver = true;
+			game.state = "over";
+			game.frame = 0;
 			gameWonMenu();
 		}
 		
@@ -63,47 +64,20 @@ function update() {
 				taxi.death();
 		    }
 		}
-
-        //Obstacle loop
-        for (var i = 0; i < obstacles.length; i++) {
-			// check collision taxi obstacles
-			switch(obstacles[i].type) {
-				case "frame":
-					if (checkTaxiCollision(obstacles[i].xStart, obstacles[i].xEnd,
-										obstacles[i].yStart, obstacles[i].yEnd)) {
-						taxi.death();
-					}
-					break;
-				
-				case "static_obstacle":
-					if (checkTaxiCollision(obstacles[i].xStart, obstacles[i].xEnd,
-										obstacles[i].yStart, obstacles[i].yEnd)) {
-						taxi.death();
-					}
-					break;
-					
-				case "platform_edge":
-					if (checkTaxiCollision(obstacles[i].xStart, obstacles[i].xEnd,
-										obstacles[i].yStart, obstacles[i].yEnd)) {
-						taxi.death();
-					}
-					break;
-			}
-        }
 		
 		//Guests loops
-		for (i = 0; i < guests[roundNumber-1].length; i++){
+		for (i = 0; i < guests[game.roundNumber-1].length; i++){
 			//check if taxi arrived for picking up guest
-			if(guests[roundNumber-1][i].currPlatform == taxi.currPlatform){
-				guests[roundNumber-1][i].enterTaxi(taxi.x);
+			if(guests[game.roundNumber-1][i].currPlatform == taxi.currPlatform){
+				guests[game.roundNumber-1][i].enterTaxi(taxi.x);
 			}
 			//handle collision taxi, guest
-			if (checkTaxiCollision(guests[roundNumber-1][i].x, guests[roundNumber-1][i].x + blockSizeX,
-									guests[roundNumber-1][i].y, guests[roundNumber-1][i].y + blockSizeY)) {
+			if (checkTaxiCollision(guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].x + game.blockSize,
+									guests[game.roundNumber-1][i].y, guests[game.roundNumber-1][i].y + game.blockSize)) {
 				if(taxi.vy == 0){
-					guests[roundNumber-1][i].state = "onTaxi";
+					guests[game.roundNumber-1][i].state = "onTaxi";
 				}
-				else if(guests[roundNumber-1][i].state == "free"){
+				else if(guests[game.roundNumber-1][i].state == "free"){
 					taxi.death();
 				}
 			}
@@ -112,14 +86,14 @@ function update() {
 		//action when taxi landed on any platform
 		if(taxi.currPlatform != 0){
 			//guests delivered ?
-			if(taxi.state == "full" && taxi.currPlatform == targetPlatform){
+			if(taxi.state == "full" && taxi.currPlatform == game.targetPlatform){ 	//wird Funktion von game.update
 				console.log("Gaeste abgeliefert!");
-				roundNumber++;
+				game.roundNumber++;
 			}
 			
-			taxi.collisionBottom = true;
+			taxi.collisionBottom = true;			// sollte in taxi.update()
 			taxi.vy = 0;
-			taxi.y = platforms[taxi.currPlatform-1].yStart - blockSizeY;
+			taxi.y = platforms[taxi.currPlatform-1].yStart - game.blockSize;
 		}
 
 		for(i=0; i < drones.length; i++) {
@@ -142,7 +116,7 @@ function update() {
     }
 	
 	//check if object is on platform
-	function checkOnPlatform (platXstart, platXend, platYstart, platYend, objXstart, objXend, objYstart, objYend){// 
+	function checkOnPlatform (platXstart, platXend, platYstart, platYend, objXstart, objXend, objYstart, objYend){// sollte in platform integriert werden
 		if(checkCollision(platXstart, platXend, platYstart, platYend, objXstart, objYstart)
                                &&
            checkCollision(platXstart, platXend, platYstart, platYend, objXend, objYend)){

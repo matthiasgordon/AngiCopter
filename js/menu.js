@@ -3,8 +3,9 @@ function mainMenu() {
 
     $('.play').click(function() {
         $('#main').hide();
-        init();
-        beginGameLoop();
+        game.state = "running";
+		console.log(game.state);
+        game.beginGameLoop();
     });
 }
 
@@ -13,7 +14,8 @@ function gameOverMenu() {
 
 	$('.restart').click(function() {
   		$('#game-over').hide();
-        init();
+		game.state = "running";
+        game.reset();
 	});
 }
 
@@ -22,7 +24,8 @@ function gamePausedMenu() {
 
     $('.continue').click(function() {
         $('#game-paused').hide();
-        gamePaused = false;
+        game.state = "running";
+		//gamePaused = false;
     });
 }
 
@@ -31,6 +34,7 @@ function gameWonMenu() {
 
     $('.restart').click(function() {
         $('#game-won').hide();
-        init();
+		game.state = "running";
+        game.reset();
     });
 }
