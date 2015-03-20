@@ -150,8 +150,40 @@ function initObjects() {
                     frames.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+                        
 						draw: function(){
-							ctx.drawImage(edge, 0, 0, edge.width, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            //Left
+                            if(this.xStart == 0 && this.yStart > 0 && this.yStart < game.height - game.blockSize) {
+                                ctx.drawImage(edge, 0 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Upper left
+                            else if(this.xStart == 0 && this.yStart == 0) {
+                                ctx.drawImage(edge, 1 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Top
+                            else if(this.xStart > 0 && this.xStart < game.width - game.blockSize && this.yStart == 0) {
+                                ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Upper right
+                            else if(this.xStart == game.width - game.blockSize && this.yStart == 0) {
+                                ctx.drawImage(edge, 3 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Right
+                            else if(this.xStart == game.width - game.blockSize && this.yStart > 0 && this.yStart < game.height - game.blockSize) {
+                                ctx.drawImage(edge, 4 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Lower right
+                            else if(this.xStart == game.width - game.blockSize && this.yStart == game.height - game.blockSize) {
+                                ctx.drawImage(edge, 5 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Bottom
+                            else if(this.xStart > 0 && this.xStart < game.width - game.blockSize && this.yStart == game.height - game.blockSize) {
+                                ctx.drawImage(edge, 6 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
+                            //Lower left
+                            else if(this.xStart == 0 && this.yStart == game.height - game.blockSize) {
+                                ctx.drawImage(edge, 7 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            }
 						}});
                     break;
 
@@ -172,7 +204,7 @@ function initObjects() {
 
                         draw: function(){
                             //ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, this.xStart + game.blockSize / 8, this.yStart - game.blockSize / 2.5, game.blockSize, game.blockSize);
-                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart - game.blockSize, game.blockSize, game.blockSize * 2);
 
                         }});
                     break;
@@ -212,7 +244,7 @@ function initObjects() {
 
                             draw: function() {
                                 ctx.drawImage(droneImage, Math.floor(game.frame % 16) *  droneImage.width / 16, 0, droneImage.width / 16, droneImage.height,
-                                              this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                              this.xStart, this.yStart, game.blockSize * 2, game.blockSize);
                             }
                         });
 
@@ -262,7 +294,7 @@ function initObjects() {
 
                         draw: function() {
                             ctx.drawImage(droneImage, Math.floor(game.frame % 16) *  droneImage.width / 16, 0, droneImage.width / 16, droneImage.height,
-                                          this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                          this.xStart, this.yStart, game.blockSize * 2, game.blockSize);
                         }
                     });
 
@@ -447,24 +479,24 @@ function initObjects() {
 							switch(this.drawState){
 								case "up":
 									ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
-										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+										  this.x, this.y, taxiImage.width / 5, taxiImage.height / 3);
 									break;
 
 								case "left":
 									ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
-										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+										  this.x, this.y, taxiImage.width / 5, taxiImage.height / 3);
 									break;
         
 								case "right":
 									ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, 2 * taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
-										  this.x, this.y, taxiImage.width / 5 / 2, taxiImage.height / 3 / 2);
+										  this.x, this.y, taxiImage.width / 5, taxiImage.height / 3);
 									break;
 									
 								case "broken":
 									taxi.vx = 0;
 									taxi.vy = 0;
 									ctx.drawImage(brokenTaxiImage, Math.floor(game.frame % 8) * brokenTaxiImage.width / 8, Math.floor(game.frame / 8) * brokenTaxiImage.height / 6,
-										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8 / 2, brokenTaxiImage.height / 6 / 2);
+										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8, brokenTaxiImage.height / 6);
 									game.frame += 0.2;
 									if(game.frame > 48) {
 										gameOverMenu();
@@ -491,11 +523,14 @@ function initObjects() {
 						currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
 						xStart: x * game.blockSize, x: x * game.blockSize,
 						yStart: y * game.blockSize, y: y * game.blockSize,
+                        direction: "standing",
 						enterTaxi: function(taxiX){
 							if(taxiX-this.x <0){
 								this.x -= 1;
+                                this.direction = "movingLeft";
 							}else{
 								this.x += 1;
+                                this.direction = "movingRight";
 							}
 						},
 						update: function(){
@@ -510,9 +545,22 @@ function initObjects() {
 						},
 						
 						draw: function(){
-										if(this.state == "free" && (this.type == game.roundNumber)){
-											ctx.drawImage(guest, 0, 0, guest.width, guest.height, this.x, this.y, game.blockSize, game.blockSize);
-										}
+							if(this.state == "free" && (this.type == game.roundNumber)){
+                                if(this.direction == "standing") {
+                                    ctx.drawImage(guestImage, 0 * guestImage.width / 7, 1 * guestImage.height / 2, 
+                                                  guestImage.width / 7, guestImage.height / 2, this.x, this.y - game.blockSize, 
+                                                  game.blockSize * 2, game.blockSize * 2);
+                                }
+                                else{
+                                    ctx.drawImage(guestImage, Math.floor(game.frame % 7) * guestImage.width / 7, 0, 
+                                                  guestImage.width / 7, guestImage.height / 2, this.x, this.y - game.blockSize, 
+                                                  game.blockSize * 2, game.blockSize * 2);
+
+                                    //ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
+                                    //      this.x, this.y, taxiImage.width / 5, taxiImage.height / 3);
+                                }
+								
+							}
 						}		
 					});
 

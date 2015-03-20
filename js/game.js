@@ -44,17 +44,17 @@ function preloadAssets() {
 
     taxiImage = addImage("assets/sprite_sheet_heli.png");
     brokenTaxiImage = addImage("assets/heli_absturz.png");
-    guest = addImage("assets/guest.png");
-    edge = addImage("assets/block_r.png");
-    background = addImage("assets/background3.png");
+    guestImage = addImage("assets/merkel_spritesheet.png");
+    edge = addImage("assets/rand_spritesheet.png");
+    background = addImage("assets/background.png");
     platform_mid = addImage("assets/plattform_mitte.png");
     platform_left = addImage("assets/plattform_links.png");
     platform_right = addImage("assets/plattform_rechts.png");
     droneImage = addImage("assets/amazon_drone.png");
     googleCarImage = addImage("assets/google_car.png");
-    transmitterImage = addImage("assets/sendemast_final.png");
+    transmitterImage = addImage("assets/sendemast.png");
     transmitterRadioImage = addImage("assets/strahlung_final.png");
-    satelliteImage = addImage("assets/antenne_x.png");
+    satelliteImage = addImage("assets/antenne.png");
 
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
