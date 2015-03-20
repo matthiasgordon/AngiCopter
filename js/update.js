@@ -133,6 +133,12 @@ function update() {
 	  			taxi.death();
 	  		}
 	  	}
+
+	  	for(i=0; i < transmitter.length; i++) {
+	  		if(taxi.collides(transmitter[i].xStart, transmitter[i].xEnd, transmitter[i].yStart, transmitter[i].yEnd)) {
+	  			taxi.death();
+	  		}
+	  	}
     }
 	
 	//check if object is on platform
