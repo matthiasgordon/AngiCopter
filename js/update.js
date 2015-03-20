@@ -90,7 +90,9 @@ function update() {
 				console.log("Gaeste abgeliefert!");
 				game.roundNumber++;
 			}
-			
+			if(taxi.vy < -300) {
+				taxi.death();
+			}
 			taxi.collisionBottom = true;			// sollte in taxi.update()
 			taxi.vy = 0;
 			taxi.y = platforms[taxi.currPlatform-1].yStart - game.blockSize;

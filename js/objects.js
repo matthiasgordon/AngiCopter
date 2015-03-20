@@ -383,20 +383,20 @@ function initObjects() {
 							
 							this.drawState = "up";
 
-							if(keydown.up) {
+							if(keydown.w) {
 								this.vy += 10;
 								this.collisionBottom = false;
 								this.drawState = "up";
 								this.currPlatform = 0;
 							}
-							if(keydown.down && this.collisionBottom == false) {
+							if(keydown.s && this.collisionBottom == false) {
 								this.vy -= 10;
 							}
-							if (keydown.left) {
+							if (keydown.a) {
 								this.vx -= 7;
 								this.drawState = "left";
 							}
-							if (keydown.right) {
+							if (keydown.d) {
 								this.vx += 7;
 								this.drawState = "right";
 							}
