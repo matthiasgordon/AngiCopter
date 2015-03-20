@@ -18,7 +18,8 @@ var collisionText = "frei";
 var platforms, obstacles, guests, frames, staticSatellites, googleCars, drones, transmitter;
 
 var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10,
-    platform_mid, platform_left, platform_right, droneImage, googleCarImage, transmitterImage, transmitterRadioImage; 
+    platform_mid, platform_left, platform_right, droneImage, googleCarImage, transmitterImage, transmitterRadioImage,
+    satelliteImage; 
 
 // Level ranges
 var levelXMax;
@@ -103,6 +104,7 @@ function preloadAssets() {
     googleCarImage = addImage("assets/google_car.png");
     transmitterImage = addImage("assets/sendemast_final.png");
     transmitterRadioImage = addImage("assets/strahlung_final.png");
+    satelliteImage = addImage("assets/antenne_x.png");
 
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
@@ -224,7 +226,7 @@ function initObjects() {
                         xStart: x * blockSizeX, xEnd: x * blockSizeX + blockSizeX,
                         yStart: y * blockSizeY, yEnd: y * blockSizeY + blockSizeY,
 						draw: function(){
-							ctx.drawImage(obstacle, 0, 0, obstacle.width, obstacle.height, this.xStart, this.yStart, blockSizeX, blockSizeY);
+							ctx.drawImage(satelliteImage, 0, 0, satelliteImage.width, satelliteImage.height, this.xStart, this.yStart, blockSizeX, blockSizeY);
 						}});
                     break;
 
