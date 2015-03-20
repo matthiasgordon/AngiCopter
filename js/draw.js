@@ -18,14 +18,14 @@ function draw() {
 	for(i=0; i<staticSatellites.length; i++){
 		staticSatellites[i].draw();
 	}
+    for(i=0; i < drones.length; i++) {
+            drones[i].draw();
+        }
 	for(i=0; i<platforms.length; i++){
 		platforms[i].draw();
 	}
 	taxi.draw();
 
-    for(i=0; i < drones.length; i++) {
-            drones[i].draw();
-        }
     //drawTarget();
 
     //Only for debugging

@@ -117,6 +117,12 @@ function update() {
 			taxi.vy = 0;
 			taxi.y = platforms[taxi.currPlatform-1].yStart - blockSizeY;
 		}
+
+		for(i=0; i < drones.length; i++) {
+	  		if(taxi.collides(drones[i].xStart, drones[i].xEnd, drones[i].yStart, drones[i].yEnd)) {
+	  			taxi.death();
+	  		}
+	  	}
     }
 	
 	//check if object is on platform
