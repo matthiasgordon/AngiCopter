@@ -142,7 +142,7 @@ function beginGameLoop() {
 function initObjects() {
     var strings = levelDataRaw;
     var levelRows = strings.split("\r\n");
-    
+
     var verticalDronesFinished = new Array();
     for (X=0; X<levelXMax; X++){
         verticalDronesFinished[X] = new Array();
@@ -276,7 +276,7 @@ function initObjects() {
 
                         verticalDronesFinished[x][y] = true;
 
-                        y = oldY + 1;
+                        y = oldY;
                         drones[drones.length-1].moveEnd += count * blockSizeY + blockSizeY;
                     }
 
