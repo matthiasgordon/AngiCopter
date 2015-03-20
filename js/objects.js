@@ -6,8 +6,8 @@ function initObjects() {
     var levelRows = strings.split("\r\n");
 	
 	game = {
-		w: $("#canvas").width(),	levelXMax: 32,	blockSize: 25,
-		h: $("#canvas").height(),	levelYMax: 24, 
+		width:  $("#canvas").width()-150, levelXMax: 32,  blockSize: 25,
+		height: $("#canvas").height(),    levelYMax: 24, 
 		
 		frame: 0,
 		FPS: 60,
@@ -16,7 +16,7 @@ function initObjects() {
 		roundNumber: 1, state: "running",
 		
 		drawBackground: function(){
-			ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, game.w, game.h);
+			ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, game.width, game.height);
 		},
 		
 		reset: function(){
@@ -43,6 +43,48 @@ function initObjects() {
 			}, 1000/game.FPS);
 		}
 	}
+
+    sidebar = {
+        width: $("#canvas").width() - game.width,
+        height: game.height,
+
+        xStart: game.width, xEnd: $("#canvas").width(),
+        yStart: 0, yEnd: game.height,
+
+        draw: function(){
+            //Draw background of sidebar
+            ctx.fillStyle = "#232323";
+            ctx.fillRect(this.xStart,this.yStart,this.width,this.height);
+
+            //Draw target platform
+            ctx.fillStyle = "#807E00";
+            ctx.font="20px Arial";
+            
+            if(game.roundNumber == 1 && taxi.passengers == 0) {
+                ctx.fillText("Collect Angi", this.xStart + 10, this.yStart + 50);
+                ctx.fillText("at platform " + guests[game.roundNumber-1][0].currPlatform, this.xStart + 10, this.yStart + 80);
+            }
+            else if((game.roundNumber == 1 && taxi.passengers == 1) ||
+                     game.roundNumber == 2){
+                ctx.fillText("Bring her to", this.xStart + 10, this.yStart + 50);
+                ctx.fillText("platform " + game.targetPlatform, this.xStart + 10, this.yStart + 80);
+            }
+            else{
+                ctx.fillText("Bring Angi", this.xStart + 10, this.yStart + 50);
+                ctx.fillText("out of here!", this.xStart + 10, this.yStart + 80);
+            }
+
+            //Draw health bar background
+            ctx.fillStyle = "#5E5E5E";
+            ctx.fillRect(this.xStart + 10, this.yEnd - 80, 130, 30);
+
+            //Draw health bar
+            if(taxi.health > 0) {
+                ctx.fillStyle = "#807E00";
+                ctx.fillRect(this.xStart + 15, this.yEnd - 75, 1.2 * taxi.health, 20);
+            }
+        }
+    }
 
     var verticalDronesFinished = new Array();
     for (X = 0; X < game.levelXMax; X++){
@@ -300,7 +342,7 @@ function initObjects() {
 						vy: 0,
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,
-						state: "free",		currPlatform:  0,
+						state: "free",		currPlatform:  0,   health: 100,
 						
 						update: function() {
 							if(this.collisionBottom == false) {
@@ -327,8 +369,8 @@ function initObjects() {
 								this.drawState = "right";
 							}
 							if(keydown.space) {
-								// Zeit die Kufen auszufahren!!!
-								console.log(platforms.length);
+					           
+							    this.health -= 1;
 							}
 						
 							if(this.collisionBottom == true) {
@@ -382,6 +424,10 @@ function initObjects() {
 									this.state = "free";
 								}
 							}
+
+                            if(this.health < 0) {
+                                this.death();
+                            }
 						},
 						
 						collides: function(obstXstart, obstXend, obstYstart, obstYend){

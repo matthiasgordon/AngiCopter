@@ -1,7 +1,6 @@
 var canvas;
 var ctx;
 
-
 var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10,
     platform_mid, platform_left, platform_right, droneImage, googleCarImage, transmitterImage, transmitterRadioImage,
     satelliteImage; 
@@ -45,14 +44,9 @@ function preloadAssets() {
 
     taxiImage = addImage("assets/sprite_sheet_heli.png");
     brokenTaxiImage = addImage("assets/heli_absturz.png");
-    goal = addImage("assets/goal.png");
     guest = addImage("assets/guest.png");
-    guest2 = addImage("assets/guest2.png");
     edge = addImage("assets/block_r.png");
-    obstacle = addImage("assets/block_a.png");
     background = addImage("assets/background3.png");
-    fire = addImage("assets/feuer.png");
-    blocks20x10 = addImage("assets/blocks20x10.png");
     platform_mid = addImage("assets/plattform_mitte.png");
     platform_left = addImage("assets/plattform_links.png");
     platform_right = addImage("assets/plattform_rechts.png");
