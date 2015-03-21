@@ -472,7 +472,12 @@ function initObjects() {
 									this.state = "free";
 								}
 							}
-
+							
+							for(i = 0; i < transmitters.length; i++){
+								if(transmitters[i].distanceToTaxi < 100){
+									this.health -= 1;
+								}
+							}
                             if(this.health < 0) {
                                 this.death();
                             }
