@@ -25,7 +25,6 @@ function gamePausedMenu() {
     $('.continue').click(function() {
         $('#game-paused').hide();
         game.state = "running";
-		//gamePaused = false;
     });
 }
 

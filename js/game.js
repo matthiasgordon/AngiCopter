@@ -16,7 +16,7 @@ function init(){
 	staticSatellites = new Array();
     googleCars = new Array();
     drones = new Array();
-    transmitter = new Array();
+    transmitters = new Array();
 	guests = new Array();
 	for (i=0; i<3; i++){
 		guests[i] = new Array;

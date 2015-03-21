@@ -1,9 +1,15 @@
 function update() {
 
-	  	// update objects
-	  	taxi.update();
+	  	//********************************update objects********************************/
+	  	game.update();
+		taxi.update();
 
-	  	for(i=0; i < drones.length; i++) {
+	  	for(i=0; i < transmitters.length; i++) {
+	  		transmitters[i].update();
+			document.getElementById("target").innerHTML = transmitters[i].distanceToTaxi;
+	  	}
+		
+		for(i=0; i < drones.length; i++) {
 	  		drones[i].update();
 	  	}
 
@@ -16,12 +22,6 @@ function update() {
 				guests[i][j].update();
 			}
 		}
-		//update targetPlatform
-		if(game.roundNumber != 3){
-				game.targetPlatform = guests[game.roundNumber][0].currPlatform;
-		}else{
-				game.targetPlatform = -1; //Muss noch verbessert werden!
-			}
 		
 		if(keydown.esc) {
 			game.state = "pause";
@@ -72,7 +72,7 @@ function update() {
 				guests[game.roundNumber-1][i].enterTaxi(taxi.x);
 			}
 			//handle collision taxi, guest
-			if (checkTaxiCollision(guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].x + game.blockSize,
+			if (taxi.collides(guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].x + game.blockSize,
 									guests[game.roundNumber-1][i].y, guests[game.roundNumber-1][i].y + game.blockSize)) {
 				if(taxi.vy == 0){
 					guests[game.roundNumber-1][i].state = "onTaxi";
@@ -110,35 +110,13 @@ function update() {
 	  		}
 	  	}
 
-	  	for(i=0; i < transmitter.length; i++) {
-	  		if(taxi.collides(transmitter[i].xStart, transmitter[i].xEnd, transmitter[i].yStart, transmitter[i].yEnd)) {
+	  	for(i=0; i < transmitters.length; i++) {
+	  		if(taxi.collides(transmitters[i].xStart, transmitters[i].xEnd, transmitters[i].yStart, transmitters[i].yEnd)) {
 	  			taxi.death();
 	  		}
 	  	}
     }
-	
-	//check if object is on platform
-	function checkOnPlatform (platXstart, platXend, platYstart, platYend, objXstart, objXend, objYstart, objYend){// sollte in platform integriert werden
-		if(checkCollision(platXstart, platXend, platYstart, platYend, objXstart, objYstart)
-                               &&
-           checkCollision(platXstart, platXend, platYstart, platYend, objXend, objYend)){
-			return true;					   
-		} else{
-			return false;
-		}
-	}
-	//check if taxi collides with any object
-    function checkTaxiCollision(obstXstart, obstXend, obstYstart, obstYend) {
-        if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.lu.x, taxi.lu.y)||
-            checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.ld.x, taxi.ld.y)||
-            checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.ru.x, taxi.ru.y)||
-            checkCollision(obstXstart, obstXend, obstYstart, obstYend, taxi.rd.x, taxi.rd.y)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+
 	//check collision between two objects
     function checkCollision(xStart, xEnd, yStart, yEnd, xObj, yObj) {
         if ((yObj >= yStart && yObj <= yEnd) && (xObj >= xStart && xObj <= xEnd)) {

@@ -1,5 +1,5 @@
 var game;
-var taxi, platforms, obstacles, guests, frames, staticSatellites, googleCars, drones, transmitter;
+var taxi, platforms, obstacles, guests, frames, staticSatellites, googleCars, drones,transmitters;
 
 function initObjects() {
     var strings = levelDataRaw;
@@ -19,8 +19,16 @@ function initObjects() {
 			ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, game.width, game.height);
 		},
 		
+		update: function(){
+			if(this.roundNumber != 3){
+				this.targetPlatform = guests[this.roundNumber][0].currPlatform;
+			}else{
+				this.targetPlatform = -1; //Muss noch verbessert werden!
+			}
+		},
+		
 		reset: function(){
-			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0;
+			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0; this.frame = 0;
 			taxi.y = taxi.yStart;	taxi.passengers = 0;	taxi.vy = 0;
 			
 			for (i=0; i < guests.length; i++){
@@ -142,6 +150,15 @@ function initObjects() {
 										this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
 								}
 							}
+						},
+						
+						hasLanded: function(objXstart, objXend, objYstart, objYend){
+							if(checkCollision(this.xStart, this.xEnd, this.yStart, this.yEnd, objXstart, objYstart)&&
+								checkCollision(this.xStart, this.xEnd, this.yStart, this.yEnd, objXend, objYend)){
+								return true;
+							} else{
+								return false;
+							}
 						}
                     });
                     break;
@@ -198,15 +215,21 @@ function initObjects() {
                     break;
 
                 case "M":  //static obstacle
-                    transmitter.push({
+                    transmitters.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
-
-                        draw: function(){
-                            //ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, this.xStart + game.blockSize / 8, this.yStart - game.blockSize / 2.5, game.blockSize, game.blockSize);
+						distanceToTaxi: 0,
+						
+                        update: function(){
+							this.distanceToTaxi = Math.sqrt(Math.pow(taxi.x - this.xStart, 2)+ Math.pow(taxi.y - this.yStart, 2));
+						},
+						
+						draw: function(){
+                            //ctx.drawImage(transmittersRadioImage, 0, 0, transmittersRadioImage.width, transmittersRadioImage.height, this.xStart + game.blockSize / 8, this.yStart - game.blockSize / 2.5, game.blockSize, game.blockSize);
                             ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart - game.blockSize, game.blockSize, game.blockSize * 2);
 
-                        }});
+                        }
+					});
                     break;
 
 					/*********************************Dynamic Level elements*******************************/
@@ -359,19 +382,14 @@ function initObjects() {
 
                 case "T":
                     taxi = {
-						x: x * game.blockSize,	xStart: x * game.blockSize,
-						y: y * game.blockSize,	yStart: y * game.blockSize,
-
+						x: x * game.blockSize,	xStart: x * game.blockSize,	vx: 0,
+						y: y * game.blockSize,	yStart: y * game.blockSize,	vy: 0,
 						
 						// corners of taxi hitbox
 						ru: { x: x * game.blockSize + game.blockSize, y: y * game.blockSize }, // -> right upper corner
 						rd: { x: x * game.blockSize + game.blockSize, y: y * game.blockSize + game.blockSize }, // -> right down corner
 						lu: { x: x * game.blockSize, y: y * game.blockSize }, // -> left up corner
 						ld: { x: x * game.blockSize, y: y * game.blockSize + game.blockSize }, // -> left down corner
-						
-						//velocity towards x (vx) and y (vy)
-						vx: 0,
-						vy: 0,
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,
 						state: "free",		currPlatform:  0,   health: 100,
@@ -434,9 +452,7 @@ function initObjects() {
 							for (var i = 0; i < platforms.length; i++) {
 
 							/*Prüfung Landung*/
-								if(checkOnPlatform(platforms[i].xStart, platforms[i].xEnd,
-									platforms[i].yStart, platforms[i].yEnd,
-									this.ld.x, this.rd.x, this.ld.y, this.rd.y)){
+								if(platforms[i].hasLanded(this.ld.x, this.rd.x, this.ld.y, this.rd.y)){
 										this.currPlatform = platforms[i].id;
 										break;
 								}else{
@@ -536,9 +552,7 @@ function initObjects() {
 						update: function(){
 							for (var i = 0; i < platforms.length; i++) {
 								/*Prüfung Landung*/
-								if(checkOnPlatform(platforms[i].xStart, platforms[i].xEnd,
-									platforms[i].yStart, platforms[i].yEnd,
-									this.x, this.x +game.blockSize, this.y + game.blockSize, this.y + game.blockSize)){
+								if(platforms[i].hasLanded(this.x, this.x +game.blockSize, this.y + game.blockSize, this.y + game.blockSize)){
 										this.currPlatform = platforms[i].id;
 								}
 							}
