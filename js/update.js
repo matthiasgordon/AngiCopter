@@ -33,7 +33,7 @@ function update() {
 			document.getElementById("target").innerHTML = "Gewonnen!";
 			game.state = "over";
 			game.frame = 0;
-			gameWonMenu();
+			menu.showGameWonMenu();
 		}
 		
 	  	checkObjects();
@@ -70,6 +70,8 @@ function update() {
 			//check if taxi arrived for picking up guest
 			if(guests[game.roundNumber-1][i].currPlatform == taxi.currPlatform){
 				guests[game.roundNumber-1][i].enterTaxi(taxi.x);
+			}else{
+				guests[game.roundNumber-1][i].direction = "standing";
 			}
 			//handle collision taxi, guest
 			if (taxi.collides(guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].x + game.blockSize,

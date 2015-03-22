@@ -23,7 +23,8 @@ function init(){
 	frames = new Array();
 	
     initObjects();
-	mainMenu();
+	menu.initButtons();
+	menu.showMainMenu();
 	//preloadAssets();
 }
 

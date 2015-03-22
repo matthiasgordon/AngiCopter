@@ -28,14 +28,15 @@ function initObjects() {
 		},
 		
 		reset: function(){
-			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0; this.frame = 0;
-			taxi.y = taxi.yStart;	taxi.passengers = 0;	taxi.vy = 0;
+			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0; 	this.frame = 0;			game.state = "running";
+			taxi.y = taxi.yStart;	taxi.passengers = 0;	taxi.vy = 0;	taxi.drawState = "up";	taxi.health = 100;
 			
 			for (i=0; i < guests.length; i++){
 				for(j=0; j < guests[i].length; j++){
 					guests[i][j].x = guests[i][j].xStart;
 					guests[i][j].y = guests[i][j].yStart;
 					guests[i][j].state = "free";
+					guests[i][j].direction = "standing";
 				}
 			}
 			this.roundNumber = 1; this.targetPlatform = 0;
@@ -81,7 +82,11 @@ function initObjects() {
                 ctx.fillText("Bring Angi", this.xStart + 10, this.yStart + 50);
                 ctx.fillText("out of here!", this.xStart + 10, this.yStart + 80);
             }
-
+			
+			//Draw lives
+			ctx.fillText("Remaining lives:", this.xStart + 10, this.yEnd/2);
+            ctx.fillText(taxi.lives, this.xStart + 10, this.yEnd/2 + 30);
+			
             //Draw health bar background
             ctx.fillStyle = "#5E5E5E";
             ctx.fillRect(this.xStart + 10, this.yEnd - 80, 130, 30);
@@ -113,39 +118,36 @@ function initObjects() {
 
             this.restartButton.click(function() {
                 menu.gameOverMenu.hide();
+				menu.gameWonMenu.hide();
                 game.state = "running";
                 game.reset();
+				taxi.lives = 3;
             });
 
             this.continueButton.click(function() {
                 menu.gamePausedMenu.hide();
                 game.state = "running";
             });
-
-            this.restartButton.click(function() {
-                menu.gameWonMenu.hide();
-                game.state = "running";
-                game.reset();
-            });
         },
         
         showMainMenu: function() {
-            mainMenu.show();
+            this.mainMenu.show();
         },
 
         showGameOverMenu: function() {
-            gameOverMenu.show();
+            this.gameOverMenu.show();
         },
 
         showGamePausedMenu: function() {
-            gamePausedMenu.show();
+            this.gamePausedMenu.show();
         },
 
         showGameWonMenu: function() {
-            gameWonMenu.show();
+            this.gameWonMenu.show();
         }
     }
-
+	
+	
     var verticalDronesFinished = new Array();
     for (X = 0; X < game.levelXMax; X++){
         verticalDronesFinished[X] = new Array();
@@ -443,7 +445,7 @@ function initObjects() {
 						lu: { x: x * game.blockSize, y: y * game.blockSize }, // -> left up corner
 						ld: { x: x * game.blockSize, y: y * game.blockSize + game.blockSize }, // -> left down corner
 						
-						drawState: "up",	passengers: 0,		collisionBottom: false,
+						drawState: "up",	passengers: 0,		collisionBottom: false,	lives: 3,
 						state: "free",		currPlatform:  0,   health: 100,
 						
 						update: function() {
@@ -572,7 +574,11 @@ function initObjects() {
 										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8, brokenTaxiImage.height / 6);
 									game.frame += 0.2;
 									if(game.frame > 48) {
-										gameOverMenu();
+										if(this.lives >= 1){
+											game.reset();
+										}else{
+											menu.showGameOverMenu();
+										}
 									}
 									break;
 							}
@@ -582,6 +588,10 @@ function initObjects() {
 							this.drawState = "broken";
 							game.frame = 0;
 							game.state = "over";
+							if(taxi.state != "dead"){
+								this.lives--;
+							}
+							taxi.state = "dead";
 						}
 					};
 					break;
