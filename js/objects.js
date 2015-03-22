@@ -228,14 +228,35 @@ function initObjects() {
 							var boxes = (this.xEnd - this.xStart)/25;
 							for(j=0; j < boxes; j++){
 								if(j == 0 && this.hasBegin){
-									ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
-                                        this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    if(this.id == game.targetPlatform && taxi.state == "full") {
+                                        ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75, 0, 
+                                                      platform_blink_spritesheet.width / 60, platform_blink_spritesheet.height,
+                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    }
+                                    else{
+                                        ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
+                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    }
 								}else if(j == boxes-1 && this.hasEnd){
-									ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
-                                        this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    if(this.id == game.targetPlatform && taxi.state == "full") {
+									    ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75 + 50, 0, 
+                                                      platform_blink_spritesheet.width / 60, platform_blink_spritesheet.height,
+                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    }
+                                    else {
+                                        ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
+                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    }
 								}else{
-									ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height, 
-										this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    if(this.id == game.targetPlatform && taxi.state == "full") {
+                                    ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75 + 25, 0, 
+                                                  platform_blink_spritesheet.width / 60, platform_blink_spritesheet.height, 
+										          this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    }
+                                    else {
+                                    ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height, 
+                                                  this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                    }
 								}
 							}
 						},
