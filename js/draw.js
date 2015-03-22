@@ -5,7 +5,7 @@ function draw() {
         game.frame += 0.1;
     }
 
-    sidebar.draw();
+    
     game.drawBackground();
     
 	for (i=0; i < guests.length; i++){
@@ -35,4 +35,5 @@ function draw() {
 		platforms[i].draw();
 	}
 	taxi.draw();
+    sidebar.draw();
 }

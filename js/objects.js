@@ -334,7 +334,8 @@ function initObjects() {
 						},
 						
 						draw: function(){
-                            //ctx.drawImage(transmittersRadioImage, 0, 0, transmittersRadioImage.width, transmittersRadioImage.height, this.xStart + game.blockSize / 8, this.yStart - game.blockSize / 2.5, game.blockSize, game.blockSize);
+                            ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, 
+                                          this.xStart - 83, this.yStart - 90, 200, 200);
                             ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart - game.blockSize, game.blockSize, game.blockSize * 2);
 
                         }
