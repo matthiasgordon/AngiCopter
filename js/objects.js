@@ -1,5 +1,5 @@
 var game;
-var taxi, platforms, obstacles, guests, frames, staticSatellites, googleCars, drones,transmitters;
+var sidebar, menu, taxi, platforms, obstacles, guests, frames, staticSatellites, googleCars, drones, transmitters;
 
 function initObjects() {
     var strings = levelDataRaw;
@@ -91,6 +91,58 @@ function initObjects() {
                 ctx.fillStyle = "#807E00";
                 ctx.fillRect(this.xStart + 15, this.yEnd - 75, 1.2 * taxi.health, 20);
             }
+        }
+    }
+
+    menu = {
+        mainMenu: $('#main'),
+        gameOverMenu: $('#game-over'),
+        gamePausedMenu: $('#game-paused'),
+        gameWonMenu: $('#game-won'),
+
+        playButton: $('.play'),
+        restartButton: $('.restart'),
+        continueButton: $('.continue'),
+
+        initButtons: function() {
+            this.playButton.click(function() {
+                menu.mainMenu.hide();
+                game.state = "running";
+                game.beginGameLoop();
+            });
+
+            this.restartButton.click(function() {
+                menu.gameOverMenu.hide();
+                game.state = "running";
+                game.reset();
+            });
+
+            this.continueButton.click(function() {
+                menu.gamePausedMenu.hide();
+                game.state = "running";
+            });
+
+            this.restartButton.click(function() {
+                menu.gameWonMenu.hide();
+                game.state = "running";
+                game.reset();
+            });
+        },
+        
+        showMainMenu: function() {
+            mainMenu.show();
+        },
+
+        showGameOverMenu: function() {
+            gameOverMenu.show();
+        },
+
+        showGamePausedMenu: function() {
+            gamePausedMenu.show();
+        },
+
+        showGameWonMenu: function() {
+            gameWonMenu.show();
         }
     }
 
@@ -570,13 +622,18 @@ function initObjects() {
                                                   guestImage.width / 7, guestImage.height / 2, this.x, this.y - game.blockSize, 
                                                   game.blockSize * 2, game.blockSize * 2);
                                 }
-                                else{
+                                else if(this.direction == "movingLeft"){
                                     ctx.drawImage(guestImage, Math.floor(game.frame % 7) * guestImage.width / 7, 0, 
                                                   guestImage.width / 7, guestImage.height / 2, this.x, this.y - game.blockSize, 
                                                   game.blockSize * 2, game.blockSize * 2);
 
                                     //ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
                                     //      this.x, this.y, taxiImage.width / 5, taxiImage.height / 3);
+                                }
+                                else if(this.direction == "movingRight") {
+                                    ctx.drawImage(guestImageBack, Math.floor(game.frame % 7) * guestImageBack.width / 7, 0, 
+                                                  guestImageBack.width / 7, guestImageBack.height / 2, this.x, this.y - game.blockSize, 
+                                                  game.blockSize * 2, game.blockSize * 2);
                                 }
 								
 							}

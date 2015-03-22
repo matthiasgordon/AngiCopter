@@ -1,9 +1,8 @@
 var canvas;
 var ctx;
 
-var taxiImage, brokenTaxiImage, goal, guest, guest2, edge, obstacle, background, fire, blocks20x10,
-    platform_mid, platform_left, platform_right, droneImage, googleCarImage, transmitterImage, transmitterRadioImage,
-    satelliteImage; 
+var taxiImage , brokenTaxiImage, guestImage, guestImageBack, edge, background, platform_mid, platform_left, platform_right,
+    droneImage, googleCarImage, transmitterImage, transmitterRadioImage, satelliteImage;
 
 function init(){
     //Canvas start
@@ -45,6 +44,7 @@ function preloadAssets() {
     taxiImage = addImage("assets/sprite_sheet_heli.png");
     brokenTaxiImage = addImage("assets/heli_absturz.png");
     guestImage = addImage("assets/merkel_spritesheet.png");
+    guestImageBack = addImage("assets/merkel_spritesheet_back.png");
     edge = addImage("assets/rand_spritesheet.png");
     background = addImage("assets/background.png");
     platform_mid = addImage("assets/plattform_mitte.png");
