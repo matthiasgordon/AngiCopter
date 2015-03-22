@@ -87,17 +87,9 @@ function update() {
 		
 		//action when taxi landed on any platform
 		if(taxi.currPlatform != 0){
-			//guests delivered ?
-			if(taxi.state == "full" && taxi.currPlatform == game.targetPlatform){ 	//wird Funktion von game.update
-				console.log("Gaeste abgeliefert!");
-				game.roundNumber++;
-			}
 			if(taxi.vy < -300) {
 				taxi.death();
 			}
-			taxi.collisionBottom = true;			// sollte in taxi.update()
-			taxi.vy = 0;
-			taxi.y = platforms[taxi.currPlatform-1].yStart - game.blockSize;
 		}
 
 		for(i=0; i < drones.length; i++) {

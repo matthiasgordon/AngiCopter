@@ -1,9 +1,7 @@
 var game;
-var sidebar, menu, taxi, platforms, obstacles, guests, frames, staticSatellites, googleCars, drones, transmitters;
+var sidebar, menu, taxi, platforms, obstacles, guests, frames, exits, staticSatellites, googleCars, drones, transmitters;
 
-function initObjects() {
-    var strings = levelDataRaw;
-    var levelRows = strings.split("\r\n");
+function initGame(){
 	
 	game = {
 		width:  $("#canvas").width()-150, levelXMax: 32,  blockSize: 25,
@@ -25,6 +23,15 @@ function initObjects() {
 			}else{
 				this.targetPlatform = -1; //Muss noch verbessert werden!
 			}
+			
+			if(taxi.currPlatform != 0){
+				//guests delivered ?
+				if(taxi.state == "full" && taxi.currPlatform == game.targetPlatform){ 	//wird Funktion von game.update
+					console.log("Gaeste abgeliefert!");
+					game.roundNumber++;
+				}
+			}
+		
 		},
 		
 		reset: function(){
@@ -79,13 +86,14 @@ function initObjects() {
                 ctx.fillText("platform " + game.targetPlatform, this.xStart + 10, this.yStart + 80);
             }
             else{
-                ctx.fillText("Bring Angi", this.xStart + 10, this.yStart + 50);
+                ctx.fillText("Get Angi", this.xStart + 10, this.yStart + 50);
                 ctx.fillText("out of here!", this.xStart + 10, this.yStart + 80);
             }
 			
 			//Draw lives
-			ctx.fillText("Remaining lives:", this.xStart + 10, this.yEnd/2);
-            ctx.fillText(taxi.lives, this.xStart + 10, this.yEnd/2 + 30);
+			ctx.fillText("Remaining", this.xStart + 10, this.yEnd/2);
+			ctx.fillText("lives:", this.xStart + 30, this.yEnd/2 + 30);
+            ctx.fillText(taxi.lives, this.xStart + 50, this.yEnd/2 + 60);
 			
             //Draw health bar background
             ctx.fillStyle = "#5E5E5E";
@@ -107,6 +115,7 @@ function initObjects() {
 
         playButton: $('.play'),
         restartButton: $('.restart'),
+		nextLevelButton: $('.nextLevel'),
         continueButton: $('.continue'),
 
         initButtons: function() {
@@ -128,6 +137,27 @@ function initObjects() {
                 menu.gamePausedMenu.hide();
                 game.state = "running";
             });
+			
+			this.nextLevelButton.click(function(){
+				menu.gameWonMenu.hide();
+				game.reset();
+				var nextLevel;
+				switch(game.levelNumber){
+					case 1:
+						nextLevel = "level2.txt";
+						break;
+					
+					case 2:
+						nextLevel = "level3.txt";
+						break;
+					
+					case 3:
+						nextLevel = "none";
+						break;
+				}
+				loadLevel(nextLevel);
+				game.levelNumber++;
+			})
         },
         
         showMainMenu: function() {
@@ -146,7 +176,11 @@ function initObjects() {
             this.gameWonMenu.show();
         }
     }
-	
+}
+
+function initObjects() {
+    var strings = levelDataRaw;
+    var levelRows = strings.split("\r\n");
 	
     var verticalDronesFinished = new Array();
     for (X = 0; X < game.levelXMax; X++){
@@ -285,6 +319,21 @@ function initObjects() {
                         }
 					});
                     break;
+					
+				case "E":
+					exits.push({
+						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
+                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+						
+						draw: function(){
+							if(game.roundNumber != 3){
+								ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+							}else if(taxi.state != "full"){
+								ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+							}
+						}
+					});
+				break;
 
 					/*********************************Dynamic Level elements*******************************/
                 // Taxi and guests
@@ -525,6 +574,12 @@ function initObjects() {
 								}else{
 									this.state = "free";
 								}
+							}
+							
+							if(this.currPlatform != 0){
+								this.collisionBottom = true;			// sollte in taxi.update()
+								this.vy = 0;
+								this.y = platforms[this.currPlatform-1].yStart - game.blockSize;
 							}
 							
 							for(i = 0; i < transmitters.length; i++){

@@ -12,6 +12,7 @@ function init(){
 	//collector initialisation
 	platforms = new Array();
 	obstacles = new Array();
+	exits = new Array();
 	staticSatellites = new Array();
     googleCars = new Array();
     drones = new Array();
@@ -21,11 +22,11 @@ function init(){
 		guests[i] = new Array;
 	}
 	frames = new Array();
-	
+	if(game == undefined){
+		initGame();
+	}
     initObjects();
 	menu.initButtons();
-	menu.showMainMenu();
-	//preloadAssets();
 }
 
 // Function to preload all images and sounds
@@ -75,11 +76,11 @@ function loadLevel(levelName) {
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             levelDataRaw = xmlhttp.responseText;
-            //document.getElementById("level").innerHTML = xmlhttp.responseText;
 
-            // Debugging message
-            console.log("level loaded");
             init();
+			if(game.levelNumber == 1) {
+				menu.showMainMenu();
+			}
         }
     }
 

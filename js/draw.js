@@ -19,6 +19,9 @@ function draw() {
 	for(i=0; i<frames.length; i++){
 		frames[i].draw();
 	}
+	for(i=0; i<exits.length; i++){
+		exits[i].draw();
+	}
 	for(i=0; i<staticSatellites.length; i++){
 		staticSatellites[i].draw();
 	}
