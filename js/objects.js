@@ -46,6 +46,9 @@ function initGame(){
 				}
 			}
 			this.roundNumber = 1; this.targetPlatform = 0;
+
+            this.playSoundLoop(backgroundsong);
+            this.playSoundLoop(helicopter);
 		},
 		
 		beginGameLoop: function() {
@@ -56,7 +59,24 @@ function initGame(){
 				}
 			draw();
 			}, 1000/game.FPS);
-		}
+		},
+
+        playSoundLoop: function(soundID) {
+            soundID.pause();
+            soundID.currentTime = 0;
+            soundID.loop = true;
+            soundID.play();
+        },
+
+        playSound: function(soundID) {
+            soundID.pause();
+            soundID.currentTime = 0;
+            soundID.play();
+        },
+
+        stopSound: function(soundID) {
+            soundID.pause();
+        }
 	}
 
     sidebar = {
@@ -120,11 +140,15 @@ function initGame(){
         initButtons: function() {
             this.playButton.click(function() {
                 menu.mainMenu.hide();
+                game.stopSound(intro);
                 game.state = "running";
                 game.beginGameLoop();
+                game.playSoundLoop(backgroundsong);
+                game.playSoundLoop(helicopter);
             });
 
             this.restartButton.click(function() {
+                game.stopSound(neuland);
                 menu.gameOverMenu.hide();
 				menu.gameWonMenu.hide();
                 game.state = "running";
@@ -137,6 +161,7 @@ function initGame(){
             this.continueButton.click(function() {
                 menu.gamePausedMenu.hide();
                 game.state = "running";
+                game.playSound(helicopter);
             });
 			
 			this.nextLevelButton.click(function(){
@@ -163,14 +188,17 @@ function initGame(){
         
         showMainMenu: function() {
             this.mainMenu.show();
+            game.playSound(intro);
         },
 
         showGameOverMenu: function() {
             this.gameOverMenu.show();
+            game.playSound(neuland);
         },
 
         showGamePausedMenu: function() {
             this.gamePausedMenu.show();
+            game.stopSound(helicopter);
         },
 
         showGameWonMenu: function() {
@@ -676,7 +704,7 @@ function initObjects() {
 									ctx.drawImage(brokenTaxiImage, Math.floor(game.frame % 8) * brokenTaxiImage.width / 8, Math.floor(game.frame / 8) * brokenTaxiImage.height / 6,
 										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8, brokenTaxiImage.height / 6);
 									game.frame += 0.2;
-									if(game.frame > 48) {
+									if(Math.floor(game.frame) == 48) {
 										if(this.lives >= 1){
 											game.reset();
 										}else{
@@ -689,6 +717,9 @@ function initObjects() {
 						
 						death: function(){
 							this.drawState = "broken";
+                            game.stopSound(backgroundsong);
+                            game.stopSound(helicopter);
+                            game.playSound(explosion);
 							game.frame = 0;
 							game.state = "over";
 							if(taxi.state != "dead"){

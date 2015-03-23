@@ -29,7 +29,7 @@ function update() {
 		
 		if(keydown.esc) {
 			game.state = "pause";
-			gamePausedMenu();
+			menu.showGamePausedMenu();
 		}
 		
 		//Check: gewonnen? 
