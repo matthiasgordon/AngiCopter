@@ -1,3 +1,7 @@
+body {
+  font-family: arial;
+}
+
 #canvas {
 	border: #232323 1px solid;
 }
@@ -15,9 +19,26 @@
   display: none;
   height: 60%;
   overflow: auto;
-  margin: 250px auto;
+  margin: 80px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#controls {
+  font-size: 20px;
+  text-align: center;
+  color: #808000;
+  padding: 25px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #232323;
+  width: 250px;
+  border: #808000 5px dashed;
+}
+
+img {
+  width: 200px;
 }
 
 #game-over {
