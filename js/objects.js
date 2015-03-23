@@ -154,7 +154,7 @@ function initGame(){
                 game.playSound(helicopter);
             });
 			
-			this.nextLevelButton.click(function(){
+			this.nextLevelButton.unbind('click').click(function(){
 				menu.gameWonMenu.hide();
 				game.reset();
 				var nextLevel;
