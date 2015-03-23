@@ -562,14 +562,15 @@ function initObjects() {
 
                 case "T":
                     taxi = {
-						x: x * game.blockSize,	xStart: x * game.blockSize,	vx: 0,	width: 58,
-						y: y * game.blockSize,	yStart: y * game.blockSize,	vy: 0,	height: 25,
+                        height: 25, width: 58,
+						x: x * game.blockSize,	 xStart: this.x,	vx: 0,
+						y: y * game.blockSize,   yStart: this.y,	vy: 0,	
 						
 						// corners of taxi hitbox
-						ru: { x: x * game.blockSize + this.width, y: y * game.blockSize }, // -> right upper corner
-						rd: { x: x * game.blockSize + this.width, y: y * game.blockSize + this.height }, // -> right down corner
-						lu: { x: x * game.blockSize, y: y * game.blockSize }, // -> left up corner
-						ld: { x: x * game.blockSize, y: y * game.blockSize + this.height }, // -> left down corner
+						ru: { x: this.x + this.width, y: this.y }, // -> right upper corner
+						rd: { x: this.x + this.width, y: this.y + this.height }, // -> right down corner
+						lu: { x: this.x, y: this.y }, // -> left up corner
+						ld: { x: this.x, y: this.y + this.height }, // -> left down corner
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,	  lives: 3,
 						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
@@ -637,7 +638,7 @@ function initObjects() {
 								}
 							}
 							
-							this.x += this.vx/200;
+							this.x += this.vx / 200;
 							this.y -= this.vy / 200;
 							
 							//                                                                     lu = left-up                     ru = right-up
