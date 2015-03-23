@@ -16,6 +16,11 @@ function update() {
 	  		exits[i].update();
 	  	}
 
+		
+	  	for(i=0; i < staticSatellites.length; i++) {
+	  		staticSatellites[i].update();
+	  	}
+		
 	  	for(i=0; i < googleCars.length; i++) {
 	  		googleCars[i].update();
 	  	}

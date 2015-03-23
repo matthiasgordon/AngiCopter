@@ -348,6 +348,21 @@ function initObjects() {
                     staticSatellites.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+						angleToTaxi: 0,
+						
+						update: function(){
+							if (taxi.y < this.yStart){
+								var bSeite = this.yStart - taxi.y;
+								var aSeite;
+								if(this.xStart <= taxi.x){
+									aSeite = taxi.x - this.xStart;
+								}else{
+									aSeite = this.xStart - taxi.x;
+								}
+								this.angleToTaxi = Math.atan(bSeite/aSeite) * 57.2957795;
+							}
+						},
+						
 						draw: function(){
 							ctx.drawImage(satelliteImage, 0, 0, satelliteImage.width, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
 						}});
@@ -516,7 +531,7 @@ function initObjects() {
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
                         moveStart: x * game.blockSize, moveEnd: x * game.blockSize,
-                        direction: "right",
+                        direction: "right",	angleToTaxi: 0,
 
                         update: function (){
                             if(this.direction == "right") {
@@ -536,6 +551,17 @@ function initObjects() {
                                     //this.update();
                                 }
                             }
+							if (taxi.y < this.yStart){
+								var bSeite = this.yStart - taxi.y;
+								var aSeite;
+								if(this.xStart <= taxi.x){
+									aSeite = taxi.x - this.xStart;
+								}else{
+									aSeite = this.xStart - taxi.x;
+								}
+								this.angleToTaxi = Math.atan(bSeite/aSeite) * 57.2957795;
+							}
+							
                         },
 
                         draw: function() {
