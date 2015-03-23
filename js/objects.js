@@ -348,13 +348,6 @@ function initObjects() {
 				case "J":
 					var type = levelRows[y][x];
 					
-<<<<<<< HEAD
-=======
-				case "I":
-				case "J":
-					var type = levelRows[y][x];
-					
->>>>>>> origin/master
 					powerUps.push({
 						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
