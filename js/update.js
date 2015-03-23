@@ -12,6 +12,10 @@ function update() {
 		for(i=0; i < drones.length; i++) {
 	  		drones[i].update();
 	  	}
+		
+		for(i=0; i < exits.length; i++) {
+	  		exits[i].update();
+	  	}
 
 	  	for(i=0; i < googleCars.length; i++) {
 	  		googleCars[i].update();
@@ -58,10 +62,34 @@ function update() {
 		    }
 		}
 		
+		for(var i = 0; i < exits.length; i++){
+			if(taxi.collides(exits[i].xStart, exits[i].xEnd,
+                                   exits[i].yStart, exits[i].yEnd)){
+				if(exits[i].state == "visible"){
+					taxi.death();	
+				}
+		    }
+		}
+		
 		for(var i = 0; i < staticSatellites.length; i++){
 			if(taxi.collides(staticSatellites[i].xStart, staticSatellites[i].xEnd,
                                    staticSatellites[i].yStart, staticSatellites[i].yEnd)){
 				taxi.death();
+		    }
+		}
+		
+		for(var i = 0; i < powerUps.length; i++){
+			if(taxi.collides(powerUps[i].xStart, powerUps[i].xEnd,
+                                   powerUps[i].yStart, powerUps[i].yEnd)){
+				if(powerUps[i].type=="I" && powerUps[i].state == "open"){
+					powerUps[i].state = "closed";
+					for(i = 0; i < transmitters.length; i++){
+						transmitters[i].state = "off";
+					}
+				}else if(powerUps[i].type=="J" && powerUps[i].state == "open"){
+					powerUps[i].state = "closed";
+					taxi.vy += 500;
+				}
 		    }
 		}
 		

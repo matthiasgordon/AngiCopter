@@ -31,6 +31,9 @@ function draw() {
     for(i=0; i < googleCars.length; i++) {
         googleCars[i].draw();
     }
+	for(i=0; i < powerUps.length; i++) {
+        powerUps[i].draw();
+    }
 	for(i=0; i<platforms.length; i++){
 		platforms[i].draw();
 	}

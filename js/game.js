@@ -1,7 +1,7 @@
 var canvas;
 var ctx;
 
-var taxiImage , brokenTaxiImage, guestImage, guestImageBack, edge, background, platform_mid, platform_left, platform_right,
+var taxiImage , brokenTaxiImage, guestImage, guestImageBack, edge, background, platform_mid, platform_left, platform_right, powerUpSnowden, powerUpBlitz,
     droneImage, googleCarImage, transmitterImage, transmitterRadioImage, satelliteImage;
 
 function init(){
@@ -9,11 +9,12 @@ function init(){
     canvas = $("#canvas")[0];
 	ctx = canvas.getContext("2d");
 	
-	//collector initialisation
+	//collector initialisation  SOLLTE DAS NICHT VIELLEICHT IN objects.js gemacht werden?
 	platforms = new Array();
 	obstacles = new Array();
 	exits = new Array();
 	staticSatellites = new Array();
+	powerUps = new Array();
     googleCars = new Array();
     drones = new Array();
     transmitters = new Array();
@@ -24,6 +25,7 @@ function init(){
 	frames = new Array();
 	if(game == undefined){
 		initGame();
+		menu.showMainMenu();
 	}
     initObjects();
 	menu.initButtons();
@@ -57,6 +59,8 @@ function preloadAssets() {
     googleCarImage = addImage("assets/google_car.png");
     transmitterImage = addImage("assets/sendemast.png");
     transmitterRadioImage = addImage("assets/strahlung_final.png");
+	powerUpSnowden = addImage("assets/power_up_snowden.png");
+	powerUpBlitz = addImage("assets/power_up_blitz.png");
     satelliteImage = addImage("assets/antenne.png");
 
     var checkResources = function () {
@@ -79,9 +83,9 @@ function loadLevel(levelName) {
             levelDataRaw = xmlhttp.responseText;
 
             init();
-			if(game.levelNumber == 1) {
+			/*if(game == undefined) {
 				menu.showMainMenu();
-			}
+			}*/
         }
     }
 
