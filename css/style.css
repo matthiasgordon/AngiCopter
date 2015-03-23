@@ -1,9 +1,5 @@
 #canvas {
 	border: #232323 1px solid;
-	left: 50%;
-	top: 50%;
-	margin-left: 20px;
-	margin-top: 20px;
 }
 
 .wrapper {
@@ -15,10 +11,11 @@
 }
 
 #main {
+  color: white;
   display: none;
   height: 60%;
   overflow: auto;
-  margin: auto;
+  margin: 250px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
 }
@@ -26,9 +23,10 @@
 #game-over {
   color: white;
   display: none;
+  padding-right: 150px;
   height: 60%;
   overflow: auto;
-  margin: auto;
+  margin: 200px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
 }
@@ -36,9 +34,10 @@
 #game-paused {
   color: white;
   display: none;
+  padding-right: 150px;
   height: 60%;
   overflow: auto;
-  margin: auto;
+  margin: 200px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
 }
@@ -46,11 +45,19 @@
 #game-won {
   color: white;
   display: none;
+  padding-right: 150px;
   height: 60%;
   overflow: auto;
-  margin: auto;
+  margin: 200px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.button.play {
+  width: 30%;
+  height: 60px;
+  font-size: 50px;
+  padding-top: 30px;
 }
 
 .button {
@@ -59,17 +66,17 @@
   margin: 1% auto;
   height: 30px;
   line-height: 30px;
-  border: 1px solid #AA2666;
-  color: white;
+  border: 5px dashed #808000;
+  color: #808000;
   font-weight: bold;
-  background-color: #FF0000;
+  background-color: #232323;
   border-radius: 5px;
   text-decoration: none;
 }
 
 .button:hover {
-  color: #DDDDDD;
-  background-color: #DD0000;
+  color: #909000;
+  background-color: #606000;
 }
 
 ul {
