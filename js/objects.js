@@ -178,7 +178,7 @@ function initGame(){
         
         showMainMenu: function() {
             this.mainMenu.show();
-            game.playSound(intro);
+            game.playSoundLoop(intro);
         },
 
         showGameOverMenu: function() {
