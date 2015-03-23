@@ -34,8 +34,10 @@ function initGame(){
 		},
 		
 		reset: function(){
-			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0; 	this.frame = 0;			game.state = "running";
-			taxi.y = taxi.yStart;	taxi.passengers = 0;	taxi.vy = 0;	taxi.drawState = "up";	taxi.health = 100;
+			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0; 	taxi.health = 100;
+			taxi.y = taxi.yStart;	taxi.passengers = 0;	taxi.vy = 0;	taxi.drawState = "up";	
+			
+			game.state = "running";	this.roundNumber = 1; 	this.targetPlatform = 0;	this.frame = 0;			
 			
 			for (i=0; i < guests.length; i++){
 				for(j=0; j < guests[i].length; j++){
@@ -45,8 +47,11 @@ function initGame(){
 					guests[i][j].direction = "standing";
 				}
 			}
-			this.roundNumber = 1; this.targetPlatform = 0;
-
+			
+			for(i=0; i < exits.length; i++){
+				exits[i].state = "visible";
+			}
+			
             this.playSoundLoop(backgroundsong);
             this.playSoundLoop(helicopter);
 		},
@@ -341,7 +346,7 @@ function initObjects() {
                     transmitters.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
-						state: "on",				distanceToTaxi: 0,
+						state: "on",				distanceToTaxi: 101,
 						
                         update: function(){
 							this.distanceToTaxi = Math.sqrt(Math.pow(taxi.x - this.xStart, 2)+ Math.pow(taxi.y - this.yStart, 2));

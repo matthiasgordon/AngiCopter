@@ -81,11 +81,7 @@ function loadLevel(levelName) {
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             levelDataRaw = xmlhttp.responseText;
-
             init();
-			/*if(game == undefined) {
-				menu.showMainMenu();
-			}*/
         }
     }
 
