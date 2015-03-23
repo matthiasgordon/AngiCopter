@@ -705,6 +705,9 @@ function initObjects() {
                                 if(taxi.vy < -300) {
                                     taxi.death();
                                 }
+                                if(this.drawState != "up") {
+                                    taxi.death();
+                                }
                             }
 							
 							for(i = 0; i < transmitters.length; i++){
