@@ -589,8 +589,8 @@ function initObjects() {
                 case "T":
                     taxi = {
                         height: 25, width: 58,
-						x: x * game.blockSize,	 xStart: this.x,	vx: 0,
-						y: y * game.blockSize,   yStart: this.y,	vy: 0,	
+						x: x * game.blockSize,	 xStart: x * game.blockSize,	vx: 0,
+						y: y * game.blockSize,   yStart: y * game.blockSize,	vy: 0,	
 						
 						// corners of taxi hitbox
 						ru: { x: this.x + this.width, y: this.y }, // -> right upper corner
