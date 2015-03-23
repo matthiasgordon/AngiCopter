@@ -6,7 +6,6 @@ function update() {
 
 	  	for(i=0; i < transmitters.length; i++) {
 	  		transmitters[i].update();
-			document.getElementById("target").innerHTML = transmitters[i].distanceToTaxi;
 	  	}
 		
 		for(i=0; i < drones.length; i++) {
