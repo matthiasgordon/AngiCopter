@@ -562,14 +562,14 @@ function initObjects() {
 
                 case "T":
                     taxi = {
-						x: x * game.blockSize,	xStart: x * game.blockSize,	vx: 0,
-						y: y * game.blockSize,	yStart: y * game.blockSize,	vy: 0,
+						x: x * game.blockSize,	xStart: x * game.blockSize,	vx: 0,	width: 58,
+						y: y * game.blockSize,	yStart: y * game.blockSize,	vy: 0,	height: 25,
 						
 						// corners of taxi hitbox
-						ru: { x: x * game.blockSize + game.blockSize, y: y * game.blockSize }, // -> right upper corner
-						rd: { x: x * game.blockSize + game.blockSize, y: y * game.blockSize + game.blockSize }, // -> right down corner
+						ru: { x: x * game.blockSize + this.width, y: y * game.blockSize }, // -> right upper corner
+						rd: { x: x * game.blockSize + this.width, y: y * game.blockSize + this.height }, // -> right down corner
 						lu: { x: x * game.blockSize, y: y * game.blockSize }, // -> left up corner
-						ld: { x: x * game.blockSize, y: y * game.blockSize + game.blockSize }, // -> left down corner
+						ld: { x: x * game.blockSize, y: y * game.blockSize + this.height }, // -> left down corner
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,	  lives: 3,
 						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
@@ -642,10 +642,10 @@ function initObjects() {
 							
 							//                                                                     lu = left-up                     ru = right-up
 							//Update of this corner position:                                       //---------------+---------------
-								this.ru.x = this.x + game.blockSize; this.ru.y = this.y;                //         ___ /^^[___              
-								this.rd.x = this.x + game.blockSize; this.rd.y = this.y + game.blockSize;   //        /|^+----+   |#___________//
+								this.ru.x = this.x + this.width; this.ru.y = this.y;                //         ___ /^^[___              
+								this.rd.x = this.x + this.width; this.rd.y = this.y + this.height;  //        /|^+----+   |#___________//
 								this.lu.x = this.x; this.lu.y = this.y;                             //      ( -+ |____|   _______-----+/
-								this.ld.x = this.x; this.ld.y = this.y + game.blockSize;                //       ==_________--'            \
+								this.ld.x = this.x; this.ld.y = this.y + this.height;               //       ==_________--'            \
 																									//          ~_|___|__
 							// 															           ld = left-down                   rd = right-down
 							
