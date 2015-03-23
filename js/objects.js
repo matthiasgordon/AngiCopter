@@ -1,5 +1,5 @@
 var game;
-var sidebar, menu, taxi, platforms, obstacles, guests, frames, exits, staticSatellites, googleCars, drones, transmitters;
+var sidebar, menu, taxi, platforms, obstacles, guests, frames, exits, staticSatellites, powerUps, googleCars, drones, transmitters;
 
 function initGame(){
 	
@@ -327,21 +327,43 @@ function initObjects() {
                     transmitters.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
-						distanceToTaxi: 0,
+						state: "on",				distanceToTaxi: 0,
 						
                         update: function(){
 							this.distanceToTaxi = Math.sqrt(Math.pow(taxi.x - this.xStart, 2)+ Math.pow(taxi.y - this.yStart, 2));
 						},
 						
 						draw: function(){
-                            ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, 
+							if(this.state == "on"){
+								ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, 
                                           this.xStart - 83, this.yStart - 90, 200, 200);
+							}
                             ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart - game.blockSize, game.blockSize, game.blockSize * 2);
 
                         }
 					});
                     break;
 					
+				case "I":
+				case "J":
+					var type = levelRows[y][x];
+					
+					powerUps.push({
+						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
+                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+						type: type,					state: "open",
+						
+						draw: function(){
+							if(this.type == "I" && this.state == "open"){
+								ctx.drawImage(powerUpSnowden, 0, 0, powerUpSnowden.width, powerUpSnowden.height, this.xStart, this.yStart, game.blockSize * 2, game.blockSize);
+							}
+							if(this.type == "J" && this.state == "open"){
+								ctx.drawImage(powerUpBlitz, 0, 0, powerUpBlitz.width, powerUpBlitz.height, this.xStart, this.yStart, game.blockSize * 2, game.blockSize);
+							}
+						}
+					});
+					break;
+				
 				case "E":
 					exits.push({
 						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
@@ -605,7 +627,7 @@ function initObjects() {
 							}
 							
 							for(i = 0; i < transmitters.length; i++){
-								if(transmitters[i].distanceToTaxi < 100){
+								if(transmitters[i].distanceToTaxi < 100 && transmitters[i].state == "on"){
 									this.health -= 1;
 								}
 							}

@@ -65,6 +65,21 @@ function update() {
 		    }
 		}
 		
+		for(var i = 0; i < powerUps.length; i++){
+			if(taxi.collides(powerUps[i].xStart, powerUps[i].xEnd,
+                                   powerUps[i].yStart, powerUps[i].yEnd)){
+				if(powerUps[i].type=="I" && powerUps[i].state == "open"){
+					powerUps[i].state = "closed";
+					for(i = 0; i < transmitters.length; i++){
+						transmitters[i].state = "off";
+					}
+				}else if(powerUps[i].type=="J" && powerUps[i].state == "open"){
+					powerUps[i].state = "closed";
+					taxi.vy += 500;
+				}
+		    }
+		}
+		
 		//Guests loops
 		for (i = 0; i < guests[game.roundNumber-1].length; i++){
 			//check if taxi arrived for picking up guest
