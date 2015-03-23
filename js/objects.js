@@ -701,19 +701,22 @@ function initObjects() {
 							}
 
                             //action when taxi landed on any platform
-                            if(taxi.currPlatform != 0){
-                                if(taxi.vy < -300) {
-                                    taxi.death();
+                            if(this.currPlatform != 0){
+                                if(this.vy < -300) {
+                                    this.death();
                                 }
-                                if(this.drawState != "up") {
-                                    taxi.death();
+                                if(this.drawState != "up" && this.vy != 0) {
+                                    this.death();
                                 }
                             }
 							
 							for(i = 0; i < transmitters.length; i++){
-								if(transmitters[i].distanceToTaxi < 100 && transmitters[i].state == "on"){
+								if(transmitters[i].distanceToTaxi < 70 && transmitters[i].state == "on"){
 									this.health -= 1;
 								}
+                                else if(transmitters[i].distanceToTaxi < 100 && transmitters[i].state == "on"){
+                                        this.health -= 0.5;
+                                }
 							}
                             if(this.health < 0) {
                                 this.death();
