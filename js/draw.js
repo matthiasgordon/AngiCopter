@@ -13,9 +13,6 @@ function draw() {
 			guests[i][j].draw();
 		}
 	}
-    for(i=0; i<transmitters.length; i++){
-        transmitters[i].draw();
-    }
 	for(i=0; i<frames.length; i++){
 		frames[i].draw();
 	}
@@ -37,6 +34,9 @@ function draw() {
 	for(i=0; i<platforms.length; i++){
 		platforms[i].draw();
 	}
+	for(i=0; i<transmitters.length; i++){
+        transmitters[i].draw();
+    }
 	taxi.draw();
     sidebar.draw();
 }

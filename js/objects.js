@@ -673,12 +673,13 @@ function initObjects() {
 									this.state = "free";
 								}
 							}
-							
-							if(this.currPlatform != 0){
-								this.collisionBottom = true;			// sollte in taxi.update()
-								this.vy = 0;
-								this.y = platforms[this.currPlatform-1].yStart - game.blockSize;
-							}
+
+                            //action when taxi landed on any platform
+                            if(taxi.currPlatform != 0){
+                                if(taxi.vy < -300) {
+                                    taxi.death();
+                                }
+                            }
 							
 							for(i = 0; i < transmitters.length; i++){
 								if(transmitters[i].distanceToTaxi < 100 && transmitters[i].state == "on"){
@@ -687,6 +688,12 @@ function initObjects() {
 							}
                             if(this.health < 0) {
                                 this.death();
+                            }
+
+                            if(this.currPlatform != 0){
+                                this.collisionBottom = true;
+                                this.vy = 0;
+                                this.y = platforms[this.currPlatform-1].yStart - game.blockSize;
                             }
 						},
 						

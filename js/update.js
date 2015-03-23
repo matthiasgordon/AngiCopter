@@ -110,13 +110,6 @@ function update() {
 				}
 			}
 		}
-		
-		//action when taxi landed on any platform
-		if(taxi.currPlatform != 0){
-			if(taxi.vy < -300) {
-				taxi.death();
-			}
-		}
 
 		for(i=0; i < drones.length; i++) {
 	  		if(taxi.collides(drones[i].xStart, drones[i].xEnd, drones[i].yStart, drones[i].yEnd)) {
