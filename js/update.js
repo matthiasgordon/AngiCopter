@@ -33,7 +33,6 @@ function update() {
 		
 		//Check: gewonnen? 
 		if(taxi.y < -50 && game.targetPlatform < 0){
-			document.getElementById("target").innerHTML = "Gewonnen!";
 			game.state = "over";
 			game.frame = 0;
 			menu.showGameWonMenu();
@@ -87,7 +86,7 @@ function update() {
 					}
 				}else if(powerUps[i].type=="J" && powerUps[i].state == "open"){
 					powerUps[i].state = "closed";
-					taxi.vy += 500;
+					taxi.powerUpState = "fast";
 				}
 		    }
 		}

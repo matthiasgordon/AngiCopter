@@ -12,6 +12,7 @@ function initGame(){
 		
 		levelNumber: 1,	targetPlatform: 0,
 		roundNumber: 1, state: "running",
+        powerUpTimer: 1000,
 		
 		drawBackground: function(){
 			ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, game.width, game.height);
@@ -31,6 +32,14 @@ function initGame(){
 					game.roundNumber++;
 				}
 			}
+
+            if(this.powerUpTimer != 0) {
+                this.powerUpTimer -= 1;
+            }
+
+            if(this.powerUpTimer == 0) {
+                taxi.powerUpState = "none";
+            }
 		},
 		
 		reset: function(){
@@ -54,6 +63,8 @@ function initGame(){
 			
             this.playSoundLoop(backgroundsong);
             this.playSoundLoop(helicopter);
+
+            taxi.powerUpTimer = "none";
 		},
 		
 		beginGameLoop: function() {
@@ -560,8 +571,8 @@ function initObjects() {
 						lu: { x: x * game.blockSize, y: y * game.blockSize }, // -> left up corner
 						ld: { x: x * game.blockSize, y: y * game.blockSize + game.blockSize }, // -> left down corner
 						
-						drawState: "up",	passengers: 0,		collisionBottom: false,	lives: 3,
-						state: "free",		currPlatform:  0,   health: 100,
+						drawState: "up",	passengers: 0,		collisionBottom: false,	  lives: 3,
+						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
 						
 						update: function() {
 							if(this.collisionBottom == false) {
@@ -571,25 +582,45 @@ function initObjects() {
 							this.drawState = "up";
 
 							if(keydown.w) {
-								this.vy += 10;
+                                if(this.powerUpState != "fast") {
+                                    this.vy += 10;
+                                }
+								else {
+                                    this.vy += 20;
+                                }
 								this.collisionBottom = false;
 								this.drawState = "up";
 								this.currPlatform = 0;
 							}
 							if(keydown.s && this.collisionBottom == false) {
-								this.vy -= 10;
+                                if(this.powerUpState != "fast") {
+								    this.vy -= 10;
+                                }
+                                else {
+                                    this.vy -= 20;
+                                }
 							}
 							if (keydown.a) {
-								this.vx -= 7;
+                                if(this.powerUpState != "fast") {
+								    this.vx -= 7;
+                                }
+                                else {
+                                    this.vx -= 14;
+                                }
 								this.drawState = "left";
 							}
 							if (keydown.d) {
-								this.vx += 7;
+                                if(this.powerUpState != "fast") {
+								    this.vx += 7;
+                                }
+                                else{
+                                    this.vx += 14;
+                                }
 								this.drawState = "right";
 							}
 							if(keydown.space) {
 					           
-							    this.health -= 1;
+							    //this.health -= 1;
 							}
 						
 							if(this.collisionBottom == true) {
