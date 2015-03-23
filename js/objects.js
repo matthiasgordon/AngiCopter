@@ -90,38 +90,23 @@ function initGame(){
             //Draw background of sidebar
             ctx.fillStyle = "#232323";
             ctx.fillRect(this.xStart,this.yStart,this.width,this.height);
-
-            //Draw target platform
-            ctx.fillStyle = "#807E00";
-            ctx.font="20px Arial";
-            
-            if(game.roundNumber == 1 && taxi.passengers == 0) {
-                ctx.fillText("Collect Angi", this.xStart + 10, this.yStart + 50);
-                ctx.fillText("at platform " + guests[game.roundNumber-1][0].currPlatform, this.xStart + 10, this.yStart + 80);
-            }
-            else if((game.roundNumber == 1 && taxi.passengers == 1) ||
-                     game.roundNumber == 2){
-                ctx.fillText("Bring her to", this.xStart + 10, this.yStart + 50);
-                ctx.fillText("platform " + game.targetPlatform, this.xStart + 10, this.yStart + 80);
-            }
-            else{
-                ctx.fillText("Get Angi", this.xStart + 10, this.yStart + 50);
-                ctx.fillText("out of here!", this.xStart + 10, this.yStart + 80);
-            }
 			
-			//Draw lives
-			ctx.fillText("Remaining", this.xStart + 10, this.yEnd/2);
-			ctx.fillText("lives:", this.xStart + 30, this.yEnd/2 + 30);
-            ctx.fillText(taxi.lives, this.xStart + 50, this.yEnd/2 + 60);
+			ctx.fillStyle = "#000000";
+			for(i = 0; i < taxi.lives; i++){
+				ctx.fillRect(this.xEnd-115, this.yEnd - 45 - (i*30), 25, 25);
+			}
 			
             //Draw health bar background
-            ctx.fillStyle = "#5E5E5E";
-            ctx.fillRect(this.xStart + 10, this.yEnd - 80, 130, 30);
+            ctx.fillStyle = "#FFFFFF";
+			ctx.fillRect(this.xEnd - 70, this.yEnd - 230, 50, 210);
 
             //Draw health bar
             if(taxi.health > 0) {
-                ctx.fillStyle = "#807E00";
-                ctx.fillRect(this.xStart + 15, this.yEnd - 75, 1.2 * taxi.health, 20);
+				var grd = ctx.createLinearGradient(0,650,0,0);
+				grd.addColorStop(0,"#FF0000");
+				grd.addColorStop(1,"#FFFF00");
+                ctx.fillStyle = grd;
+                ctx.fillRect(this.xEnd - 65, this.yEnd - 25, 40, -(2 * taxi.health));
             }
         }
     }
