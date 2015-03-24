@@ -213,10 +213,12 @@ function initGame(){
                 if(game.soundEnabled == true) {
                     game.muteSounds();
                     game.soundEnabled = false;
+                    muteButton.src="http://www.compicture.de/angicopter/spacetaxi/sound_aus_klein.png";
                 }
                 else{
                     game.unmuteSounds();
                     game.soundEnabled = true;
+                    muteButton.src="http://www.compicture.de/angicopter/spacetaxi/sound_an_klein.png";
                 }
             });
         },
