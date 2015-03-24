@@ -51,7 +51,7 @@ function preloadAssets() {
     platform_mid = addImage("assets/plattform_mitte.png");
     platform_left = addImage("assets/plattform_links.png");
     platform_right = addImage("assets/plattform_rechts.png");
-    platform_blink_spritesheet = addImage("assets/spritesheet_plattform_blink.png");
+    platform_blink_spritesheet = addImage("assets/spritesheet_platform_blink.png");
     droneImage = addImage("assets/amazon_drone.png");
     googleCarImage = addImage("assets/google_car.png");
     transmitterImage = addImage("assets/sendemast.png");
