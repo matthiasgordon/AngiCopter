@@ -20,6 +20,7 @@ function initGame(){
 		},
 		
 		update: function(){
+			//UPDATING roundNumber
 			var counter = 0;
 			for (i = 0; i < guests[this.roundNumber-1].length; i++){
 				if (guests[this.roundNumber-1][i].state == "delivered"){
@@ -29,12 +30,12 @@ function initGame(){
 			if(counter == guests[this.roundNumber-1].length){
 				this.roundNumber++;	
 			}
-			
+			//UPDATE targetPlatform
 			if(taxi.state == "full"){
 				if(this.roundNumber < guests.length){
 					this.targetPlatform = guests[this.roundNumber][0].currPlatform;
 				}else{
-					this.targetPlatform = -1; //Muss noch verbessert werden!
+					this.targetPlatform = -1;
 				}
 			}
 			
@@ -875,12 +876,12 @@ function initObjects() {
 					}
 					guests[value].push({
 						type: levelRows[y][x], state: "free", 
-						currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
+						currPlatform : 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
 						xStart: x * game.blockSize, x: x * game.blockSize,
 						yStart: y * game.blockSize, y: y * game.blockSize,
                         direction: "standing",
-						enterTaxi: function(taxiX){
-							if(taxiX-this.x <0){
+						enterTaxi: function(){
+							if(taxi.x-this.x <0){
 								this.x -= 1;
                                 this.direction = "movingLeft";
 							}else{
@@ -889,11 +890,14 @@ function initObjects() {
 							}
 						},
 						
-						leaveTaxi: function(taxiX){
+						exitTaxi:function(){
 							if(this.state != "leaving"){
 								this.x = taxi.x;
 								this.y = taxi.y;
 							}
+						},
+						
+						leaveTaxi: function(){
 							if(guests[game.roundNumber][0].x - this.x < 0){
 								this.x -= 1;
 								this.direction = "movingLeft";

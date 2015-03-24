@@ -98,36 +98,39 @@ function update() {
 		
 		//Guests loops
 		for (i = 0; i < guests[game.roundNumber-1].length; i++){
+			var currGuest = guests[game.roundNumber-1][i];
+
 			//check if taxi arrived for picking up guest
-			if(guests[game.roundNumber-1][i].state != "leaving"){
-				if(guests[game.roundNumber-1][i].currPlatform == taxi.currPlatform){
-					guests[game.roundNumber-1][i].enterTaxi(taxi.x);
+			if(currGuest.state == "free"){
+				if (taxi.collides(currGuest.x, currGuest.x + game.blockSize,
+									currGuest.y, currGuest.y + game.blockSize)) {
+					if(taxi.vy == 0){
+						currGuest.state = "onTaxi";
+					}else{
+						taxi.death();
+					}
+				}
+				
+				if(currGuest.currPlatform == taxi.currPlatform){
+					currGuest.enterTaxi();
 				}else{
-					guests[game.roundNumber-1][i].direction = "standing";
+					currGuest.direction = "standing";
 				}	
 			}
 			
-			
-			//check if taxi arrived at targetPlatform
-			if(game.targetPlatform == taxi.currPlatform && taxi.state == "full"){
-				if (checkCollision(guests[game.roundNumber][0].x, guests[game.roundNumber][0].x + game.blockSize, 
-					guests[game.roundNumber][0].y, guests[game.roundNumber][0].y + game.blockSize, guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].y)){
-						guests[game.roundNumber-1][i].state = "delivered";
-						//setTimeout(function(){game.roundNumber++;}, 100);
-				}else{
-					guests[game.roundNumber-1][i].leaveTaxi(taxi.x);
-					guests[game.roundNumber-1][i].state = "leaving";
+			if(currGuest.state == "onTaxi"){
+				if(game.targetPlatform == taxi.currPlatform && taxi.state == "full"){
+					currGuest.exitTaxi();
+					currGuest.state = "leaving";
 				}
 			}
 			
-			//handle collision taxi, guest
-			if (taxi.collides(guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].x + game.blockSize,
-									guests[game.roundNumber-1][i].y, guests[game.roundNumber-1][i].y + game.blockSize)) {
-				if(taxi.vy == 0 && guests[game.roundNumber-1][i].state != "leaving"){
-					guests[game.roundNumber-1][i].state = "onTaxi";
-				}
-				else if(guests[game.roundNumber-1][i].state == "free"){
-					taxi.death();
+			if(currGuest.state == "leaving"){
+				if (checkCollision(guests[game.roundNumber][0].x, guests[game.roundNumber][0].x + game.blockSize, 
+					guests[game.roundNumber][0].y, guests[game.roundNumber][0].y + game.blockSize, currGuest.x, currGuest.y)){
+						currGuest.state = "delivered";
+				}else{
+					currGuest.leaveTaxi();
 				}
 			}
 		}
