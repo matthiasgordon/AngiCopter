@@ -58,7 +58,7 @@ function preloadAssets() {
     transmitterRadioImage = addImage("assets/strahlung_final.png");
 	powerUpSnowden = addImage("assets/power_up_snowden.png");
 	powerUpBlitz = addImage("assets/power_up_blitz.png");
-    satelliteImage = addImage("assets/antenne.png");
+    satelliteImage = addImage("assets/antenne_spritesheet.png");
 
     var checkResources = function () {
         // If everthing is preloaded go on and load the level
