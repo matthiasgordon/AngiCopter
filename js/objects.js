@@ -442,8 +442,8 @@ function initObjects() {
 
                 case "M":  //static obstacle
                     transmitters.push({
-                        xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
-                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+                        xStart: x * game.blockSize, 					xEnd: x * game.blockSize + game.blockSize,	xDrawStart: x * game.blockSize,
+                        yStart: y * game.blockSize - game.blockSize, 	yEnd: y * game.blockSize + game.blockSize,	yDrawStart: y * game.blockSize,
 						state: "on",				distanceToTaxi: 101,
 						
                         update: function(){
@@ -455,7 +455,7 @@ function initObjects() {
 								ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, 
                                           this.xStart - 83, this.yStart - 90, 200, 200);
 							}
-                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xStart, this.yStart - game.blockSize, game.blockSize, game.blockSize * 2);
+                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xDrawStart, this.yDrawStart - game.blockSize, game.blockSize, game.blockSize * 2);
                         }
 					});
                     break;
@@ -465,7 +465,7 @@ function initObjects() {
 					var type = levelRows[y][x];
 					
 					powerUps.push({
-						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
+						xStart: x * game.blockSize, xEnd: x * game.blockSize + (2 * game.blockSize),
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
 						type: type,					state: "open",
 						
@@ -663,12 +663,14 @@ function initObjects() {
                         height: 25, width: 58,
 						x: x * game.blockSize,	 xStart: x * game.blockSize,	vx: 0,
 						y: y * game.blockSize,   yStart: y * game.blockSize,	vy: 0,	
-						
-						// corners of taxi hitbox
-						ru: { x: this.x + this.width, y: this.y }, // -> right upper corner
-						rd: { x: this.x + this.width, y: this.y + this.height }, // -> right down corner
-						lu: { x: this.x, y: this.y }, // -> left up corner
-						ld: { x: this.x, y: this.y + this.height }, // -> left down corner
+						//                                                                     lu = left-up                     ru = right-up
+						// corners of taxi hitbox															//---------------+---------------
+						ru: { x: this.x + this.width, y: this.y }, // -> right upper corner					//         ___ /^^[___              
+						rd: { x: this.x + this.width, y: this.y + this.height }, // -> right down corner	//        /|^+----+   |#___________//
+						lu: { x: this.x, y: this.y }, // -> left up corner									//      ( -+ |____|   _______-----+/
+						ld: { x: this.x, y: this.y + this.height }, // -> left down corner					//       ==_________--'            \
+																											//          ~_|___|__
+						// 															           ld = left-down                   rd = right-down
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,	  lives: 3,
 						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
@@ -739,14 +741,12 @@ function initObjects() {
 							this.x += this.vx / 200;
 							this.y -= this.vy / 200;
 							
-							//                                                                     lu = left-up                     ru = right-up
-							//Update of this corner position:                                       //---------------+---------------
-								this.ru.x = this.x + this.width; this.ru.y = this.y;                //         ___ /^^[___              
-								this.rd.x = this.x + this.width; this.rd.y = this.y + this.height;  //        /|^+----+   |#___________//
-								this.lu.x = this.x; this.lu.y = this.y;                             //      ( -+ |____|   _______-----+/
-								this.ld.x = this.x; this.ld.y = this.y + this.height;               //       ==_________--'            \
-																									//          ~_|___|__
-							// 															           ld = left-down                   rd = right-down
+
+							//Update of this corner position:                                       
+								this.ru.x = this.x + this.width; this.ru.y = this.y;                
+								this.rd.x = this.x + this.width; this.rd.y = this.y + this.height;  
+								this.lu.x = this.x; this.lu.y = this.y;                             
+								this.ld.x = this.x; this.ld.y = this.y + this.height;               
 							
 							for (var i = 0; i < platforms.length; i++) {
 
