@@ -4,8 +4,7 @@ function draw() {
     if(game.state == "running") {
         game.frame += 0.1;
     }
-
-    
+	
     game.drawBackground();
     
 	for (i=0; i < guests.length; i++){

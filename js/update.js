@@ -113,7 +113,7 @@ function update() {
 				if (checkCollision(guests[game.roundNumber][0].x, guests[game.roundNumber][0].x + game.blockSize, 
 					guests[game.roundNumber][0].y, guests[game.roundNumber][0].y + game.blockSize, guests[game.roundNumber-1][i].x, guests[game.roundNumber-1][i].y)){
 						guests[game.roundNumber-1][i].state = "delivered";
-						game.roundNumber++;
+						//setTimeout(function(){game.roundNumber++;}, 100);
 				}else{
 					guests[game.roundNumber-1][i].leaveTaxi(taxi.x);
 					guests[game.roundNumber-1][i].state = "leaving";

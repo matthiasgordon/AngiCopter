@@ -19,9 +19,6 @@ function init(){
     drones = new Array();
     transmitters = new Array();
 	guests = new Array();
-	for (i=0; i<3; i++){
-		guests[i] = new Array;
-	}
 	frames = new Array();
 	if(game == undefined){
 		initGame();

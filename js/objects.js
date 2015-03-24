@@ -20,10 +20,22 @@ function initGame(){
 		},
 		
 		update: function(){
-			if(this.roundNumber != 3 && taxi.state == "full"){
-				this.targetPlatform = guests[this.roundNumber][0].currPlatform;
-			}else{
-				this.targetPlatform = -1; //Muss noch verbessert werden!
+			var counter = 0;
+			for (i = 0; i < guests[this.roundNumber-1].length; i++){
+				if (guests[this.roundNumber-1][i].state == "delivered"){
+					counter++;
+				}
+			}
+			if(counter == guests[this.roundNumber-1].length){
+				this.roundNumber++;	
+			}
+			
+			if(taxi.state == "full"){
+				if(this.roundNumber < guests.length){
+					this.targetPlatform = guests[this.roundNumber][0].currPlatform;
+				}else{
+					this.targetPlatform = -1; //Muss noch verbessert werden!
+				}
 			}
 			
             if(this.powerUpTimer != 0) {
@@ -435,7 +447,7 @@ function initObjects() {
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
 						
 						update: function(){
-							if(game.roundNumber == 3 && taxi.state == "full"){
+							if(game.targetPlatform < 0 && taxi.state == "full"){
 								this.state = "invisible"
 							}
 						},
@@ -816,7 +828,12 @@ function initObjects() {
                 case "2":
 				case "3":
 					var value = levelRows[y][x] - 1;
-
+					
+					if(guests.length < value + 1){
+						for(i = guests.length; i <= value; i++){
+							guests[i] = new Array();
+						}
+					}
 					guests[value].push({
 						type: levelRows[y][x], state: "free", 
 						currPlatform : 0, targetPlatform: 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
