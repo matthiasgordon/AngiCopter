@@ -100,6 +100,15 @@ img {
   background-color: #606000;
 }
 
-ul {
-  list-style-type: none;
+#mute {
+  position: absolute;
+  text-align: center;
+  color: #808000;
+  top: 0; left: 0; bottom: 0; right: 0;
+  margin-left: 800px;
+  margin-top: 10px;
+}
+
+#mute img {
+  width: 25px;
 }

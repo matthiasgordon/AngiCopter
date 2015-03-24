@@ -13,6 +13,7 @@ function initGame(){
 		levelNumber: 1,	targetPlatform: 0,
 		roundNumber: 1, state: "running",
         powerUpTimer: 1000,
+        soundEnabled: true,
 		
 		drawBackground: function(){
 			ctx.drawImage(background, 0, 0, background.width, background.height, 0, 0, game.width, game.height);
@@ -92,6 +93,22 @@ function initGame(){
 
         stopSound: function(soundID) {
             soundID.pause();
+        },
+
+        muteSounds: function() {
+            backgroundsong.muted = true;
+            intro.muted = true;
+            explosion.muted = true;
+            helicopter.muted = true;
+            neuland.muted = true;
+        },
+
+        unmuteSounds: function() {
+            backgroundsong.muted = false;
+            intro.muted = false;
+            explosion.muted = false;
+            helicopter.muted = false;
+            neuland.muted = false;
         }
 	}
 
@@ -137,6 +154,7 @@ function initGame(){
         restartButton: $('.restart'),
 		nextLevelButton: $('.nextLevel'),
         continueButton: $('.continue'),
+        muteButton: $('.muteButton'),
 
         initButtons: function() {
             this.playButton.click(function() {
@@ -184,7 +202,18 @@ function initGame(){
 				}
 				loadLevel(nextLevel);
 				game.levelNumber++;
-			})
+			});
+
+            this.muteButton.click(function(){
+                if(game.soundEnabled == true) {
+                    game.muteSounds();
+                    game.soundEnabled = false;
+                }
+                else{
+                    game.unmuteSounds();
+                    game.soundEnabled = true;
+                }
+            });
         },
         
         showMainMenu: function() {
