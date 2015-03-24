@@ -388,7 +388,7 @@ function initObjects() {
 								var bSeite = this.yStart - taxi.y;
 								var aSeite;
 								if(this.xStart <= taxi.x){
-									aSeite = taxi.x - this.xStart;
+									aSeite = (taxi.x - this.xStart) * (-1);
 								}else{
 									aSeite = this.xStart - taxi.x;
 								}
@@ -397,7 +397,46 @@ function initObjects() {
 						},
 						
 						draw: function(){
-							ctx.drawImage(satelliteImage, 0, 0, satelliteImage.width, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+							switch(true){
+								// right from taxi and angle 0-20°
+								case (this.angleToTaxi > 0 && this.angleToTaxi < 20):
+									ctx.drawImage(satelliteImage, 8 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// right from taxi and angle 20-40°
+								case (this.angleToTaxi > 20 && this.angleToTaxi < 40):
+									ctx.drawImage(satelliteImage, 7 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// right from taxi and angle 40-60°	
+								case (this.angleToTaxi > 40 && this.angleToTaxi < 60):
+									ctx.drawImage(satelliteImage, 6 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// right from taxi and angle 60-80°
+								case (this.angleToTaxi > 60 && this.angleToTaxi < 80):
+									ctx.drawImage(satelliteImage, 5 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// right from taxi and angle 80-90°; left from taxi and angle 80-90°; if no possible angle
+								case (this.angleToTaxi > -90 && this.angleToTaxi < -80):
+								case (this.angleToTaxi > 80 && this.angleToTaxi <90):
+								case (this.angleToTaxi == 0):
+									ctx.drawImage(satelliteImage, 4 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// left from taxi and angle 0-20°
+								case (this.angleToTaxi > -20 && this.angleToTaxi < 0):
+									ctx.drawImage(satelliteImage, 0 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// left from taxi and angle 20-40°
+								case (this.angleToTaxi > -40 && this.angleToTaxi < -20):
+									ctx.drawImage(satelliteImage, 1 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// left from taxi and angle 40-60°
+								case (this.angleToTaxi > -60 && this.angleToTaxi < -40):
+									ctx.drawImage(satelliteImage, 2 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+								// left from taxi and angle 60-80°
+								case (this.angleToTaxi > -80 && this.angleToTaxi < -60):
+									ctx.drawImage(satelliteImage, 3 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									break;
+							}
 						}});
                     break;
 
@@ -588,7 +627,7 @@ function initObjects() {
 								var bSeite = this.yStart - taxi.y;
 								var aSeite;
 								if(this.xStart <= taxi.x){
-									aSeite = taxi.x - this.xStart;
+									aSeite = (taxi.x - this.xStart) * (-1);
 								}else{
 									aSeite = this.xStart - taxi.x;
 								}
