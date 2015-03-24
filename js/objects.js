@@ -67,8 +67,8 @@ function initGame(){
 				exits[i].state = "visible";
 			}
 			
-            this.playSoundLoop(backgroundsong);
-            this.playSoundLoop(helicopter);
+            backgroundsong.play();
+            helicopter.play();
 
             taxi.powerUpTimer = "none";
 		},
@@ -209,7 +209,7 @@ function initGame(){
 				game.levelNumber++;
 			});
 
-            this.muteButton.click(function(){
+            this.muteButton.unbind('click').click(function(){
                 if(game.soundEnabled == true) {
                     game.muteSounds();
                     game.soundEnabled = false;
