@@ -20,20 +20,12 @@ function initGame(){
 		},
 		
 		update: function(){
-			if(this.roundNumber != 3){
+			if(this.roundNumber != 3 && taxi.state == "full"){
 				this.targetPlatform = guests[this.roundNumber][0].currPlatform;
 			}else{
 				this.targetPlatform = -1; //Muss noch verbessert werden!
 			}
 			
-			if(taxi.currPlatform != 0){
-				//guests delivered ?
-				if(taxi.state == "full" && taxi.currPlatform == game.targetPlatform){ 	//wird Funktion von game.update
-					console.log("Gaeste abgeliefert!");
-					game.roundNumber++;
-				}
-			}
-
             if(this.powerUpTimer != 0) {
                 this.powerUpTimer -= 1;
             }
@@ -720,7 +712,7 @@ function initObjects() {
 							//update taxi attributes according to guests
 							this.passengers = 0;
 							for (i = 0; i < guests[game.roundNumber-1].length; i++){
-								if(guests[game.roundNumber-1][i].state == "onTaxi")
+								if(guests[game.roundNumber-1][i].state == "onTaxi" || guests[game.roundNumber-1][i].state == "leaving")
 									this.passengers++;
 								if(taxi.passengers == guests[game.roundNumber-1].length){
 									this.state = "full";
@@ -840,6 +832,21 @@ function initObjects() {
                                 this.direction = "movingRight";
 							}
 						},
+						
+						leaveTaxi: function(taxiX){
+							if(this.state != "leaving"){
+								this.x = taxi.x;
+								this.y = taxi.y;
+							}
+							if(guests[game.roundNumber][0].x - this.x < 0){
+								this.x -= 1;
+								this.direction = "movingLeft";
+							}else if(guests[game.roundNumber][0].x - this.x > 0){
+								this.x += 1;
+								this.direction = "movingRight";
+							}
+						},
+						
 						update: function(){
 							for (var i = 0; i < platforms.length; i++) {
 								/*Prüfung Landung*/
@@ -848,9 +855,9 @@ function initObjects() {
 								}
 							}
 						},
-						
+
 						draw: function(){
-							if(this.state == "free" && (this.type == game.roundNumber)){
+							if((this.state == "free" || this.state == "leaving") && (this.type == game.roundNumber)){
                                 if(this.direction == "standing") {
                                     ctx.drawImage(guestImage, 0 * guestImage.width / 7, 1 * guestImage.height / 2, 
                                                   guestImage.width / 7, guestImage.height / 2, this.x, this.y - game.blockSize, 
@@ -860,9 +867,6 @@ function initObjects() {
                                     ctx.drawImage(guestImage, Math.floor(game.frame % 7) * guestImage.width / 7, 0, 
                                                   guestImage.width / 7, guestImage.height / 2, this.x, this.y - game.blockSize, 
                                                   game.blockSize * 2, game.blockSize * 2);
-
-                                    //ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, taxiImage.height / 3, taxiImage.width / 5, taxiImage.height / 3,
-                                    //      this.x, this.y, taxiImage.width / 5, taxiImage.height / 3);
                                 }
                                 else if(this.direction == "movingRight") {
                                     ctx.drawImage(guestImageBack, Math.floor(game.frame % 7) * guestImageBack.width / 7, 0, 
