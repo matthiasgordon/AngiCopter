@@ -523,9 +523,10 @@ function initObjects() {
                         }
 					});
                     break;
-				/*********************************Initialization of power ups*******************+++******************************/
+				
 				case "I":
 				case "J":
+                    /*********************************Initialization of power ups*******************+++******************************/
 					var type = levelRows[y][x];
 					
 					powerUps.push({
@@ -544,12 +545,13 @@ function initObjects() {
 					});
 					break;
 				
-
 					/*********************************Initialization of Dynamic Level elements*******************************/
-
-                /*********************Initialization of drone object*********************/
-                /****************************vertical flying*****************************/
+                
                 case "K":
+                    /*********************Initialization of drone object*********************/
+                    /****************************vertical flying*****************************/
+
+                    //Check if drone element has already been used
                     if(verticalDronesFinished[x][y] == false) {
                         drones.push({
                             xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
@@ -558,6 +560,7 @@ function initObjects() {
                             direction: "down",
 
                             update: function (){
+                                //moving the drone up and down
                                 if(this.direction == "down") {
                                     if(this.yEnd <= this.moveEnd) {
                                         this.yStart += 1; this.yEnd += 1;
@@ -572,7 +575,6 @@ function initObjects() {
                                     }
                                     else{
                                         this.direction = "down";
-                                        //this.update();
                                     }
                                 }
                             },
@@ -593,6 +595,7 @@ function initObjects() {
 
                         verticalDronesFinished[x][y] = true;
 
+                        //Update drones flying target to the full length
                         y = oldY;
                         drones[drones.length-1].moveEnd += count * game.blockSize + game.blockSize;
                     }
@@ -608,6 +611,7 @@ function initObjects() {
                         direction: "right",
 
                         update: function (){
+                            //moving the drone back and forth
                             if(this.direction == "right") {
                                 if(this.xEnd <= this.moveEnd) {
                                     this.xStart += 1; this.xEnd += 1;
@@ -640,6 +644,7 @@ function initObjects() {
                         count++;
                     }
 
+                    //Update drones flying target to the full length
                     drones[drones.length-1].moveEnd += count * game.blockSize + game.blockSize;
                     break;
 
@@ -652,6 +657,7 @@ function initObjects() {
                         direction: "right",	angleToTaxi: 0,
 
                         update: function (){
+                            //moving the car back and forth
                             if(this.direction == "right") {
                                 if(this.xEnd <= this.moveEnd) {
                                     this.xStart += 1; this.xEnd += 1;
@@ -666,7 +672,6 @@ function initObjects() {
                                 }
                                 else{
                                     this.direction = "right";
-                                    //this.update();
                                 }
                             }
 							if (taxi.y < this.yStart){
@@ -683,10 +688,12 @@ function initObjects() {
                         },
 
                         draw: function() {
+                            //Draw car driving in right direction
                             if(this.direction == "right"){
                                 ctx.drawImage(googleCarImage, Math.floor(game.frame % 4) *  googleCarImage.width / 4, 0, googleCarImage.width / 4, googleCarImage.height / 2,
                                               this.xStart, this.yStart, game.blockSize, game.blockSize);
                             }
+                            //Draw car driving in left direction
                             else{
                                 ctx.drawImage(googleCarImage, Math.floor(game.frame % 4) *  googleCarImage.width / 4, googleCarImage.height / 2, googleCarImage.width / 4, googleCarImage.height / 2,
                                               this.xStart, this.yStart, game.blockSize, game.blockSize);
@@ -701,11 +708,12 @@ function initObjects() {
                         count++;
                     }
 
+                    //Update cars moving target to the full length
                     googleCars[googleCars.length-1].moveEnd += count * game.blockSize + game.blockSize;
                     break;
 					
-				/*********************************Initialization of taxi**************************************************/
                 case "T":
+                    /*********************************Initialization of taxi**************************************************/
                     taxi = {
                         height: 25, width: 58,
 						x: x * game.blockSize,	 xBegin: x * game.blockSize,	xStart: x * game.blockSize,	xEnd: x * game.blockSize + this.width,	vx: 0,
@@ -715,6 +723,7 @@ function initObjects() {
 						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
 						
 						update: function() {
+                            //Simulating gravity if taxi is not on a platform
 							if(this.collisionBottom == false) {
 								this.vy -= 3;	
 							}
