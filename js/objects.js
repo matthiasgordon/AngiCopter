@@ -1,8 +1,9 @@
 var game;
 var sidebar, menu, taxi, platforms, obstacles, guests, frames, exits, staticSatellites, powerUps, googleCars, drones, transmitters;
 
+/*********************************Initialization of general game objects*************************************************/
+/************************************************************************************************************************/
 function initGame(){
-	
 	game = {
 		width:  $("#canvas").width()-150, levelXMax: 32,  blockSize: 25,
 		height: $("#canvas").height(),    levelYMax: 24, 
@@ -67,8 +68,8 @@ function initGame(){
 				exits[i].state = "visible";
 			}
 			
-            backgroundsong.play();
-            helicopter.play();
+            this.playSoundLoop(backgroundsong);
+            this.playSoundLoop(helicopter);
 
             taxi.powerUpTimer = "none";
 		},
@@ -131,7 +132,9 @@ function initGame(){
 			
 			ctx.fillStyle = "#000000";
 			for(i = 0; i < taxi.lives; i++){
-				ctx.fillRect(this.xEnd-115, this.yEnd - 45 - (i*30), 25, 25);
+				draw
+				//ctx.fillRect(this.xEnd-115, this.yEnd - 45 - (i*30), 25, 25);
+				ctx.drawImage(lifeImage, 0, 0, lifeImage.width, lifeImage.height, this.xEnd-115, this.yEnd - 45 - (i*30), game.blockSize, game.blockSize);
 			}
 			
             //Draw health bar background
@@ -209,16 +212,14 @@ function initGame(){
 				game.levelNumber++;
 			});
 
-            this.muteButton.unbind('click').click(function(){
+            this.muteButton.click(function(){
                 if(game.soundEnabled == true) {
                     game.muteSounds();
                     game.soundEnabled = false;
-                    muteButton.src="http://www.compicture.de/angicopter/spacetaxi/sound_aus_klein.png";
                 }
                 else{
                     game.unmuteSounds();
                     game.soundEnabled = true;
-                    muteButton.src="http://www.compicture.de/angicopter/spacetaxi/sound_an_klein.png";
                 }
             });
         },
@@ -243,7 +244,8 @@ function initGame(){
         }
     }
 }
-
+/*********************************Initialization of level objects*************************************************/
+/*****************************************************************************************************************/
 function initObjects() {
     var strings = levelDataRaw;
     var levelRows = strings.split("\r\n");
@@ -260,7 +262,7 @@ function initObjects() {
         for (x = 0; x < game.levelXMax; x++) {
 
             switch(levelRows[y][x]){
-            /*********************************Initialization platforms*********************************/
+            /*********************************Initialization of platforms*************************************************/
                 case "<":
 				case "#": //Platform
 					var tempPlatform = {xStart: 0, xEnd: 0, yStart: 0, yEnd: 0, hasBegin: false, hasEnd: false};
@@ -286,8 +288,8 @@ function initObjects() {
                     //add tempPlatform to platforms
                     platforms.push({
 						id: platforms.length + 1,
-                        xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,
-                        yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd,
+                        xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,	xDraw: tempPlatform.xStart,
+                        yStart: tempPlatform.yStart, yEnd: tempPlatform.yEnd,	yDraw: tempPlatform.yStart,
 						hasBegin: tempPlatform.hasBegin, hasEnd: tempPlatform.hasEnd,
 						
 						draw: function(){
@@ -297,31 +299,31 @@ function initObjects() {
                                     if(this.id == game.targetPlatform && taxi.state == "full") {
                                         ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75, 0, 
                                                       platform_blink_spritesheet.width / 60, platform_blink_spritesheet.height,
-                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                                      this.xDraw + (j * game.blockSize), this.yDraw, game.blockSize, game.blockSize);
                                     }
                                     else{
                                         ctx.drawImage(platform_left, 0, 0, platform_left.width, platform_left.height,
-                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                                      this.xDraw + (j * game.blockSize), this.yDraw, game.blockSize, game.blockSize);
                                     }
 								}else if(j == boxes-1 && this.hasEnd){
                                     if(this.id == game.targetPlatform && taxi.state == "full") {
 									    ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75 + 50, 0, 
                                                       platform_blink_spritesheet.width / 60, platform_blink_spritesheet.height,
-                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                                      this.xDraw + (j * game.blockSize), this.yDraw, game.blockSize, game.blockSize);
                                     }
                                     else {
                                         ctx.drawImage(platform_right, 0, 0, platform_right.width, platform_right.height,
-                                                      this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                                      this.xDraw + (j * game.blockSize), this.yDraw, game.blockSize, game.blockSize);
                                     }
 								}else{
                                     if(this.id == game.targetPlatform && taxi.state == "full") {
                                     ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75 + 25, 0, 
                                                   platform_blink_spritesheet.width / 60, platform_blink_spritesheet.height, 
-										          this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+										          this.xDraw + (j * game.blockSize), this.yDraw, game.blockSize, game.blockSize);
                                     }
                                     else {
                                     ctx.drawImage(platform_mid, 0, 0, platform_mid.width, platform_mid.height, 
-                                                  this.xStart + (j * game.blockSize), this.yStart, game.blockSize, game.blockSize);
+                                                  this.xDraw + (j * game.blockSize), this.yDraw, game.blockSize, game.blockSize);
                                     }
 								}
 							}
@@ -337,53 +339,74 @@ function initObjects() {
 						}
                     });
                     break;
-
+				/*********************************Initialization of frame**************************************************************/
                 case "R": //frame
                     frames.push({
-                        xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
-                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+                        xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
+                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
                         
 						draw: function(){
                             //Left
                             if(this.xStart == 0 && this.yStart > 0 && this.yStart < game.height - game.blockSize) {
-                                ctx.drawImage(edge, 0 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 0 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Upper left
                             else if(this.xStart == 0 && this.yStart == 0) {
-                                ctx.drawImage(edge, 1 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 1 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Top
                             else if(this.xStart > 0 && this.xStart < game.width - game.blockSize && this.yStart == 0) {
-                                ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Upper right
                             else if(this.xStart == game.width - game.blockSize && this.yStart == 0) {
-                                ctx.drawImage(edge, 3 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 3 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Right
                             else if(this.xStart == game.width - game.blockSize && this.yStart > 0 && this.yStart < game.height - game.blockSize) {
-                                ctx.drawImage(edge, 4 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 4 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Lower right
                             else if(this.xStart == game.width - game.blockSize && this.yStart == game.height - game.blockSize) {
-                                ctx.drawImage(edge, 5 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 5 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Bottom
                             else if(this.xStart > 0 && this.xStart < game.width - game.blockSize && this.yStart == game.height - game.blockSize) {
-                                ctx.drawImage(edge, 6 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 6 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
                             //Lower left
                             else if(this.xStart == 0 && this.yStart == game.height - game.blockSize) {
-                                ctx.drawImage(edge, 7 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+                                ctx.drawImage(edge, 7 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
                             }
 						}});
                     break;
-
-                /*********************************Extended Level elements******************************/
+				
+				/*********************************Initialization of exit elements***********************************************/
+				case "E":
+					exits.push({
+						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize, 	xDraw: x * game.blockSize,
+                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
+						state: "visible",
+						
+						update: function(){
+							if(game.targetPlatform < 0 && taxi.state == "full"){
+								this.state = "invisible"
+							}
+						},
+						
+						draw: function(){
+							if(this.state == "visible"){
+								ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
+							}
+						}
+					});
+				break;
+				
+                /*********************************Initialization of static obstacles*************************************************/
                 case "X":  //static obstacle
                     staticSatellites.push({
-                        xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
-                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+                        xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
+                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
 						angleToTaxi: 0,
 						
 						update: function(){
@@ -403,41 +426,41 @@ function initObjects() {
 							switch(true){
 								// right from taxi and angle 0-20°
 								case (this.angleToTaxi > 0 && this.angleToTaxi < 20):
-									ctx.drawImage(satelliteImage, 8 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 8 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// right from taxi and angle 20-40°
 								case (this.angleToTaxi > 20 && this.angleToTaxi < 40):
-									ctx.drawImage(satelliteImage, 7 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 7 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// right from taxi and angle 40-60°	
 								case (this.angleToTaxi > 40 && this.angleToTaxi < 60):
-									ctx.drawImage(satelliteImage, 6 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 6 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// right from taxi and angle 60-80°
 								case (this.angleToTaxi > 60 && this.angleToTaxi < 80):
-									ctx.drawImage(satelliteImage, 5 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 5 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// right from taxi and angle 80-90°; left from taxi and angle 80-90°; if no possible angle
 								case (this.angleToTaxi > -90 && this.angleToTaxi < -80):
 								case (this.angleToTaxi > 80 && this.angleToTaxi <90):
 								case (this.angleToTaxi == 0):
-									ctx.drawImage(satelliteImage, 4 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 4 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// left from taxi and angle 0-20°
 								case (this.angleToTaxi > -20 && this.angleToTaxi < 0):
-									ctx.drawImage(satelliteImage, 0 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 0 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// left from taxi and angle 20-40°
 								case (this.angleToTaxi > -40 && this.angleToTaxi < -20):
-									ctx.drawImage(satelliteImage, 1 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 1 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// left from taxi and angle 40-60°
 								case (this.angleToTaxi > -60 && this.angleToTaxi < -40):
-									ctx.drawImage(satelliteImage, 2 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 2 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 								// left from taxi and angle 60-80°
 								case (this.angleToTaxi > -80 && this.angleToTaxi < -60):
-									ctx.drawImage(satelliteImage, 3 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
+									ctx.drawImage(satelliteImage, 3 * satelliteImage.width / 9, 0, satelliteImage.width / 9, satelliteImage.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 									break;
 							}
 						}});
@@ -445,8 +468,9 @@ function initObjects() {
 
                 case "M":  //static obstacle
                     transmitters.push({
-                        xStart: x * game.blockSize, 					xEnd: x * game.blockSize + game.blockSize,	xDrawStart: x * game.blockSize,
-                        yStart: y * game.blockSize - game.blockSize, 	yEnd: y * game.blockSize + game.blockSize,	yDrawStart: y * game.blockSize,
+                        xStart: x * game.blockSize, 					xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
+                        yStart: y * game.blockSize - game.blockSize, 	yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
+						
 						state: "on",				distanceToTaxi: 101,
 						
                         update: function(){
@@ -456,55 +480,35 @@ function initObjects() {
 						draw: function(){
 							if(this.state == "on"){
 								ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, 
-                                          this.xStart - 83, this.yStart - 90, 200, 200);
+                                          this.xDraw - 83, (this.yDraw - game.blockSize) - 90, 200, 200);
 							}
-                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xDrawStart, this.yDrawStart - game.blockSize, game.blockSize, game.blockSize * 2);
+                            ctx.drawImage(transmitterImage, 0, 0, transmitterImage.width, transmitterImage.height, this.xDraw, this.yDraw - game.blockSize, game.blockSize, game.blockSize * 2);
                         }
 					});
                     break;
-
+				/*********************************Initialization of power ups*******************+++******************************/
 				case "I":
 				case "J":
 					var type = levelRows[y][x];
 					
 					powerUps.push({
-						xStart: x * game.blockSize, xEnd: x * game.blockSize + (2 * game.blockSize),
-                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
+						xStart: x * game.blockSize, xEnd: x * game.blockSize + (2 * game.blockSize),	xDraw: x * game.blockSize,
+                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,			yDraw: y * game.blockSize,
 						type: type,					state: "open",
 						
 						draw: function(){
 							if(this.type == "I" && this.state == "open"){
-								ctx.drawImage(powerUpSnowden, 0, 0, powerUpSnowden.width, powerUpSnowden.height, this.xStart, this.yStart, game.blockSize * 2, game.blockSize);
+								ctx.drawImage(powerUpSnowden, 0, 0, powerUpSnowden.width, powerUpSnowden.height, this.xDraw, this.yDraw, game.blockSize * 2, game.blockSize);
 							}
 							if(this.type == "J" && this.state == "open"){
-								ctx.drawImage(powerUpBlitz, 0, 0, powerUpBlitz.width, powerUpBlitz.height, this.xStart, this.yStart, game.blockSize * 2, game.blockSize);
+								ctx.drawImage(powerUpBlitz, 0, 0, powerUpBlitz.width, powerUpBlitz.height, this.xDraw, this.yDraw, game.blockSize * 2, game.blockSize);
 							}
 						}
 					});
 					break;
 				
-				case "E":
-					exits.push({
-						xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize, state: "visible",
-                        yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,
-						
-						update: function(){
-							if(game.targetPlatform < 0 && taxi.state == "full"){
-								this.state = "invisible"
-							}
-						},
-						
-						draw: function(){
-							if(this.state == "visible"){
-								ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xStart, this.yStart, game.blockSize, game.blockSize);
-							}
-						}
-					});
-				break;
 
-					/*********************************Dynamic Level elements*******************************/
-                // Taxi and guests
-                // Diese Elemente mussen an sich dynamisch gezeichnet werden - hier nur für Demozwecke zeichnen
+					/*********************************Initialization of Dynamic Level elements*******************************/
 
                 //Vertical flying drone
                 case "K":
@@ -660,20 +664,13 @@ function initObjects() {
 
                     googleCars[googleCars.length-1].moveEnd += count * game.blockSize + game.blockSize;
                     break;
-
+					
+				/*********************************Initialization of taxi**************************************************/
                 case "T":
                     taxi = {
                         height: 25, width: 58,
-						x: x * game.blockSize,	 xStart: x * game.blockSize,	vx: 0,
-						y: y * game.blockSize,   yStart: y * game.blockSize,	vy: 0,	
-						//                                                                     lu = left-up                     ru = right-up
-						// corners of taxi hitbox															//---------------+---------------
-						ru: { x: this.x + this.width, y: this.y }, // -> right upper corner					//         ___ /^^[___              
-						rd: { x: this.x + this.width, y: this.y + this.height }, // -> right down corner	//        /|^+----+   |#___________//
-						lu: { x: this.x, y: this.y }, // -> left up corner									//      ( -+ |____|   _______-----+/
-						ld: { x: this.x, y: this.y + this.height }, // -> left down corner					//       ==_________--'            \
-																											//          ~_|___|__
-						// 															           ld = left-down                   rd = right-down
+						x: x * game.blockSize,	 xStart: x * game.blockSize,	xEnd: x * game.blockSize + this.width,	vx: 0,
+						y: y * game.blockSize,   yStart: y * game.blockSize,	yEnd: y * game.blockSize + this.height, vy: 0,	
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,	  lives: 3,
 						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
@@ -746,15 +743,13 @@ function initObjects() {
 							
 
 							//Update of this corner position:                                       
-								this.ru.x = this.x + this.width; this.ru.y = this.y;                
-								this.rd.x = this.x + this.width; this.rd.y = this.y + this.height;  
-								this.lu.x = this.x; this.lu.y = this.y;                             
-								this.ld.x = this.x; this.ld.y = this.y + this.height;               
-							
+								this.xStart = this.x; this.xEnd = this.x + this.width;                
+								this.yStart = this.y; this.yEnd = this.y + this.height;  
+								
 							for (var i = 0; i < platforms.length; i++) {
 
 							/*Prüfung Landung*/
-								if(platforms[i].hasLanded(this.ld.x, this.rd.x, this.ld.y, this.rd.y)){
+								if(platforms[i].hasLanded(this.xStart, this.xEnd, this.yEnd, this.yEnd)){
 										this.currPlatform = platforms[i].id;
 										break;
 								}else{
@@ -805,10 +800,10 @@ function initObjects() {
 						},
 						
 						collides: function(obstXstart, obstXend, obstYstart, obstYend){
-							if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.lu.x, this.lu.y)||
-								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.ld.x, this.ld.y)||
-								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.ru.x, this.ru.y)||
-								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.rd.x, this.rd.y)) {
+							if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xStart, this.yStart)||	//left-up
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xStart, this.yEnd)||		//left-down
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xEnd, this.yStart)||		//right-up
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xEnd, this.yEnd)) {		//right-down
 								return true;
 							}
 							else {
@@ -865,7 +860,7 @@ function initObjects() {
 						}
 					};
 					break;
-				
+				/*********************************Initialization of guests***************************************************/
 				case "1":
                 case "2":
 				case "3":
@@ -944,5 +939,4 @@ function initObjects() {
             }//switch
         }//for x
     }//for y
-    //guests.changeShownGuests(1);
 }
