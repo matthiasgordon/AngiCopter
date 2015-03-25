@@ -674,16 +674,6 @@ function initObjects() {
                                     this.direction = "right";
                                 }
                             }
-							if (taxi.y < this.yStart){
-								var bSeite = this.yStart - taxi.y;
-								var aSeite;
-								if(this.xStart <= taxi.x){
-									aSeite = (taxi.x - this.xStart) * (-1);
-								}else{
-									aSeite = this.xStart - taxi.x;
-								}
-								this.angleToTaxi = Math.atan(bSeite/aSeite) * 57.2957795;
-							}
 							
                         },
 
@@ -728,20 +718,30 @@ function initObjects() {
 								this.vy -= 3;	
 							}
 							
+                            //Default drawstate if no key is pressed
 							this.drawState = "up";
 
+                            //If key W is pressed the taxi has to move up
 							if(keydown.w) {
+                                //Update velocity of taxi 
+                                //If powerupstate "fast" is active, acceleration is faster
                                 if(this.powerUpState != "fast") {
                                     this.vy += 10;
                                 }
 								else {
                                     this.vy += 20;
                                 }
+                                //When taxi is moving up it is not colliding with a platform any more
+                                //Drawstate is up
+                                //and it is not longer on a platform
 								this.collisionBottom = false;
 								this.drawState = "up";
 								this.currPlatform = 0;
 							}
+                            //If key S is pressed and collision bottom is false the taxi can move down
+                            //if it is true it is standing an a platform and isn't able to move down
 							if(keydown.s && this.collisionBottom == false) {
+                                //If powerupstate "fast" is active, acceleration is faster
                                 if(this.powerUpState != "fast") {
 								    this.vy -= 10;
                                 }
@@ -749,29 +749,32 @@ function initObjects() {
                                     this.vy -= 20;
                                 }
 							}
+                            //If key A is pressed the taxi has to move left
 							if (keydown.a) {
+                                //If powerupstate "fast" is active, acceleration is faster
                                 if(this.powerUpState != "fast") {
 								    this.vx -= 7;
                                 }
                                 else {
                                     this.vx -= 14;
                                 }
+                                //The drawstate is changed to left
 								this.drawState = "left";
 							}
+                            //If key D is pressed the taxi has to move left
 							if (keydown.d) {
+                                //If powerupstate "fast" is active, acceleration is faster
                                 if(this.powerUpState != "fast") {
 								    this.vx += 7;
                                 }
                                 else{
                                     this.vx += 14;
                                 }
+                                //The drawstate is changed to right
 								this.drawState = "right";
 							}
-							if(keydown.space) {
-					           
-							    //this.health -= 1;
-							}
 						
+                            //if taxi lands on platform it slows down
 							if(this.collisionBottom == true) {
 								if(this.vx < -5) {
 									this.vx += 5;
@@ -786,20 +789,22 @@ function initObjects() {
 								}
 							}
 							
+                            //Update taxi position depending on the velocity
 							this.x += this.vx / 200;
 							this.y -= this.vy / 200;
 							
 
 							//Update of this corner position:                                       
-								this.xStart = this.x; this.xEnd = this.x + this.width;                
-								this.yStart = this.y; this.yEnd = this.y + this.height;  
+							this.xStart = this.x; this.xEnd = this.x + this.width;                
+							this.yStart = this.y; this.yEnd = this.y + this.height;  
 								
 							for (var i = 0; i < platforms.length; i++) {
 
-							/*Prüfung Landung*/
+							     //Check if taxi has landed and set the platform it landed on as the current platform of the taxi
 								if(platforms[i].hasLanded(this.xStart, this.xEnd, this.yEnd, this.yEnd)){
 										this.currPlatform = platforms[i].id;
 										break;
+                                //If not the curren platform stays 0
 								}else{
 									this.currPlatform = 0;
 									this.collisionBottom = false;
@@ -818,16 +823,19 @@ function initObjects() {
 								}
 							}
 
-                            //action when taxi landed on any platform
+                            //action when taxi landed on a platform
                             if(this.currPlatform != 0){
+                                //If taxi is landing with a velocity over 300 --> taxi is dead
                                 if(this.vy < -300) {
                                     this.death();
                                 }
+                                //If taxi is not landing straight --> taxi is dead
                                 if(this.drawState != "up" && this.vy != 0) {
                                     this.death();
                                 }
                             }
 							
+                            //Reduce the taxis health if it is too close to a transmitter depending on the distance
 							for(i = 0; i < transmitters.length; i++){
 								if(transmitters[i].distanceToTaxi < 70 && transmitters[i].state == "on"){
 									this.health -= 1;
@@ -836,10 +844,13 @@ function initObjects() {
                                         this.health -= 0.5;
                                 }
 							}
+
+                            //If taxis health is 0 --> taxi is dead
                             if(this.health < 0) {
                                 this.death();
                             }
 
+                            //Update taxis attributes if it landed safely
                             if(this.currPlatform != 0){
                                 this.collisionBottom = true;
                                 this.vy = 0;
@@ -847,10 +858,11 @@ function initObjects() {
                             }
 						},
 						
+                        //Function to check a collision from the taxi and an other object
 						collides: function(obstXstart, obstXend, obstYstart, obstYend){
 							if (checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xStart, this.yStart)||	//left-up
-								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xStart, this.yEnd)||		//left-down
-								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xEnd, this.yStart)||		//right-up
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xStart, this.yEnd)||	//left-down
+								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xEnd, this.yStart)||	//right-up
 								checkCollision(obstXstart, obstXend, obstYstart, obstYend, this.xEnd, this.yEnd)) {		//right-down
 								return true;
 							}
@@ -859,8 +871,8 @@ function initObjects() {
 							}
 						},
 						
-						//Heli going straight up
 						draw: function(){
+                            //Drawing the taxi depending on its drawstate
 							switch(this.drawState){
 								case "up":
 									ctx.drawImage(taxiImage, Math.floor(game.frame % 5) *  taxiImage.width / 5, 0, taxiImage.width / 5, taxiImage.height / 3,
@@ -883,6 +895,8 @@ function initObjects() {
 									ctx.drawImage(brokenTaxiImage, Math.floor(game.frame % 8) * brokenTaxiImage.width / 8, Math.floor(game.frame / 8) * brokenTaxiImage.height / 6,
 										  brokenTaxiImage.width / 8, brokenTaxiImage.height / 6, this.x - 42, this.y - 47, brokenTaxiImage.width / 8, brokenTaxiImage.height / 6);
 									game.frame += 0.2;
+
+                                    //Call actions after the dying animation has been finished
 									if(Math.floor(game.frame) == 48) {
 										if(this.lives >= 1){
 											game.reset();
@@ -894,6 +908,7 @@ function initObjects() {
 							}
 						},
 						
+                        //Function that is called when the taxi is dies
 						death: function(){
 							this.drawState = "broken";
                             game.stopSound(backgroundsong);
@@ -908,10 +923,10 @@ function initObjects() {
 						}
 					};
 					break;
-				/*********************************Initialization of guests***************************************************/
-				case "1":
-                case "2":
-				case "3":
+				
+				case "1": //guest type 1
+                case "2": //guest type 2
+				case "3": //guest type 3
 					var value = levelRows[y][x] - 1;
 					
 					if(guests.length < value + 1){
@@ -919,12 +934,17 @@ function initObjects() {
 							guests[i] = new Array();
 						}
 					}
+
+                    /*********************************Initialization of guests***************************************************/
 					guests[value].push({
 						type: levelRows[y][x], state: "free", 
-						currPlatform : 0,	//muss irgendwann später definiert werden, da dies immer wieder geschieht
+						currPlatform : 0,
 						xStart: x * game.blockSize, x: x * game.blockSize,
 						yStart: y * game.blockSize, y: y * game.blockSize,
                         direction: "standing",
+
+                        //Guest entering the taxi
+                        //either moving left or moving right
 						enterTaxi: function(){
 							if(taxi.x-this.x <0){
 								this.x -= 1;
@@ -935,6 +955,7 @@ function initObjects() {
 							}
 						},
 						
+                        //Guest getting out of the taxi
 						exitTaxi:function(){
 							if(this.state != "leaving"){
 								this.x = taxi.x;
@@ -942,6 +963,8 @@ function initObjects() {
 							}
 						},
 						
+                        //After exiting the taxi the guest is going to his target position on the platform
+                        //Either moving left or moving right
 						leaveTaxi: function(){
 							if(guests[game.roundNumber][0].x - this.x < 0){
 								this.x -= 1;
@@ -954,7 +977,7 @@ function initObjects() {
 						
 						update: function(){
 							for (var i = 0; i < platforms.length; i++) {
-								/*Prüfung Landung*/
+								//Assign every guest the platform he is currently on
 								if(platforms[i].hasLanded(this.x, this.x +game.blockSize, this.y + game.blockSize, this.y + game.blockSize)){
 										this.currPlatform = platforms[i].id;
 								}
@@ -962,6 +985,7 @@ function initObjects() {
 						},
 
 						draw: function(){
+                            //Draw a guest depending on his state
 							if((this.state == "free" || this.state == "leaving") && (this.type == game.roundNumber)){
                                 if(this.direction == "standing") {
                                     ctx.drawImage(guestImage, 0 * guestImage.width / 7, 1 * guestImage.height / 2, 
