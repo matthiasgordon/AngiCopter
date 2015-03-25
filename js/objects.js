@@ -221,7 +221,7 @@ function initGame(){
 				menu.gameWonMenu.hide();
 				game.reset();
 				var nextLevel;
-				if (game.levelNumber < 4){
+				if (game.levelNumber < 5){
 					nextLevel = "level" + (game.levelNumber + 1) + ".txt";
 				}else{
 					nextLevel = "level1.txt";
