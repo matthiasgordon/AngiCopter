@@ -268,7 +268,7 @@ function initGame(){
 }
 /*********************************Initialization of level objects*************************************************/
 /*****************************************************************************************************************/
-function initObjects(levelDataRaw) {
+function initObjects() {
     var strings = levelDataRaw;
     var levelRows = strings.split("\r\n");
 	

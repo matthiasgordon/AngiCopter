@@ -39,10 +39,10 @@ function init(){
 	frames = new Array();
 	if(game == undefined){
 		initGame();
+		menu.initButtons();
 		menu.showMainMenu();
 	}
     initObjects();
-	menu.initButtons();
 }
 
 // Function to preload all images
