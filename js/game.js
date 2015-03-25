@@ -1,7 +1,7 @@
 var canvas;
 var ctx;
 
-var taxiImage , brokenTaxiImage, guestImage, guestImageBack, edge, background, platform_mid, platform_left, platform_right, powerUpSnowden, powerUpBlitz,
+var taxiImage , brokenTaxiImage, guestImage, guestImageBack, edge, background, platform_mid, platform_left, platform_right, powerUpSnowden, powerUpBlitz, lifeImage,
     droneImage, googleCarImage, transmitterImage, transmitterRadioImage, satelliteImage;
 
 function init(){
@@ -48,7 +48,8 @@ function preloadAssets() {
     guestImageBack = addImage("assets/merkel_spritesheet_back.png");
     edge = addImage("assets/rand_spritesheet.png");
     background = addImage("assets/background.png");
-    platform_mid = addImage("assets/plattform_mitte.png");
+    lifeImage = addImage("assets/merkel_leben.png");
+	platform_mid = addImage("assets/plattform_mitte.png");
     platform_left = addImage("assets/plattform_links.png");
     platform_right = addImage("assets/plattform_rechts.png");
     platform_blink_spritesheet = addImage("assets/spritesheet_platform_blink.png");
