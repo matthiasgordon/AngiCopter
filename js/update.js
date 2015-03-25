@@ -1,6 +1,7 @@
 function update() {
 
 	  	//********************************update objects********************************/
+	  	//Call the update method of each object
 	  	game.update();
 		taxi.update();
 
@@ -15,7 +16,6 @@ function update() {
 		for(i=0; i < exits.length; i++) {
 	  		exits[i].update();
 	  	}
-
 		
 	  	for(i=0; i < staticSatellites.length; i++) {
 	  		staticSatellites[i].update();
@@ -31,6 +31,7 @@ function update() {
 			}
 		}
 		
+		//Pause the game if the esc key is pressed and show the gamePausedMenu
 		if(keydown.esc) {
 			game.state = "pause";
 			menu.showGamePausedMenu();
@@ -47,6 +48,8 @@ function update() {
 	}
 
     function checkObjects() {
+    	//In this function we are looping trough the collector arrays
+
         //Platfrom loop
         for (var i = 0; i < platforms.length; i++) {
 			// Check collision platform, taxi
@@ -58,6 +61,7 @@ function update() {
             }
         }
 		
+		//Frame elements loop
 		for(var i = 0; i < frames.length; i++){
 			if(taxi.collides(frames[i].xStart, frames[i].xEnd,
                                    frames[i].yStart, frames[i].yEnd)){
@@ -65,6 +69,7 @@ function update() {
 		    }
 		}
 		
+		//Exit loop
 		for(var i = 0; i < exits.length; i++){
 			if(taxi.collides(exits[i].xStart, exits[i].xEnd,
                                    exits[i].yStart, exits[i].yEnd)){
@@ -74,6 +79,7 @@ function update() {
 		    }
 		}
 		
+		//Satellite loop
 		for(var i = 0; i < staticSatellites.length; i++){
 			if(taxi.collides(staticSatellites[i].xStart, staticSatellites[i].xEnd,
                                    staticSatellites[i].yStart, staticSatellites[i].yEnd)){
@@ -81,6 +87,7 @@ function update() {
 		    }
 		}
 		
+		//Powerup loop
 		for(var i = 0; i < powerUps.length; i++){
 			if(taxi.collides(powerUps[i].xStart, powerUps[i].xEnd,
                                    powerUps[i].yStart, powerUps[i].yEnd)){
@@ -135,18 +142,21 @@ function update() {
 			}
 		}
 
+		//Drone loop
 		for(i=0; i < drones.length; i++) {
 	  		if(taxi.collides(drones[i].xStart, drones[i].xEnd, drones[i].yStart, drones[i].yEnd)) {
 	  			taxi.death();
 	  		}
 	  	}
 
+	  	//GoogleCar loop
 	  	for(i=0; i < googleCars.length; i++) {
 	  		if(taxi.collides(googleCars[i].xStart, googleCars[i].xEnd, googleCars[i].yStart, googleCars[i].yEnd)) {
 	  			taxi.death();
 	  		}
 	  	}
 
+	  	//Transmitter loop
 	  	for(i=0; i < transmitters.length; i++) {
 	  		if(taxi.collides(transmitters[i].xStart, transmitters[i].xEnd, transmitters[i].yStart, transmitters[i].yEnd)) {
 	  			taxi.death();

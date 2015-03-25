@@ -212,14 +212,16 @@ function initGame(){
 				game.levelNumber++;
 			});
 
-            this.muteButton.click(function(){
+            this.muteButton.unbind('click').click(function(){
                 if(game.soundEnabled == true) {
                     game.muteSounds();
                     game.soundEnabled = false;
+                    muteButton.src="assets/sound_aus.png";
                 }
                 else{
                     game.unmuteSounds();
                     game.soundEnabled = true;
+                    muteButton.src="assets/sound_an.png";
                 }
             });
         },

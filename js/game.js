@@ -1,6 +1,7 @@
 var canvas;
 var ctx;
 
+//Image variables
 var taxiImage , brokenTaxiImage, guestImage, guestImageBack, edge, background, platform_mid, platform_left, platform_right, powerUpSnowden, powerUpBlitz, lifeImage,
     droneImage, googleCarImage, transmitterImage, transmitterRadioImage, satelliteImage;
 
@@ -9,7 +10,7 @@ function init(){
     canvas = $("#canvas")[0];
 	ctx = canvas.getContext("2d");
 	
-	//collector initialisation  SOLLTE DAS NICHT VIELLEICHT IN objects.js gemacht werden?
+	//collector initialisation
 	platforms = new Array();
 	obstacles = new Array();
 	exits = new Array();
@@ -28,7 +29,7 @@ function init(){
 	menu.initButtons();
 }
 
-// Function to preload all images and sounds
+// Function to preload all images
 function preloadAssets() {
     var _toPreload = 0;
 
@@ -65,6 +66,7 @@ function preloadAssets() {
         // If everthing is preloaded go on and load the level
         if (_toPreload == 0)
             loadLevel("level1.txt");
+        //If not check if they are loaded in 0,2 secounds again
         else
             setTimeout(checkResources, 200);
     }
@@ -77,6 +79,7 @@ function loadLevel(levelName) {
     var xmlhttp  = new XMLHttpRequest(); // code for IE7+, Firefox, Chrome, Opera, Safari
         
     xmlhttp.onreadystatechange = function () {
+        //When the leveldescription is loaded start the init function
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             levelDataRaw = xmlhttp.responseText;
             init();
@@ -88,5 +91,5 @@ function loadLevel(levelName) {
     xmlhttp.send();
 }
 
-// Run the init method when the document is loaded
+// Run the preloadAssets fuction when the document is loaded
 document.addEventListener("DOMContentLoaded", preloadAssets, false);

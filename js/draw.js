@@ -5,6 +5,7 @@ function draw() {
         game.frame += 0.1;
     }
 	
+    //Call the draw method of each object
     game.drawBackground();
     
 	for (i=0; i < guests.length; i++){
