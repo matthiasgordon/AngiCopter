@@ -264,6 +264,8 @@ function initObjects() {
     var strings = levelDataRaw;
     var levelRows = strings.split("\r\n");
 	
+    //Keeps track of which drone elements already have been used
+    //Three dimensional array with fields for each block in the level
     var verticalDronesFinished = new Array();
     for (X = 0; X < game.levelXMax; X++){
         verticalDronesFinished[X] = new Array();
@@ -272,22 +274,25 @@ function initObjects() {
         }
     }
 
+    //Loop through every block in the level description
     for (y = 0; y < game.levelYMax; y++) {
         for (x = 0; x < game.levelXMax; x++) {
 
             switch(levelRows[y][x]){
-            /*********************************Initialization of platforms*************************************************/
-                case "<":
-				case "#": //Platform
+                //Finding new platforms to add to the platform collector
+
+                case "<": //Platform beginning tile
+				case "#": //Platform mid tile
 					var tempPlatform = {xStart: 0, xEnd: 0, yStart: 0, yEnd: 0, hasBegin: false, hasEnd: false};
 
                     tempPlatform.xStart = x * game.blockSize; tempPlatform.xEnd = x * game.blockSize + game.blockSize;
                     tempPlatform.yStart = y * game.blockSize; tempPlatform.yEnd = y * game.blockSize + game.blockSize;
+
 					//check if platform has a begin-edge
 					if(levelRows[y][x] == "<"){
 						tempPlatform.hasBegin = true;
 					}
-                    //check end of platform and is end-edge exists 
+                    //check end of platform and if end-edge exists 
                     var count = -1;
                     while(levelRows[y][x] == "#" || levelRows[y][x] == ">" || levelRows[y][x] == "<") {
                         x++;
@@ -297,9 +302,12 @@ function initObjects() {
 						}
                     }
 					x--;
+
+                    //Update platform end to get the whole size of the platform
                     tempPlatform.xEnd += count * game.blockSize;
 
                     //add tempPlatform to platforms
+                    /*********************************Initialization of platforms*************************************************/
                     platforms.push({
 						id: platforms.length + 1,
                         xStart: tempPlatform.xStart, xEnd: tempPlatform.xEnd,	xDraw: tempPlatform.xStart,
@@ -309,6 +317,9 @@ function initObjects() {
 						draw: function(){
 							var boxes = (this.xEnd - this.xStart)/25;
 							for(j=0; j < boxes; j++){
+                                //Drawing the different variations of platforms
+                                //Also checking if the platform is the target platfrom at the moment and then letting it blink
+                                //with the help of a spritesheet
 								if(j == 0 && this.hasBegin){
                                     if(this.id == game.targetPlatform && taxi.state == "full") {
                                         ctx.drawImage(platform_blink_spritesheet, Math.floor(game.frame % 20) * 75, 0, 
@@ -343,6 +354,7 @@ function initObjects() {
 							}
 						},
 						
+                        //Function to check if samething landed on a platform
 						hasLanded: function(objXstart, objXend, objYstart, objYend){
 							if(checkCollision(this.xStart, this.xEnd, this.yStart, this.yEnd, objXstart, objYstart)&&
 								checkCollision(this.xStart, this.xEnd, this.yStart, this.yEnd, objXend, objYend)){
@@ -353,8 +365,9 @@ function initObjects() {
 						}
                     });
                     break;
-				/*********************************Initialization of frame**************************************************************/
+				
                 case "R": //frame
+                    /*********************************Initialization of frame**************************************************************/
                     frames.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
