@@ -4,6 +4,7 @@ var sidebar, menu, taxi, platforms, obstacles, guests, frames, exits, staticSate
 /*********************************Initialization of general game objects*************************************************/
 /************************************************************************************************************************/
 function initGame(){
+    /*********************Initialization of game object*********************/
 	game = {
 		width:  $("#canvas").width()-150, levelXMax: 32,  blockSize: 25,
 		height: $("#canvas").height(),    levelYMax: 24, 
@@ -21,7 +22,7 @@ function initGame(){
 		},
 		
 		update: function(){
-			//UPDATING roundNumber
+			//updating roundNumber if all previous guests have been delivered
 			var counter = 0;
 			for (i = 0; i < guests[this.roundNumber-1].length; i++){
 				if (guests[this.roundNumber-1][i].state == "delivered"){
@@ -31,7 +32,7 @@ function initGame(){
 			if(counter == guests[this.roundNumber-1].length){
 				this.roundNumber++;	
 			}
-			//UPDATE targetPlatform
+			//updating targetPlatform
 			if(taxi.state == "full"){
 				if(this.roundNumber < guests.length){
 					this.targetPlatform = guests[this.roundNumber][0].currPlatform;
@@ -40,15 +41,18 @@ function initGame(){
 				}
 			}
 			
+            //Counting down the powerup timer
             if(this.powerUpTimer != 0) {
                 this.powerUpTimer -= 1;
             }
 
+            //If powerup timer is 0, disable the powerupstate
             if(this.powerUpTimer == 0) {
                 taxi.powerUpState = "none";
             }
 		},
 		
+        //Function to reset the level if the game is lost or the next level initialized
 		reset: function(){
 			taxi.x = taxi.xBegin;	taxi.state = "free";	taxi.vx = 0; 	taxi.health = 100;
 			taxi.y = taxi.yBegin;	taxi.passengers = 0;	taxi.vy = 0;	taxi.drawState = "up";	
@@ -73,14 +77,17 @@ function initGame(){
 
             taxi.powerUpTimer = "none";
 		},
-		
+
+		//Begin the game loop
 		beginGameLoop: function() {
-		// Begin the game loop
 			var gameInterval = setInterval(function() {
-				if(game.state == "running") {//		hier darf nicht this verwendet werden gehört das hier rein GORDON!!??!?!?!?
-				update();
+                //Update the game if the gamestate is "running" and not "paused" or "over" 
+				if(game.state == "running") {
+                    //Update all objects
+				    update();
 				}
-			draw();
+                //Draw all objects
+			    draw();
 			}, 1000/game.FPS);
 		},
 
@@ -117,7 +124,7 @@ function initGame(){
             neuland.muted = false;
         }
 	}
-
+    /*********************Initialization of sidebar object*********************/
     sidebar = {
         width: $("#canvas").width() - game.width,
         height: game.height,
@@ -151,7 +158,7 @@ function initGame(){
             }
         }
     }
-
+    /*********************Initialization of menu object*********************/
     menu = {
         mainMenu: $('#main'),
         gameOverMenu: $('#game-over'),
@@ -468,7 +475,7 @@ function initObjects() {
 						}});
                     break;
 
-                case "M":  //static obstacle
+                case "M":  /*********************Initialization of transmitter object*********************/
                     transmitters.push({
                         xStart: x * game.blockSize, 					xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
                         yStart: y * game.blockSize - game.blockSize, 	yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
@@ -512,7 +519,8 @@ function initObjects() {
 
 					/*********************************Initialization of Dynamic Level elements*******************************/
 
-                //Vertical flying drone
+                /*********************Initialization of drone object*********************/
+                /****************************vertical flying*****************************/
                 case "K":
                     if(verticalDronesFinished[x][y] == false) {
                         drones.push({
@@ -562,8 +570,8 @@ function initObjects() {
                     }
 
                     break;
-
-                //Horizontal flying drone
+                /*********************Initialization of drone object*********************/
+                /***************************horizontal flying****************************/
                 case "L":
                     drones.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
@@ -607,6 +615,7 @@ function initObjects() {
                     drones[drones.length-1].moveEnd += count * game.blockSize + game.blockSize;
                     break;
 
+                /*********************Initialization of googleCar object*********************/
                 case "Y":
                     googleCars.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,
