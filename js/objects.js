@@ -366,13 +366,15 @@ function initObjects() {
                     });
                     break;
 				
-                case "R": //frame
+                case "R": //frame element
                     /*********************************Initialization of frame**************************************************************/
                     frames.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
                         
 						draw: function(){
+                            //Draw the different variations of the frame elements with help of the spritesheet
+
                             //Left
                             if(this.xStart == 0 && this.yStart > 0 && this.yStart < game.height - game.blockSize) {
                                 ctx.drawImage(edge, 0 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
@@ -416,12 +418,15 @@ function initObjects() {
 						state: "visible",
 						
 						update: function(){
+                            //If all guests have been collected and the last round has been reached the exit gets invisible
+                            //and the taxi can pass it
 							if(game.targetPlatform < 0 && taxi.state == "full"){
 								this.state = "invisible"
 							}
 						},
 						
 						draw: function(){
+                            //Only draw the exit if its visible
 							if(this.state == "visible"){
 								ctx.drawImage(edge, 2 * edge.width / 8, 0, edge.width / 8, edge.height, this.xDraw, this.yDraw, game.blockSize, game.blockSize);
 							}
@@ -429,14 +434,15 @@ function initObjects() {
 					});
 				break;
 				
-                /*********************************Initialization of static obstacles*************************************************/
                 case "X":  //static obstacle
+                    /*********************************Initialization of static obstacles/satellites*************************************************/
                     staticSatellites.push({
                         xStart: x * game.blockSize, xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
                         yStart: y * game.blockSize, yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
 						angleToTaxi: 0,
 						
 						update: function(){
+                            //Calculating the angle that the satellite aims to
 							if (taxi.y < this.yStart){
 								var bSeite = this.yStart - taxi.y;
 								var aSeite;
@@ -450,6 +456,7 @@ function initObjects() {
 						},
 						
 						draw: function(){
+                            //Drawing the satellite regarding the angle it aims to
 							switch(true){
 								// right from taxi and angle 0-20°
 								case (this.angleToTaxi > 0 && this.angleToTaxi < 20):
@@ -493,7 +500,8 @@ function initObjects() {
 						}});
                     break;
 
-                case "M":  /*********************Initialization of transmitter object*********************/
+                case "M":  
+                    /*********************Initialization of transmitter object*********************/
                     transmitters.push({
                         xStart: x * game.blockSize, 					xEnd: x * game.blockSize + game.blockSize,	xDraw: x * game.blockSize,
                         yStart: y * game.blockSize - game.blockSize, 	yEnd: y * game.blockSize + game.blockSize,	yDraw: y * game.blockSize,
@@ -501,10 +509,12 @@ function initObjects() {
 						state: "on",				distanceToTaxi: 101,
 						
                         update: function(){
+                            //Calulating the distance to the taxi
 							this.distanceToTaxi = Math.sqrt(Math.pow(taxi.x - this.xStart, 2)+ Math.pow(taxi.y - this.yStart, 2));
 						},
 						
 						draw: function(){
+                            //If transmitter is on draw the radio radius of the transmitter
 							if(this.state == "on"){
 								ctx.drawImage(transmitterRadioImage, 0, 0, transmitterRadioImage.width, transmitterRadioImage.height, 
                                           this.xDraw - 83, (this.yDraw - game.blockSize) - 90, 200, 200);
