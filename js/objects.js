@@ -205,18 +205,10 @@ function initGame(){
 				menu.gameWonMenu.hide();
 				game.reset();
 				var nextLevel;
-				switch(game.levelNumber){
-					case 1:
-						nextLevel = "level2.txt";
-						break;
-					
-					case 2:
-						nextLevel = "level3.txt";
-						break;
-					
-					case 3:
-						nextLevel = "none";
-						break;
+				if (game.levelNumber < 3){
+					nextLevel = "level" + (game.levelNumber + 1) + ".txt";
+				}else{
+					nextLevel = "level1.txt";
 				}
 				loadLevel(nextLevel);
 				game.levelNumber++;
@@ -260,7 +252,7 @@ function initGame(){
 }
 /*********************************Initialization of level objects*************************************************/
 /*****************************************************************************************************************/
-function initObjects() {
+function initObjects(levelDataRaw) {
     var strings = levelDataRaw;
     var levelRows = strings.split("\r\n");
 	
