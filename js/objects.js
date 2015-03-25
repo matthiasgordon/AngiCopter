@@ -88,9 +88,11 @@ function initGame(){
 				}
                 //Draw all objects
 			    draw();
+                //1000/game FPS regulates how often the gameloop is called every second
 			}, 1000/game.FPS);
 		},
 
+        //Functions to control the sound files
         playSoundLoop: function(soundID) {
             soundID.pause();
             soundID.currentTime = 0;
@@ -137,10 +139,8 @@ function initGame(){
             ctx.fillStyle = "#232323";
             ctx.fillRect(this.xStart,this.yStart,this.width,this.height);
 			
-			ctx.fillStyle = "#000000";
+            //Draw remaining lifes
 			for(i = 0; i < taxi.lives; i++){
-				draw
-				//ctx.fillRect(this.xEnd-115, this.yEnd - 45 - (i*30), 25, 25);
 				ctx.drawImage(lifeImage, 0, 0, lifeImage.width, lifeImage.height, this.xEnd-115, this.yEnd - 45 - (i*30), game.blockSize, game.blockSize);
 			}
 			
@@ -160,17 +160,20 @@ function initGame(){
     }
     /*********************Initialization of menu object*********************/
     menu = {
+        //Initialization of menu elements
         mainMenu: $('#main'),
         gameOverMenu: $('#game-over'),
         gamePausedMenu: $('#game-paused'),
         gameWonMenu: $('#game-won'),
 
+        //Initialization of buttons
         playButton: $('.play'),
         restartButton: $('.restart'),
 		nextLevelButton: $('.nextLevel'),
         continueButton: $('.continue'),
         muteButton: $('.muteButton'),
 
+        //Function to give the buttons a click listener
         initButtons: function() {
             this.playButton.click(function() {
                 menu.mainMenu.hide();
@@ -233,6 +236,8 @@ function initGame(){
             });
         },
         
+        //Menus are hidden as default
+        //These functions are able to show them one at a time
         showMainMenu: function() {
             this.mainMenu.show();
             game.playSoundLoop(intro);
