@@ -50,8 +50,8 @@ function initGame(){
 		},
 		
 		reset: function(){
-			taxi.x = taxi.xStart;	taxi.state = "free";	taxi.vx = 0; 	taxi.health = 100;
-			taxi.y = taxi.yStart;	taxi.passengers = 0;	taxi.vy = 0;	taxi.drawState = "up";	
+			taxi.x = taxi.xBegin;	taxi.state = "free";	taxi.vx = 0; 	taxi.health = 100;
+			taxi.y = taxi.yBegin;	taxi.passengers = 0;	taxi.vy = 0;	taxi.drawState = "up";	
 			
 			game.state = "running";	this.roundNumber = 1; 	this.targetPlatform = 0;	this.frame = 0;			
 			
@@ -669,8 +669,8 @@ function initObjects() {
                 case "T":
                     taxi = {
                         height: 25, width: 58,
-						x: x * game.blockSize,	 xStart: x * game.blockSize,	xEnd: x * game.blockSize + this.width,	vx: 0,
-						y: y * game.blockSize,   yStart: y * game.blockSize,	yEnd: y * game.blockSize + this.height, vy: 0,	
+						x: x * game.blockSize,	 xBegin: x * game.blockSize,	xStart: x * game.blockSize,	xEnd: x * game.blockSize + this.width,	vx: 0,
+						y: y * game.blockSize,   yBegin: y * game.blockSize,	yStart: y * game.blockSize,	yEnd: y * game.blockSize + this.height, vy: 0,	
 						
 						drawState: "up",	passengers: 0,		collisionBottom: false,	  lives: 3,
 						state: "free",		currPlatform:  0,   health: 100,              powerUpState: "none",
